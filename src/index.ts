@@ -15,5 +15,7 @@ export * from './rumors/index';
 export { searchQuestlog } from './search_questlog';
 export type { QuestlogSearchResult } from './search_result';
 export * from './tags/index';
+export * from './tools/index';
+export * as tools from './tools/index';
 export * from './unlocks/index';
 export * as write from './write';

@@ -24,9 +24,10 @@ describe('queryQuestDetailRecords', () => {
 		).run(a.id, b.id);
 		const records = queryQuestDetailRecords(db, {}, 10, [b.id]);
 		strictEqual(records.length, 1);
-		strictEqual(records[0]?.blockerCount >= 1, true);
-		strictEqual(records[0]?.detail.id, b.id);
-		strictEqual(records[0]?.detail.markerId, 'progress.incomplete');
+		const record = records[0];
+		strictEqual(record?.blockerCount != null && record.blockerCount >= 1, true);
+		strictEqual(record?.detail.id, b.id);
+		strictEqual(record?.detail.markerId, 'progress.incomplete');
 	});
 
 	it('returns empty when questIds filter is an empty array (explicit no-op)', () => {

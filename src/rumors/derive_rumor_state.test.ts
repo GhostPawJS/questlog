@@ -8,6 +8,7 @@ function r(partial: Partial<Rumor> & Pick<Rumor, 'id'>): Rumor {
 		id: partial.id,
 		title: partial.title ?? 't',
 		details: partial.details ?? null,
+		markerId: partial.markerId ?? null,
 		createdAt: partial.createdAt ?? 1,
 		updatedAt: partial.updatedAt ?? 1,
 		dismissedAt: partial.dismissedAt ?? null,

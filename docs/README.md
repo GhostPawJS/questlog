@@ -209,6 +209,7 @@ That keeps system truth aligned with what actually happened.
 - `src/index.ts`: full public surface
 - `src/read.ts`: read-only surface
 - `src/write.ts`: write-only surface
+- `src/tools/index.ts`: additive LLM-oriented tool facade with runtime metadata, JSON-Schema-compatible input schemas, and adapter helpers
 - `searchQuestlog(db, query)`: cross-entity full-text search
 
 If you need exact public calls for a specific concept, use the corresponding
@@ -298,6 +299,8 @@ Read those files when you need exact table shape, constraints, or index detail.
 
 - `USAGE.md`: end-to-end practical manager playbook
 - `SOUL.md`: future quest-soul integration notes
+- `TOOLS.md`: guidance for designing LLM-facing tools well, including schema, clarification, and recovery contracts
+- `TOOL_SURFACE.md`: Questlog's runtime-ready LLM tool facade, including registry helpers and compact-vs-full detail behavior
 - `RESEARCH.md`: broader design and rationale background
 
 ## Quality Bar

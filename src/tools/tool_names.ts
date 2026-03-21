@@ -1,0 +1,12 @@
+export const searchQuestlogToolName = 'search_questlog';
+export const reviewQuestlogToolName = 'review_questlog';
+export const inspectQuestlogItemToolName = 'inspect_questlog_item';
+export const captureRumorToolName = 'capture_rumor';
+export const shapeWorkToolName = 'shape_work';
+export const planQuestToolName = 'plan_quest';
+export const runQuestToolName = 'run_quest';
+export const organizeWorkToolName = 'organize_work';
+export const manageRepeatableToolName = 'manage_repeatable';
+export const tagWorkToolName = 'tag_work';
+export const rewardWorkToolName = 'reward_work';
+export const retireWorkToolName = 'retire_work';
