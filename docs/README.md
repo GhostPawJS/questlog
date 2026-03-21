@@ -299,6 +299,7 @@ Read those files when you need exact table shape, constraints, or index detail.
 
 - `USAGE.md`: end-to-end practical manager playbook
 - `SOUL.md`: future quest-soul integration notes
+- `SKILLS.md`: runtime-facing overview of Questlog's exported skill surface
 - `TOOLS.md`: guidance for designing LLM-facing tools well, including schema, clarification, and recovery contracts
 - `RESEARCH.md`: broader design and rationale background
 
