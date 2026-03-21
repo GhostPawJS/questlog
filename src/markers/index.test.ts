@@ -1,7 +1,7 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import type { MarkerDefinition, MarkerId } from './index';
-import * as markers from './index';
+import type { MarkerDefinition, MarkerId } from './index.ts';
+import * as markers from './index.ts';
 
 describe('markers barrel', () => {
 	it('exports the marker lookup and derivation helpers', () => {

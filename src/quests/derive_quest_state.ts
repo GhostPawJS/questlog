@@ -1,5 +1,5 @@
-import type { QuestState } from './quest_state';
-import type { Quest } from './types';
+import type { QuestState } from './quest_state.ts';
+import type { Quest } from './types.ts';
 
 /**
  * Derives quest state from start, resolution, and success timestamps.

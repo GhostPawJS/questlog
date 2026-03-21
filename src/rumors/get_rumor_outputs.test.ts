@@ -1,11 +1,11 @@
 import { strictEqual } from 'node:assert/strict';
 import { beforeEach, describe, it } from 'node:test';
-import type { QuestlogDb } from '../database';
-import { createInitializedQuestlogDb } from '../lib/test-db';
-import { createQuestline } from '../questlines/create_questline';
-import { createQuest } from '../quests/create_quest';
-import { captureRumor } from './capture_rumor';
-import { getRumorOutputs } from './get_rumor_outputs';
+import type { QuestlogDb } from '../database.ts';
+import { createInitializedQuestlogDb } from '../lib/test-db.ts';
+import { createQuestline } from '../questlines/create_questline.ts';
+import { createQuest } from '../quests/create_quest.ts';
+import { captureRumor } from './capture_rumor.ts';
+import { getRumorOutputs } from './get_rumor_outputs.ts';
 
 let db: QuestlogDb;
 

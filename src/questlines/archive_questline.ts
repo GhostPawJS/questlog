@@ -1,7 +1,7 @@
-import type { QuestlogDb } from '../database';
-import { resolveNow } from '../resolve_now';
-import type { Questline } from './types';
-import { updateQuestline } from './update_questline';
+import type { QuestlogDb } from '../database.ts';
+import { resolveNow } from '../resolve_now.ts';
+import type { Questline } from './types.ts';
+import { updateQuestline } from './update_questline.ts';
 
 /**
  * Archives a questline without deleting it.

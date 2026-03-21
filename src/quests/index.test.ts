@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import * as quests from './index';
+import * as quests from './index.ts';
 
 describe('quests barrel', () => {
 	it('exports core quest lifecycle entrypoints', () => {

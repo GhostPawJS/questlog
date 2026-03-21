@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { resolveNow } from './resolve_now';
+import { resolveNow } from './resolve_now.ts';
 
 describe('resolveNow', () => {
 	it('returns the explicit timestamp when provided', () => {

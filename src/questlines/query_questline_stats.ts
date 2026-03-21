@@ -1,5 +1,5 @@
 import type { SQLInputValue } from 'node:sqlite';
-import type { QuestlogDb } from '../database';
+import type { QuestlogDb } from '../database.ts';
 
 /**
  * Aggregated questline progress statistics keyed by questline id.

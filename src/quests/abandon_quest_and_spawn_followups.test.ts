@@ -1,9 +1,9 @@
 import { deepStrictEqual, strictEqual } from 'node:assert/strict';
 import { beforeEach, describe, it } from 'node:test';
-import type { QuestlogDb } from '../database';
-import { createInitializedQuestlogDb } from '../lib/test-db';
-import { abandonQuestAndSpawnFollowups } from './abandon_quest_and_spawn_followups';
-import { createQuest } from './create_quest';
+import type { QuestlogDb } from '../database.ts';
+import { createInitializedQuestlogDb } from '../lib/test-db.ts';
+import { abandonQuestAndSpawnFollowups } from './abandon_quest_and_spawn_followups.ts';
+import { createQuest } from './create_quest.ts';
 
 let db: QuestlogDb;
 

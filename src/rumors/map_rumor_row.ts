@@ -1,6 +1,6 @@
-import { deriveRumorMarkerId } from '../markers/derive_rumor_marker_id';
-import { deriveRumorState } from './derive_rumor_state';
-import type { Rumor } from './types';
+import { deriveRumorMarkerId } from '../markers/derive_rumor_marker_id.ts';
+import { deriveRumorState } from './derive_rumor_state.ts';
+import type { Rumor } from './types.ts';
 
 /**
  * Maps a rumor row into its public entity shape.

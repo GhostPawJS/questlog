@@ -5,7 +5,7 @@ export {
 	moveQuestToQuestline,
 	softDeleteQuestline,
 	updateQuestline,
-} from './questlines/index';
+} from './questlines/index.ts';
 export {
 	abandonQuest,
 	abandonQuestAndSpawnFollowups,
@@ -16,32 +16,32 @@ export {
 	reviseQuestObjective,
 	softDeleteQuest,
 	startQuest,
-} from './quests/index';
+} from './quests/index.ts';
 export {
 	archiveRepeatableQuest,
 	createRepeatableQuest,
 	softDeleteRepeatableQuest,
 	spawnDueRepeatableQuests,
 	updateRepeatableQuest,
-} from './repeatable_quests/index';
+} from './repeatable_quests/index.ts';
 export {
 	addQuestReward,
 	claimQuestReward,
 	removeQuestReward,
 	replaceRepeatableQuestRewards,
 	updateQuestReward,
-} from './rewards/index';
+} from './rewards/index.ts';
 export {
 	captureRumor,
 	dismissRumor,
 	reopenRumor,
 	settleRumor,
 	softDeleteRumor,
-} from './rumors/index';
+} from './rumors/index.ts';
 export {
 	replaceQuestTags,
 	replaceRepeatableQuestTags,
 	tagQuest,
 	untagQuest,
-} from './tags/index';
-export { addUnlock, removeUnlock, replaceUnlocks } from './unlocks/index';
+} from './tags/index.ts';
+export { addUnlock, removeUnlock, replaceUnlocks } from './unlocks/index.ts';

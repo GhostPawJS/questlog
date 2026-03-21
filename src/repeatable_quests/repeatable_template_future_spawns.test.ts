@@ -1,14 +1,14 @@
 import { deepStrictEqual, strictEqual } from 'node:assert/strict';
 import { beforeEach, describe, it } from 'node:test';
-import type { QuestlogDb } from '../database';
-import { createInitializedQuestlogDb } from '../lib/test-db';
-import { getQuestDetail } from '../quests/get_quest_detail';
-import { replaceRepeatableQuestRewards } from '../rewards/replace_repeatable_quest_rewards';
-import { replaceRepeatableQuestTags } from '../tags/replace_repeatable_quest_tags';
-import { createRepeatableQuest } from './create_repeatable_quest';
-import { listDueRepeatableQuestAnchors } from './list_due_repeatable_quest_anchors';
-import { spawnDueRepeatableQuests } from './spawn_due_repeatable_quests';
-import { updateRepeatableQuest } from './update_repeatable_quest';
+import type { QuestlogDb } from '../database.ts';
+import { createInitializedQuestlogDb } from '../lib/test-db.ts';
+import { getQuestDetail } from '../quests/get_quest_detail.ts';
+import { replaceRepeatableQuestRewards } from '../rewards/replace_repeatable_quest_rewards.ts';
+import { replaceRepeatableQuestTags } from '../tags/replace_repeatable_quest_tags.ts';
+import { createRepeatableQuest } from './create_repeatable_quest.ts';
+import { listDueRepeatableQuestAnchors } from './list_due_repeatable_quest_anchors.ts';
+import { spawnDueRepeatableQuests } from './spawn_due_repeatable_quests.ts';
+import { updateRepeatableQuest } from './update_repeatable_quest.ts';
 
 let db: QuestlogDb;
 

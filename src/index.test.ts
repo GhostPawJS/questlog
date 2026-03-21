@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import * as questlog from './index';
+import * as questlog from './index.ts';
 
 describe('package index (public entry)', () => {
 	it('exposes read/write namespaces and schema init as stable entrypoints', () => {

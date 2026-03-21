@@ -1,7 +1,7 @@
-import type { QuestlogDb } from '../database';
-import { mapQuestlineRow } from './map_questline_row';
-import { queryQuestlineStats } from './query_questline_stats';
-import type { QuestlineDetail } from './types';
+import type { QuestlogDb } from '../database.ts';
+import { mapQuestlineRow } from './map_questline_row.ts';
+import { queryQuestlineStats } from './query_questline_stats.ts';
+import type { QuestlineDetail } from './types.ts';
 
 /**
  * Lists active questlines.

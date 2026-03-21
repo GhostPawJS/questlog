@@ -1,4 +1,4 @@
-import type { RepeatableQuestReward } from './types';
+import type { RepeatableQuestReward } from './types.ts';
 
 /**
  * Maps a repeatable quest reward row into its public entity shape.

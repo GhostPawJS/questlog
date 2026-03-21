@@ -1,6 +1,6 @@
-import type { QuestlogDb } from '../database';
-import { resolveQuest } from './resolve_quest';
-import type { Quest } from './types';
+import type { QuestlogDb } from '../database.ts';
+import { resolveQuest } from './resolve_quest.ts';
+import type { Quest } from './types.ts';
 
 /**
  * Resolves a quest successfully.

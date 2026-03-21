@@ -1,7 +1,7 @@
-import type { QuestlogDb } from '../database';
-import { getQuestlineOrThrow } from './get_questline_or_throw';
-import { queryQuestlineStats } from './query_questline_stats';
-import type { QuestlineDetail } from './types';
+import type { QuestlogDb } from '../database.ts';
+import { getQuestlineOrThrow } from './get_questline_or_throw.ts';
+import { queryQuestlineStats } from './query_questline_stats.ts';
+import type { QuestlineDetail } from './types.ts';
 
 /**
  * Loads a questline with computed progress counts.

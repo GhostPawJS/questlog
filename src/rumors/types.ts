@@ -1,6 +1,6 @@
-import type { MarkerId } from '../markers/types';
-import type { CreateQuestlineInput, Questline } from '../questlines/types';
-import type { CreateQuestInput, Quest } from '../quests/types';
+import type { MarkerId } from '../markers/types.ts';
+import type { CreateQuestlineInput, Questline } from '../questlines/types.ts';
+import type { CreateQuestInput, Quest } from '../quests/types.ts';
 
 /**
  * A non-committed intake item that may later yield quests, a questline, both, or nothing.

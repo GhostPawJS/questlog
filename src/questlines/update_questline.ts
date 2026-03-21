@@ -1,9 +1,9 @@
-import { assertNonEmpty } from '../assert_non_empty';
-import type { QuestlogDb } from '../database';
-import { resolveNow } from '../resolve_now';
-import { withTransaction } from '../with_transaction';
-import { getQuestlineOrThrow } from './get_questline_or_throw';
-import type { Questline, UpdateQuestlineInput } from './types';
+import { assertNonEmpty } from '../assert_non_empty.ts';
+import type { QuestlogDb } from '../database.ts';
+import { resolveNow } from '../resolve_now.ts';
+import { withTransaction } from '../with_transaction.ts';
+import { getQuestlineOrThrow } from './get_questline_or_throw.ts';
+import type { Questline, UpdateQuestlineInput } from './types.ts';
 
 /**
  * Updates mutable questline fields.

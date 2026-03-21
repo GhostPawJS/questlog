@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import * as tags from './index';
+import * as tags from './index.ts';
 
 describe('tags barrel', () => {
 	it('exports tagging helpers used by quests and repeatables', () => {

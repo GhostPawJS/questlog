@@ -1,4 +1,4 @@
-import type { Questline } from './types';
+import type { Questline } from './types.ts';
 
 /**
  * Maps a questline row into its public entity shape.

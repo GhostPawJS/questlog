@@ -1,5 +1,5 @@
-import type { QuestlogDb } from '../database';
-import type { RumorOutput } from './types';
+import type { QuestlogDb } from '../database.ts';
+import type { RumorOutput } from './types.ts';
 
 /**
  * Lists outputs that a rumor produced.

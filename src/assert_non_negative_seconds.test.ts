@@ -1,6 +1,6 @@
 import { strictEqual, throws } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { assertNonNegativeSeconds } from './assert_non_negative_seconds';
+import { assertNonNegativeSeconds } from './assert_non_negative_seconds.ts';
 
 describe('assertNonNegativeSeconds', () => {
 	it('allows null, undefined, and non-negative integers', () => {

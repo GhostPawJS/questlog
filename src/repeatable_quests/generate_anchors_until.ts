@@ -1,8 +1,8 @@
-import { advanceAnchor } from './advance_anchor';
-import { parseRRule } from './parse_rrule';
-import { startOfUtcDay } from './start_of_utc_day';
-import { startOfUtcWeek } from './start_of_utc_week';
-import type { RepeatableQuest } from './types';
+import { advanceAnchor } from './advance_anchor.ts';
+import { parseRRule } from './parse_rrule.ts';
+import { startOfUtcDay } from './start_of_utc_day.ts';
+import { startOfUtcWeek } from './start_of_utc_week.ts';
+import type { RepeatableQuest } from './types.ts';
 
 const DAY_MS = 86_400_000;
 const WEEK_MS = 7 * DAY_MS;

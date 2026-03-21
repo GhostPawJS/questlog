@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import * as write from './write';
+import * as write from './write.ts';
 
 describe('write barrel', () => {
 	it('re-exports mutation surface', () => {

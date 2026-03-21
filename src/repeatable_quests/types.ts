@@ -1,5 +1,5 @@
-import type { MarkerId } from '../markers/types';
-import type { RepeatableQuestRewardInput } from '../rewards/types';
+import type { MarkerId } from '../markers/types.ts';
+import type { RepeatableQuestRewardInput } from '../rewards/types.ts';
 
 /**
  * A recurring definition that spawns concrete quest instances for due anchors.

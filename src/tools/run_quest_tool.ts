@@ -5,9 +5,9 @@ import {
 	getQuestDetail,
 	logQuestEffort,
 	startQuest,
-} from '../quests';
-import type { FollowupQuestInput } from '../quests/types';
-import { translateToolError } from './tool_errors';
+} from '../quests/index.ts';
+import type { FollowupQuestInput } from '../quests/types.ts';
+import { translateToolError } from './tool_errors.ts';
 import {
 	arraySchema,
 	defineQuestlogTool,
@@ -15,12 +15,12 @@ import {
 	integerSchema,
 	objectSchema,
 	stringSchema,
-} from './tool_metadata';
-import { runQuestToolName } from './tool_names';
-import { inspectItemNext } from './tool_next';
-import { toQuestRef } from './tool_ref';
-import type { ToolEntityRef, ToolResult } from './tool_types';
-import { toolFailure, toolNoOp, toolSuccess } from './tool_types';
+} from './tool_metadata.ts';
+import { runQuestToolName } from './tool_names.ts';
+import { inspectItemNext } from './tool_next.ts';
+import { toQuestRef } from './tool_ref.ts';
+import type { ToolEntityRef, ToolResult } from './tool_types.ts';
+import { toolFailure, toolNoOp, toolSuccess } from './tool_types.ts';
 
 export type RunQuestToolInput =
 	| { action: 'abandon'; outcome: string; questId: number; resolvedAt?: number }

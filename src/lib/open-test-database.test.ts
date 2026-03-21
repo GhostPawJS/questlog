@@ -1,7 +1,7 @@
 import { strictEqual, throws } from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { describe, it } from 'node:test';
-import { openTestDatabase } from './open-test-database';
+import { openTestDatabase } from './open-test-database.ts';
 
 describe('openTestDatabase', () => {
 	it('returns an isolated in-memory DatabaseSync', async () => {

@@ -1,15 +1,15 @@
 import { strictEqual } from 'node:assert/strict';
 import { beforeEach, describe, it } from 'node:test';
-import type { QuestlogDb } from '../database';
-import { createInitializedQuestlogDb } from '../lib/test-db';
-import { addUnlock } from '../unlocks/add_unlock';
-import { createQuest } from './create_quest';
-import { finishQuest } from './finish_quest';
-import { getQuestOrThrow } from './get_quest_or_throw';
-import { isQuestAvailable } from './is_quest_available';
-import { mapQuestRow } from './map_quest_row';
-import { planQuestTime } from './plan_quest_time';
-import { softDeleteQuest } from './soft_delete_quest';
+import type { QuestlogDb } from '../database.ts';
+import { createInitializedQuestlogDb } from '../lib/test-db.ts';
+import { addUnlock } from '../unlocks/add_unlock.ts';
+import { createQuest } from './create_quest.ts';
+import { finishQuest } from './finish_quest.ts';
+import { getQuestOrThrow } from './get_quest_or_throw.ts';
+import { isQuestAvailable } from './is_quest_available.ts';
+import { mapQuestRow } from './map_quest_row.ts';
+import { planQuestTime } from './plan_quest_time.ts';
+import { softDeleteQuest } from './soft_delete_quest.ts';
 
 let db: QuestlogDb;
 

@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { mapRumorRow } from './map_rumor_row';
+import { mapRumorRow } from './map_rumor_row.ts';
 
 describe('mapRumorRow', () => {
 	it('maps an open rumor with optional details', () => {

@@ -1,8 +1,8 @@
-import type { QuestlogDb } from '../database';
-import { getQuestOrThrow } from '../quests/get_quest_or_throw';
-import { resolveNow } from '../resolve_now';
-import { getQuestRewardOrThrow } from './get_quest_reward_or_throw';
-import type { QuestReward } from './types';
+import type { QuestlogDb } from '../database.ts';
+import { getQuestOrThrow } from '../quests/get_quest_or_throw.ts';
+import { resolveNow } from '../resolve_now.ts';
+import { getQuestRewardOrThrow } from './get_quest_reward_or_throw.ts';
+import type { QuestReward } from './types.ts';
 
 /**
  * Claims a reward exactly once for a successfully resolved quest.

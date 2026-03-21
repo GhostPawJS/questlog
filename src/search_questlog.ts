@@ -1,9 +1,9 @@
-import type { QuestlogDb } from './database';
-import { deriveQuestMarkerId } from './markers/derive_quest_marker_id';
-import { deriveRumorMarkerId } from './markers/derive_rumor_marker_id';
-import { deriveQuestState } from './quests/derive_quest_state';
-import { deriveRumorState } from './rumors/derive_rumor_state';
-import type { QuestlogSearchResult } from './search_result';
+import type { QuestlogDb } from './database.ts';
+import { deriveQuestMarkerId } from './markers/derive_quest_marker_id.ts';
+import { deriveRumorMarkerId } from './markers/derive_rumor_marker_id.ts';
+import { deriveQuestState } from './quests/derive_quest_state.ts';
+import { deriveRumorState } from './rumors/derive_rumor_state.ts';
+import type { QuestlogSearchResult } from './search_result.ts';
 
 /**
  * Full-text search across quest and rumor content.

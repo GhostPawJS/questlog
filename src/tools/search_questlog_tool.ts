@@ -1,4 +1,4 @@
-import { searchQuestlog } from '../search_questlog';
+import { searchQuestlog } from '../search_questlog.ts';
 import {
 	arraySchema,
 	defineQuestlogTool,
@@ -6,13 +6,13 @@ import {
 	integerSchema,
 	objectSchema,
 	stringSchema,
-} from './tool_metadata';
-import { searchQuestlogToolName } from './tool_names';
-import { inspectItemNext } from './tool_next';
-import { toSearchListItem } from './tool_ref';
-import { summarizeCount } from './tool_summary';
-import type { ToolListItem, ToolResult } from './tool_types';
-import { toolFailure, toolNeedsClarification, toolSuccess, toolWarning } from './tool_types';
+} from './tool_metadata.ts';
+import { searchQuestlogToolName } from './tool_names.ts';
+import { inspectItemNext } from './tool_next.ts';
+import { toSearchListItem } from './tool_ref.ts';
+import { summarizeCount } from './tool_summary.ts';
+import type { ToolListItem, ToolResult } from './tool_types.ts';
+import { toolFailure, toolNeedsClarification, toolSuccess, toolWarning } from './tool_types.ts';
 
 export interface SearchQuestlogToolInput {
 	query: string;

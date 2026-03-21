@@ -1,8 +1,8 @@
 import { strictEqual } from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { describe, it } from 'node:test';
-import { initRumorSearch } from './init_rumor_search';
-import { initRumorTables } from './init_rumor_tables';
+import { initRumorSearch } from './init_rumor_search.ts';
+import { initRumorTables } from './init_rumor_tables.ts';
 
 describe('initRumorSearch', () => {
 	it('creates FTS5 and triggers idempotently on top of rumors', () => {

@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { startOfUtcDay } from './start_of_utc_day';
+import { startOfUtcDay } from './start_of_utc_day.ts';
 
 describe('startOfUtcDay', () => {
 	it('normalizes to UTC midnight for that calendar day', () => {

@@ -1,4 +1,4 @@
-import type { MarkerId } from './markers/types';
+import type { MarkerId } from './markers/types.ts';
 
 /**
  * Search result across questlog content.

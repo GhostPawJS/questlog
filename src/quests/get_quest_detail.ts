@@ -1,6 +1,6 @@
-import type { QuestlogDb } from '../database';
-import { queryQuestDetailRecords } from './query_quest_detail_records';
-import type { QuestDetail } from './types';
+import type { QuestlogDb } from '../database.ts';
+import { queryQuestDetailRecords } from './query_quest_detail_records.ts';
+import type { QuestDetail } from './types.ts';
 
 /**
  * Loads a quest with derived state, rewards, tags, and dependency context.

@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { mapQuestlineRow } from './map_questline_row';
+import { mapQuestlineRow } from './map_questline_row.ts';
 
 describe('mapQuestlineRow', () => {
 	it('maps nullable FK and timestamp columns to null in the domain model', () => {

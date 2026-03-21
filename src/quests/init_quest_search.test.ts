@@ -1,8 +1,8 @@
 import { strictEqual } from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { describe, it } from 'node:test';
-import { initQuestSearch } from './init_quest_search';
-import { initQuestTables } from './init_quest_tables';
+import { initQuestSearch } from './init_quest_search.ts';
+import { initQuestTables } from './init_quest_tables.ts';
 
 describe('initQuestSearch', () => {
 	it('creates FTS5 and triggers idempotently on top of quests', () => {

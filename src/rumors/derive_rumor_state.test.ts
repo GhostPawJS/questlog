@@ -1,7 +1,7 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { deriveRumorState } from './derive_rumor_state';
-import type { Rumor } from './types';
+import { deriveRumorState } from './derive_rumor_state.ts';
+import type { Rumor } from './types.ts';
 
 function r(partial: Partial<Rumor> & Pick<Rumor, 'id'>): Rumor {
 	return {

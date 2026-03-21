@@ -1,7 +1,7 @@
 import { ok, strictEqual } from 'node:assert/strict';
 import { beforeEach, describe, it } from 'node:test';
-import type { QuestlogDb } from '../database';
-import { createInitializedQuestlogDb } from '../lib/test-db';
+import type { QuestlogDb } from '../database.ts';
+import { createInitializedQuestlogDb } from '../lib/test-db.ts';
 import {
 	captureRumorTool,
 	inspectQuestlogItemTool,
@@ -15,8 +15,8 @@ import {
 	searchQuestlogTool,
 	shapeWorkTool,
 	tagWorkTool,
-} from './index';
-import type { ToolResult, ToolSuccess } from './tool_types';
+} from './index.ts';
+import type { ToolResult, ToolSuccess } from './tool_types.ts';
 
 function expectSuccess<T>(result: ToolResult<T>): ToolSuccess<T> {
 	strictEqual(result.ok, true);

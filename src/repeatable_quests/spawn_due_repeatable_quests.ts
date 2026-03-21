@@ -1,11 +1,11 @@
-import type { QuestlogDb } from '../database';
-import { getQuestOrThrow } from '../quests/get_quest_or_throw';
-import type { Quest } from '../quests/types';
-import { copyRepeatableQuestRewardsToQuest } from '../rewards/copy_repeatable_quest_rewards_to_quest';
-import { copyRepeatableQuestTagsToQuest } from '../tags/copy_repeatable_quest_tags_to_quest';
-import { withTransaction } from '../with_transaction';
-import { getRepeatableQuestOrThrow } from './get_repeatable_quest_or_throw';
-import { listDueRepeatableQuestAnchors } from './list_due_repeatable_quest_anchors';
+import type { QuestlogDb } from '../database.ts';
+import { getQuestOrThrow } from '../quests/get_quest_or_throw.ts';
+import type { Quest } from '../quests/types.ts';
+import { copyRepeatableQuestRewardsToQuest } from '../rewards/copy_repeatable_quest_rewards_to_quest.ts';
+import { copyRepeatableQuestTagsToQuest } from '../tags/copy_repeatable_quest_tags_to_quest.ts';
+import { withTransaction } from '../with_transaction.ts';
+import { getRepeatableQuestOrThrow } from './get_repeatable_quest_or_throw.ts';
+import { listDueRepeatableQuestAnchors } from './list_due_repeatable_quest_anchors.ts';
 
 /**
  * Materializes all due repeatable quest anchors into concrete quests.

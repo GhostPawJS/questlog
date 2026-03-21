@@ -1,7 +1,7 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { generateAnchorsUntil } from './generate_anchors_until';
-import type { RepeatableQuest } from './types';
+import { generateAnchorsUntil } from './generate_anchors_until.ts';
+import type { RepeatableQuest } from './types.ts';
 
 function rq(
 	partial: Partial<RepeatableQuest> & Pick<RepeatableQuest, 'anchorAt' | 'rrule'>,

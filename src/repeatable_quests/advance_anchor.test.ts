@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { advanceAnchor } from './advance_anchor';
+import { advanceAnchor } from './advance_anchor.ts';
 
 describe('advanceAnchor', () => {
 	it('advances WEEKLY by interval * 7 days in ms', () => {

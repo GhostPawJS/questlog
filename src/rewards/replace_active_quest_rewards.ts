@@ -1,8 +1,8 @@
-import { assertNonEmpty } from '../assert_non_empty';
-import { assertNonNegativeNumber } from '../assert_non_negative_number';
-import type { QuestlogDb } from '../database';
-import { resolveNow } from '../resolve_now';
-import type { QuestRewardInput } from './types';
+import { assertNonEmpty } from '../assert_non_empty.ts';
+import { assertNonNegativeNumber } from '../assert_non_negative_number.ts';
+import type { QuestlogDb } from '../database.ts';
+import { resolveNow } from '../resolve_now.ts';
+import type { QuestRewardInput } from './types.ts';
 
 /**
  * Replaces all active rewards attached to a concrete quest.

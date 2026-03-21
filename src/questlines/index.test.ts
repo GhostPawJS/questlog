@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import * as questlines from './index';
+import * as questlines from './index.ts';
 
 describe('questlines barrel', () => {
 	it('exports core questline operations', () => {

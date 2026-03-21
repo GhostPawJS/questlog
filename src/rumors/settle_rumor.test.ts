@@ -1,10 +1,10 @@
 import { deepStrictEqual, strictEqual } from 'node:assert/strict';
 import { beforeEach, describe, it } from 'node:test';
-import type { QuestlogDb } from '../database';
-import { createInitializedQuestlogDb } from '../lib/test-db';
-import { captureRumor } from './capture_rumor';
-import { getRumorDetail } from './get_rumor_detail';
-import { settleRumor } from './settle_rumor';
+import type { QuestlogDb } from '../database.ts';
+import { createInitializedQuestlogDb } from '../lib/test-db.ts';
+import { captureRumor } from './capture_rumor.ts';
+import { getRumorDetail } from './get_rumor_detail.ts';
+import { settleRumor } from './settle_rumor.ts';
 
 let db: QuestlogDb;
 

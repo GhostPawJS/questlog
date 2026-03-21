@@ -1,12 +1,12 @@
-import { captureRumor } from '../rumors/capture_rumor';
-import type { CaptureRumorInput } from '../rumors/types';
-import { translateToolError } from './tool_errors';
-import { defineQuestlogTool, integerSchema, objectSchema, stringSchema } from './tool_metadata';
-import { captureRumorToolName, shapeWorkToolName } from './tool_names';
-import { inspectItemNext, useToolNext } from './tool_next';
-import { toRumorRef } from './tool_ref';
-import type { ToolResult } from './tool_types';
-import { toolSuccess } from './tool_types';
+import { captureRumor } from '../rumors/capture_rumor.ts';
+import type { CaptureRumorInput } from '../rumors/types.ts';
+import { translateToolError } from './tool_errors.ts';
+import { defineQuestlogTool, integerSchema, objectSchema, stringSchema } from './tool_metadata.ts';
+import { captureRumorToolName, shapeWorkToolName } from './tool_names.ts';
+import { inspectItemNext, useToolNext } from './tool_next.ts';
+import { toRumorRef } from './tool_ref.ts';
+import type { ToolResult } from './tool_types.ts';
+import { toolSuccess } from './tool_types.ts';
 
 export interface CaptureRumorToolData {
 	rumor: ReturnType<typeof captureRumor>;

@@ -1,6 +1,6 @@
-import type { QuestlogDb } from '../database';
-import { mapRepeatableQuestRow } from './map_repeatable_quest_row';
-import type { RepeatableQuest } from './types';
+import type { QuestlogDb } from '../database.ts';
+import { mapRepeatableQuestRow } from './map_repeatable_quest_row.ts';
+import type { RepeatableQuest } from './types.ts';
 
 /**
  * Loads a single active repeatable quest or throws.

@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { mapQuestRewardRow } from './map_quest_reward_row';
+import { mapQuestRewardRow } from './map_quest_reward_row.ts';
 
 describe('mapQuestRewardRow', () => {
 	it('maps an unclaimed reward with optional description and quantity', () => {

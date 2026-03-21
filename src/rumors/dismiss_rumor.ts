@@ -1,8 +1,8 @@
-import { assertActiveRowExists } from '../assert_active_row_exists';
-import type { QuestlogDb } from '../database';
-import { resolveNow } from '../resolve_now';
-import { getRumorOrThrow } from './get_rumor_or_throw';
-import type { Rumor } from './types';
+import { assertActiveRowExists } from '../assert_active_row_exists.ts';
+import type { QuestlogDb } from '../database.ts';
+import { resolveNow } from '../resolve_now.ts';
+import { getRumorOrThrow } from './get_rumor_or_throw.ts';
+import type { Rumor } from './types.ts';
 
 /**
  * Dismisses a rumor without producing downstream artifacts.

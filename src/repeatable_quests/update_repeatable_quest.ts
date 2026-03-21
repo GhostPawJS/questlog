@@ -1,11 +1,11 @@
-import { assertNonEmpty } from '../assert_non_empty';
-import { assertNonNegativeSeconds } from '../assert_non_negative_seconds';
-import type { QuestlogDb } from '../database';
-import { resolveNow } from '../resolve_now';
-import { withTransaction } from '../with_transaction';
-import { getRepeatableQuestOrThrow } from './get_repeatable_quest_or_throw';
-import { parseRRule } from './parse_rrule';
-import type { RepeatableQuest, UpdateRepeatableQuestInput } from './types';
+import { assertNonEmpty } from '../assert_non_empty.ts';
+import { assertNonNegativeSeconds } from '../assert_non_negative_seconds.ts';
+import type { QuestlogDb } from '../database.ts';
+import { resolveNow } from '../resolve_now.ts';
+import { withTransaction } from '../with_transaction.ts';
+import { getRepeatableQuestOrThrow } from './get_repeatable_quest_or_throw.ts';
+import { parseRRule } from './parse_rrule.ts';
+import type { RepeatableQuest, UpdateRepeatableQuestInput } from './types.ts';
 
 /**
  * Updates a repeatable quest definition for future materializations only.

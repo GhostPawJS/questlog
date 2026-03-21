@@ -1,4 +1,4 @@
-import type { Quest } from './types';
+import type { Quest } from './types.ts';
 
 function asBoolean(value: unknown): boolean {
 	return Number(value) === 1;

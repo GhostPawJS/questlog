@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { deriveRumorMarkerId } from './derive_rumor_marker_id';
+import { deriveRumorMarkerId } from './derive_rumor_marker_id.ts';
 
 describe('deriveRumorMarkerId', () => {
 	it('returns available attention for open rumors', () => {

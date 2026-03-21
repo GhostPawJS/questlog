@@ -1,7 +1,7 @@
 import { strictEqual } from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { describe, it } from 'node:test';
-import { initRumorTables } from './init_rumor_tables';
+import { initRumorTables } from './init_rumor_tables.ts';
 
 describe('initRumorTables', () => {
 	it('is idempotent on a bare connection', () => {

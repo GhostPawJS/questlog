@@ -1,7 +1,11 @@
 import { deepStrictEqual, ok, strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { questlogToolMappings } from './tool_mapping';
-import { getQuestlogToolByName, listQuestlogToolDefinitions, questlogTools } from './tool_registry';
+import { questlogToolMappings } from './tool_mapping.ts';
+import {
+	getQuestlogToolByName,
+	listQuestlogToolDefinitions,
+	questlogTools,
+} from './tool_registry.ts';
 
 function topLevelSchemaFields(tool: (typeof questlogTools)[number]): string[] {
 	const direct = Object.keys(tool.inputSchema.properties ?? {});

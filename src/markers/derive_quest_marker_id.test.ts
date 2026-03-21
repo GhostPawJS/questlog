@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { deriveQuestMarkerId } from './derive_quest_marker_id';
+import { deriveQuestMarkerId } from './derive_quest_marker_id.ts';
 
 describe('deriveQuestMarkerId', () => {
 	it('returns yellow available attention for open quests that are available now', () => {

@@ -1,5 +1,5 @@
-import type { RumorState } from '../rumors/types';
-import type { MarkerId } from './types';
+import type { RumorState } from '../rumors/types.ts';
+import type { MarkerId } from './types.ts';
 
 export interface DeriveRumorMarkerIdInput {
 	state: RumorState;

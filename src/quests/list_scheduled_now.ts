@@ -1,7 +1,7 @@
-import type { QuestlogDb } from '../database';
-import { listQuestDetails } from './list_quest_details';
-import { overlapsScheduleWindow } from './overlaps_schedule_window';
-import type { QuestDetail, QuestListFilters } from './types';
+import type { QuestlogDb } from '../database.ts';
+import { listQuestDetails } from './list_quest_details.ts';
+import { overlapsScheduleWindow } from './overlaps_schedule_window.ts';
+import type { QuestDetail, QuestListFilters } from './types.ts';
 
 /**
  * Lists quests whose scheduled window overlaps now.

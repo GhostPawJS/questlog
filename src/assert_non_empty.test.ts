@@ -1,6 +1,6 @@
 import { strictEqual, throws } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { assertNonEmpty } from './assert_non_empty';
+import { assertNonEmpty } from './assert_non_empty.ts';
 
 describe('assertNonEmpty', () => {
 	it('returns trimmed string when non-empty', () => {

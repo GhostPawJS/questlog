@@ -1,5 +1,5 @@
-import type { QuestlogDb } from '../database';
-import type { ToolResult } from './tool_types';
+import type { QuestlogDb } from '../database.ts';
+import type { ToolResult } from './tool_types.ts';
 
 export type ToolInputDescriptions = Readonly<Record<string, string>>;
 

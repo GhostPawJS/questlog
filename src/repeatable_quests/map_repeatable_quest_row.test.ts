@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { mapRepeatableQuestRow } from './map_repeatable_quest_row';
+import { mapRepeatableQuestRow } from './map_repeatable_quest_row.ts';
 
 describe('mapRepeatableQuestRow', () => {
 	it('maps boolean all_day from 0/1 integers', () => {

@@ -1,13 +1,13 @@
 import { strictEqual } from 'node:assert/strict';
 import { beforeEach, describe, it } from 'node:test';
-import type { QuestlogDb } from '../database';
-import { createInitializedQuestlogDb } from '../lib/test-db';
-import { createQuestline } from '../questlines/create_questline';
-import { createQuest } from './create_quest';
-import { getQuestDetail } from './get_quest_detail';
-import { listActiveQuests } from './list_active_quests';
-import { listScheduledForDay } from './list_scheduled_for_day';
-import { listScheduledNow } from './list_scheduled_now';
+import type { QuestlogDb } from '../database.ts';
+import { createInitializedQuestlogDb } from '../lib/test-db.ts';
+import { createQuestline } from '../questlines/create_questline.ts';
+import { createQuest } from './create_quest.ts';
+import { getQuestDetail } from './get_quest_detail.ts';
+import { listActiveQuests } from './list_active_quests.ts';
+import { listScheduledForDay } from './list_scheduled_for_day.ts';
+import { listScheduledNow } from './list_scheduled_now.ts';
 
 let db: QuestlogDb;
 

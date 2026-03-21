@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { normalizeTagName } from './normalize_tag_name';
+import { normalizeTagName } from './normalize_tag_name.ts';
 
 describe('normalizeTagName', () => {
 	it('trims, lowercases, and collapses internal whitespace', () => {

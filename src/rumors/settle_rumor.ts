@@ -1,9 +1,9 @@
-import type { QuestlogDb } from '../database';
-import { createQuestline } from '../questlines/create_questline';
-import { createQuest } from '../quests/create_quest';
-import { withTransaction } from '../with_transaction';
-import { getRumorOrThrow } from './get_rumor_or_throw';
-import type { SettleRumorInput, SettleRumorResult } from './types';
+import type { QuestlogDb } from '../database.ts';
+import { createQuestline } from '../questlines/create_questline.ts';
+import { createQuest } from '../quests/create_quest.ts';
+import { withTransaction } from '../with_transaction.ts';
+import { getRumorOrThrow } from './get_rumor_or_throw.ts';
+import type { SettleRumorInput, SettleRumorResult } from './types.ts';
 
 /**
  * Canonically settles a rumor into zero or more downstream artifacts.

@@ -1,10 +1,10 @@
-import type { QuestlogDb } from '../database';
-import { resolveNow } from '../resolve_now';
-import { addUnlock } from '../unlocks/add_unlock';
-import { withTransaction } from '../with_transaction';
-import { abandonQuest } from './abandon_quest';
-import { createQuest } from './create_quest';
-import type { AbandonQuestResult, FollowupQuestInput } from './types';
+import type { QuestlogDb } from '../database.ts';
+import { resolveNow } from '../resolve_now.ts';
+import { addUnlock } from '../unlocks/add_unlock.ts';
+import { withTransaction } from '../with_transaction.ts';
+import { abandonQuest } from './abandon_quest.ts';
+import { createQuest } from './create_quest.ts';
+import type { AbandonQuestResult, FollowupQuestInput } from './types.ts';
 
 /**
  * Abandons a quest and atomically creates follow-up quests that point back to it.

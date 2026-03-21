@@ -1,8 +1,8 @@
-import { assertNonEmpty } from '../assert_non_empty';
-import type { QuestlogDb } from '../database';
-import { resolveNow } from '../resolve_now';
-import { getRumorOrThrow } from './get_rumor_or_throw';
-import type { CaptureRumorInput, Rumor } from './types';
+import { assertNonEmpty } from '../assert_non_empty.ts';
+import type { QuestlogDb } from '../database.ts';
+import { resolveNow } from '../resolve_now.ts';
+import { getRumorOrThrow } from './get_rumor_or_throw.ts';
+import type { CaptureRumorInput, Rumor } from './types.ts';
 
 /**
  * Captures a new rumor for later triage.

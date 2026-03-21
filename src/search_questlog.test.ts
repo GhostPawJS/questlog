@@ -1,16 +1,16 @@
 import { strictEqual } from 'node:assert/strict';
 import { beforeEach, describe, it } from 'node:test';
-import type { QuestlogDb } from './database';
-import { createInitializedQuestlogDb } from './lib/test-db';
-import { createQuest } from './quests/create_quest';
-import { finishQuest } from './quests/finish_quest';
-import { startQuest } from './quests/start_quest';
-import { addQuestReward } from './rewards/add_quest_reward';
-import { claimQuestReward } from './rewards/claim_quest_reward';
-import { captureRumor } from './rumors/capture_rumor';
-import { dismissRumor } from './rumors/dismiss_rumor';
-import { settleRumor } from './rumors/settle_rumor';
-import { searchQuestlog } from './search_questlog';
+import type { QuestlogDb } from './database.ts';
+import { createInitializedQuestlogDb } from './lib/test-db.ts';
+import { createQuest } from './quests/create_quest.ts';
+import { finishQuest } from './quests/finish_quest.ts';
+import { startQuest } from './quests/start_quest.ts';
+import { addQuestReward } from './rewards/add_quest_reward.ts';
+import { claimQuestReward } from './rewards/claim_quest_reward.ts';
+import { captureRumor } from './rumors/capture_rumor.ts';
+import { dismissRumor } from './rumors/dismiss_rumor.ts';
+import { settleRumor } from './rumors/settle_rumor.ts';
+import { searchQuestlog } from './search_questlog.ts';
 
 let db: QuestlogDb;
 

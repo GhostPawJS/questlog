@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { overlapsScheduleWindow } from './overlaps_schedule_window';
+import { overlapsScheduleWindow } from './overlaps_schedule_window.ts';
 
 describe('overlapsScheduleWindow', () => {
 	it('returns false when start is null', () => {

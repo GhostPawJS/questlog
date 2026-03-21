@@ -1,15 +1,15 @@
 import { ok } from 'node:assert/strict';
 import { performance } from 'node:perf_hooks';
 import { it } from 'node:test';
-import { createInitializedQuestlogDb } from './lib/test-db';
-import { createQuestline } from './questlines/create_questline';
-import { createQuest } from './quests/create_quest';
-import { getQuestDetail } from './quests/get_quest_detail';
-import { listAvailableQuests } from './quests/list_available_quests';
-import { listBlockedQuests } from './quests/list_blocked_quests';
-import type { Quest } from './quests/types';
-import { searchQuestlog } from './search_questlog';
-import { addUnlock } from './unlocks/add_unlock';
+import { createInitializedQuestlogDb } from './lib/test-db.ts';
+import { createQuestline } from './questlines/create_questline.ts';
+import { createQuest } from './quests/create_quest.ts';
+import { getQuestDetail } from './quests/get_quest_detail.ts';
+import { listAvailableQuests } from './quests/list_available_quests.ts';
+import { listBlockedQuests } from './quests/list_blocked_quests.ts';
+import type { Quest } from './quests/types.ts';
+import { searchQuestlog } from './search_questlog.ts';
+import { addUnlock } from './unlocks/add_unlock.ts';
 
 it('keeps representative questlog workloads in the millisecond range', async () => {
 	const db = await createInitializedQuestlogDb();

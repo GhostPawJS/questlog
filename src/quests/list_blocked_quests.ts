@@ -1,6 +1,6 @@
-import type { QuestlogDb } from '../database';
-import { queryQuestDetailRecords } from './query_quest_detail_records';
-import type { QuestDetail, QuestListFilters } from './types';
+import type { QuestlogDb } from '../database.ts';
+import { queryQuestDetailRecords } from './query_quest_detail_records.ts';
+import type { QuestDetail, QuestListFilters } from './types.ts';
 
 /**
  * Lists unresolved quests that are blocked by unmet unlock prerequisites.

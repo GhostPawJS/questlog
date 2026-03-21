@@ -1,6 +1,6 @@
-import type { QuestlogDb } from '../database';
-import { resolveNow } from '../resolve_now';
-import { getRepeatableQuestOrThrow } from './get_repeatable_quest_or_throw';
+import type { QuestlogDb } from '../database.ts';
+import { resolveNow } from '../resolve_now.ts';
+import { getRepeatableQuestOrThrow } from './get_repeatable_quest_or_throw.ts';
 
 /**
  * Soft-deletes a repeatable quest definition.

@@ -1,8 +1,8 @@
-import { assertActiveRowExists } from '../assert_active_row_exists';
-import type { QuestlogDb } from '../database';
-import { resolveNow } from '../resolve_now';
-import { replaceActiveRepeatableQuestRewards } from './replace_active_repeatable_quest_rewards';
-import type { RepeatableQuestRewardInput } from './types';
+import { assertActiveRowExists } from '../assert_active_row_exists.ts';
+import type { QuestlogDb } from '../database.ts';
+import { resolveNow } from '../resolve_now.ts';
+import { replaceActiveRepeatableQuestRewards } from './replace_active_repeatable_quest_rewards.ts';
+import type { RepeatableQuestRewardInput } from './types.ts';
 
 /**
  * Replaces the active reward templates on a repeatable quest definition.

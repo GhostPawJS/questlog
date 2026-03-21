@@ -1,7 +1,7 @@
 import { strictEqual } from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { describe, it } from 'node:test';
-import { initRewardTables } from './init_reward_tables';
+import { initRewardTables } from './init_reward_tables.ts';
 
 describe('initRewardTables', () => {
 	it('is idempotent when quests and repeatable_quests exist', () => {

@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { mapQuestRow } from './map_quest_row';
+import { mapQuestRow } from './map_quest_row.ts';
 
 describe('mapQuestRow', () => {
 	it('maps sqlite row shape to Quest with boolean coercion', () => {

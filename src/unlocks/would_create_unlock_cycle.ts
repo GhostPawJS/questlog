@@ -1,4 +1,4 @@
-import type { QuestlogDb } from '../database';
+import type { QuestlogDb } from '../database.ts';
 
 /**
  * Detects whether adding an unlock edge would create a cycle.

@@ -1,12 +1,12 @@
-import type { Questline, QuestlineDetail } from '../questlines/types';
-import { deriveQuestState } from '../quests/derive_quest_state';
-import type { Quest, QuestDetail } from '../quests/types';
-import type { DueRepeatableAnchor, RepeatableQuest } from '../repeatable_quests/types';
-import type { QuestReward } from '../rewards/types';
-import { deriveRumorState } from '../rumors/derive_rumor_state';
-import type { Rumor, RumorDetail } from '../rumors/types';
-import type { QuestlogSearchResult } from '../search_result';
-import type { ToolEntityRef, ToolListItem } from './tool_types';
+import type { Questline, QuestlineDetail } from '../questlines/types.ts';
+import { deriveQuestState } from '../quests/derive_quest_state.ts';
+import type { Quest, QuestDetail } from '../quests/types.ts';
+import type { DueRepeatableAnchor, RepeatableQuest } from '../repeatable_quests/types.ts';
+import type { QuestReward } from '../rewards/types.ts';
+import { deriveRumorState } from '../rumors/derive_rumor_state.ts';
+import type { Rumor, RumorDetail } from '../rumors/types.ts';
+import type { QuestlogSearchResult } from '../search_result.ts';
+import type { ToolEntityRef, ToolListItem } from './tool_types.ts';
 
 export function toQuestRef(quest: Quest | QuestDetail): ToolEntityRef {
 	return {

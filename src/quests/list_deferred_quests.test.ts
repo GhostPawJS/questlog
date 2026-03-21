@@ -1,10 +1,10 @@
 import { strictEqual } from 'node:assert/strict';
 import { beforeEach, describe, it } from 'node:test';
-import type { QuestlogDb } from '../database';
-import { createInitializedQuestlogDb } from '../lib/test-db';
-import { createQuest } from './create_quest';
-import { listDeferredQuests } from './list_deferred_quests';
-import { planQuestTime } from './plan_quest_time';
+import type { QuestlogDb } from '../database.ts';
+import { createInitializedQuestlogDb } from '../lib/test-db.ts';
+import { createQuest } from './create_quest.ts';
+import { listDeferredQuests } from './list_deferred_quests.ts';
+import { planQuestTime } from './plan_quest_time.ts';
 
 let db: QuestlogDb;
 

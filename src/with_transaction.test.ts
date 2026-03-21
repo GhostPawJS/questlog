@@ -1,7 +1,7 @@
 import { strictEqual, throws } from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { describe, it } from 'node:test';
-import { withTransaction } from './with_transaction';
+import { withTransaction } from './with_transaction.ts';
 
 describe('withTransaction', () => {
 	it('commits outer work and rolls back fully on failure', () => {

@@ -1,7 +1,7 @@
 import { strictEqual } from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { describe, it } from 'node:test';
-import { initQuestlineTables } from './init_questline_tables';
+import { initQuestlineTables } from './init_questline_tables.ts';
 
 describe('initQuestlineTables', () => {
 	it('is idempotent on a bare connection', () => {

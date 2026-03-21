@@ -1,12 +1,12 @@
 import { strictEqual } from 'node:assert/strict';
 import { beforeEach, describe, it } from 'node:test';
-import type { QuestlogDb } from '../database';
-import { createInitializedQuestlogDb } from '../lib/test-db';
-import { createQuest } from '../quests/create_quest';
-import { finishQuest } from '../quests/finish_quest';
-import { listAvailableQuests } from '../quests/list_available_quests';
-import { listBlockedQuests } from '../quests/list_blocked_quests';
-import { addUnlock } from './add_unlock';
+import type { QuestlogDb } from '../database.ts';
+import { createInitializedQuestlogDb } from '../lib/test-db.ts';
+import { createQuest } from '../quests/create_quest.ts';
+import { finishQuest } from '../quests/finish_quest.ts';
+import { listAvailableQuests } from '../quests/list_available_quests.ts';
+import { listBlockedQuests } from '../quests/list_blocked_quests.ts';
+import { addUnlock } from './add_unlock.ts';
 
 let db: QuestlogDb;
 

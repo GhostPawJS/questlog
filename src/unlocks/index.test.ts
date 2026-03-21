@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import * as unlocks from './index';
+import * as unlocks from './index.ts';
 
 describe('unlocks barrel', () => {
 	it('exports graph edge operations', () => {

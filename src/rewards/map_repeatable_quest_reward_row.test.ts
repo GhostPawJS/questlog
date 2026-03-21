@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { mapRepeatableQuestRewardRow } from './map_repeatable_quest_reward_row';
+import { mapRepeatableQuestRewardRow } from './map_repeatable_quest_reward_row.ts';
 
 describe('mapRepeatableQuestRewardRow', () => {
 	it('ties the reward to its repeatable template id', () => {

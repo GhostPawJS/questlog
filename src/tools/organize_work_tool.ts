@@ -1,8 +1,8 @@
-import { archiveQuestline, getQuestlineDetail, updateQuestline } from '../questlines';
-import type { UpdateQuestlineInput } from '../questlines/types';
-import { getQuestDetail } from '../quests/get_quest_detail';
-import { addUnlock, removeUnlock, replaceUnlocks } from '../unlocks';
-import { translateToolError } from './tool_errors';
+import { archiveQuestline, getQuestlineDetail, updateQuestline } from '../questlines/index.ts';
+import type { UpdateQuestlineInput } from '../questlines/types.ts';
+import { getQuestDetail } from '../quests/get_quest_detail.ts';
+import { addUnlock, removeUnlock, replaceUnlocks } from '../unlocks/index.ts';
+import { translateToolError } from './tool_errors.ts';
 import {
 	arraySchema,
 	defineQuestlogTool,
@@ -10,11 +10,11 @@ import {
 	integerSchema,
 	objectSchema,
 	stringSchema,
-} from './tool_metadata';
-import { organizeWorkToolName } from './tool_names';
-import { toQuestlineRef, toQuestRef } from './tool_ref';
-import type { ToolResult } from './tool_types';
-import { toolNoOp, toolSuccess } from './tool_types';
+} from './tool_metadata.ts';
+import { organizeWorkToolName } from './tool_names.ts';
+import { toQuestlineRef, toQuestRef } from './tool_ref.ts';
+import type { ToolResult } from './tool_types.ts';
+import { toolNoOp, toolSuccess } from './tool_types.ts';
 
 export type OrganizeWorkToolInput =
 	| { action: 'add_unlock'; fromQuestId: number; now?: number; toQuestId: number }

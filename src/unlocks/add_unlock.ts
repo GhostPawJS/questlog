@@ -1,7 +1,7 @@
-import { assertActiveRowExists } from '../assert_active_row_exists';
-import type { QuestlogDb } from '../database';
-import { resolveNow } from '../resolve_now';
-import { wouldCreateUnlockCycle } from './would_create_unlock_cycle';
+import { assertActiveRowExists } from '../assert_active_row_exists.ts';
+import type { QuestlogDb } from '../database.ts';
+import { resolveNow } from '../resolve_now.ts';
+import { wouldCreateUnlockCycle } from './would_create_unlock_cycle.ts';
 
 /**
  * Adds a hard prerequisite relation between two quests.

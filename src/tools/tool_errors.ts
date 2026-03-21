@@ -1,6 +1,6 @@
-import { searchQuestlogToolName } from './tool_names';
-import type { ToolEntityRef, ToolFailure, ToolNextStepHint } from './tool_types';
-import { toolFailure } from './tool_types';
+import { searchQuestlogToolName } from './tool_names.ts';
+import type { ToolEntityRef, ToolFailure, ToolNextStepHint } from './tool_types.ts';
+import { toolFailure } from './tool_types.ts';
 
 interface TranslateToolErrorOptions {
 	entities?: ToolEntityRef[];

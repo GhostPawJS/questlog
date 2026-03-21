@@ -1,4 +1,4 @@
-import type { MarkerDefinition, MarkerId } from './types';
+import type { MarkerDefinition, MarkerId } from './types.ts';
 
 export const markerLookup = {
 	'attention.available': {

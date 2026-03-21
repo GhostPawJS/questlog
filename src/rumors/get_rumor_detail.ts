@@ -1,8 +1,8 @@
-import type { QuestlogDb } from '../database';
-import { deriveRumorState } from './derive_rumor_state';
-import { getRumorOrThrow } from './get_rumor_or_throw';
-import { getRumorOutputs } from './get_rumor_outputs';
-import type { RumorDetail } from './types';
+import type { QuestlogDb } from '../database.ts';
+import { deriveRumorState } from './derive_rumor_state.ts';
+import { getRumorOrThrow } from './get_rumor_or_throw.ts';
+import { getRumorOutputs } from './get_rumor_outputs.ts';
+import type { RumorDetail } from './types.ts';
 
 /**
  * Loads a rumor with derived state and downstream outputs.

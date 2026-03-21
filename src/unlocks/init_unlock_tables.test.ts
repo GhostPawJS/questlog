@@ -1,7 +1,7 @@
 import { strictEqual } from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { describe, it } from 'node:test';
-import { initUnlockTables } from './init_unlock_tables';
+import { initUnlockTables } from './init_unlock_tables.ts';
 
 describe('initUnlockTables', () => {
 	it('is idempotent when quests exists', () => {

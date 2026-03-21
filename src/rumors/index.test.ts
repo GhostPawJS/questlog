@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import * as rumors from './index';
+import * as rumors from './index.ts';
 
 describe('rumors barrel', () => {
 	it('exports rumor capture and resolution helpers', () => {

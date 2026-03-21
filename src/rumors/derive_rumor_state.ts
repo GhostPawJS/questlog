@@ -1,4 +1,4 @@
-import type { Rumor, RumorState } from './types';
+import type { Rumor, RumorState } from './types.ts';
 
 /**
  * Derives rumor state from settlement and dismissal timestamps.

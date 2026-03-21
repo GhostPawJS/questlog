@@ -1,13 +1,13 @@
-import { assertActiveRowExists } from '../assert_active_row_exists';
-import { assertNonEmpty } from '../assert_non_empty';
-import { assertNonNegativeSeconds } from '../assert_non_negative_seconds';
-import type { QuestlogDb } from '../database';
-import { resolveNow } from '../resolve_now';
-import { replaceActiveQuestRewards } from '../rewards/replace_active_quest_rewards';
-import { replaceActiveQuestTags } from '../tags/replace_active_quest_tags';
-import { withTransaction } from '../with_transaction';
-import { getQuestOrThrow } from './get_quest_or_throw';
-import type { CreateQuestInput, Quest } from './types';
+import { assertActiveRowExists } from '../assert_active_row_exists.ts';
+import { assertNonEmpty } from '../assert_non_empty.ts';
+import { assertNonNegativeSeconds } from '../assert_non_negative_seconds.ts';
+import type { QuestlogDb } from '../database.ts';
+import { resolveNow } from '../resolve_now.ts';
+import { replaceActiveQuestRewards } from '../rewards/replace_active_quest_rewards.ts';
+import { replaceActiveQuestTags } from '../tags/replace_active_quest_tags.ts';
+import { withTransaction } from '../with_transaction.ts';
+import { getQuestOrThrow } from './get_quest_or_throw.ts';
+import type { CreateQuestInput, Quest } from './types.ts';
 
 /**
  * Creates a concrete quest commitment.

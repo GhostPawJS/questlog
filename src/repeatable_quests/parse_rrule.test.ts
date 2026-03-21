@@ -1,6 +1,6 @@
 import { strictEqual, throws } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { parseRRule } from './parse_rrule';
+import { parseRRule } from './parse_rrule.ts';
 
 describe('parseRRule', () => {
 	it('parses minimal DAILY rule', () => {

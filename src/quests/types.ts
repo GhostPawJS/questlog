@@ -1,6 +1,6 @@
-import type { MarkerId } from '../markers/types';
-import type { QuestReward, QuestRewardInput } from '../rewards/types';
-import type { QuestState } from './quest_state';
+import type { MarkerId } from '../markers/types.ts';
+import type { QuestReward, QuestRewardInput } from '../rewards/types.ts';
+import type { QuestState } from './quest_state.ts';
 
 /**
  * One real commitment with one objective and one terminal outcome.

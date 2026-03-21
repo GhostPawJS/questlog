@@ -1,7 +1,7 @@
-import { assertActiveRowExists } from '../assert_active_row_exists';
-import type { QuestlogDb } from '../database';
-import { resolveNow } from '../resolve_now';
-import { replaceActiveRepeatableQuestTags } from './replace_active_repeatable_quest_tags';
+import { assertActiveRowExists } from '../assert_active_row_exists.ts';
+import type { QuestlogDb } from '../database.ts';
+import { resolveNow } from '../resolve_now.ts';
+import { replaceActiveRepeatableQuestTags } from './replace_active_repeatable_quest_tags.ts';
 
 /**
  * Replaces the active tag templates on a repeatable quest definition.

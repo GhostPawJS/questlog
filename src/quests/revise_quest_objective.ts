@@ -1,8 +1,8 @@
-import { assertNonEmpty } from '../assert_non_empty';
-import type { QuestlogDb } from '../database';
-import { resolveNow } from '../resolve_now';
-import { getQuestOrThrow } from './get_quest_or_throw';
-import type { Quest } from './types';
+import { assertNonEmpty } from '../assert_non_empty.ts';
+import type { QuestlogDb } from '../database.ts';
+import { resolveNow } from '../resolve_now.ts';
+import { getQuestOrThrow } from './get_quest_or_throw.ts';
+import type { Quest } from './types.ts';
 
 /**
  * Revises a quest objective while the quest has not actually started.

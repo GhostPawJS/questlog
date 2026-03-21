@@ -1,7 +1,7 @@
-import type { QuestlogDb } from '../database';
-import { resolveNow } from '../resolve_now';
-import { getQuestOrThrow } from './get_quest_or_throw';
-import type { Quest } from './types';
+import type { QuestlogDb } from '../database.ts';
+import { resolveNow } from '../resolve_now.ts';
+import { getQuestOrThrow } from './get_quest_or_throw.ts';
+import type { Quest } from './types.ts';
 
 /**
  * Adds active effort time to a quest.

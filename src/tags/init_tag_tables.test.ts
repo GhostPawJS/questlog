@@ -1,7 +1,7 @@
 import { strictEqual } from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { describe, it } from 'node:test';
-import { initTagTables } from './init_tag_tables';
+import { initTagTables } from './init_tag_tables.ts';
 
 describe('initTagTables', () => {
 	it('is idempotent when prerequisite tables exist', () => {

@@ -1,14 +1,14 @@
-import { assertActiveRowExists } from '../assert_active_row_exists';
-import { assertNonEmpty } from '../assert_non_empty';
-import { assertNonNegativeSeconds } from '../assert_non_negative_seconds';
-import type { QuestlogDb } from '../database';
-import { resolveNow } from '../resolve_now';
-import { replaceActiveRepeatableQuestRewards } from '../rewards/replace_active_repeatable_quest_rewards';
-import { replaceActiveRepeatableQuestTags } from '../tags/replace_active_repeatable_quest_tags';
-import { withTransaction } from '../with_transaction';
-import { getRepeatableQuestOrThrow } from './get_repeatable_quest_or_throw';
-import { parseRRule } from './parse_rrule';
-import type { CreateRepeatableQuestInput, RepeatableQuest } from './types';
+import { assertActiveRowExists } from '../assert_active_row_exists.ts';
+import { assertNonEmpty } from '../assert_non_empty.ts';
+import { assertNonNegativeSeconds } from '../assert_non_negative_seconds.ts';
+import type { QuestlogDb } from '../database.ts';
+import { resolveNow } from '../resolve_now.ts';
+import { replaceActiveRepeatableQuestRewards } from '../rewards/replace_active_repeatable_quest_rewards.ts';
+import { replaceActiveRepeatableQuestTags } from '../tags/replace_active_repeatable_quest_tags.ts';
+import { withTransaction } from '../with_transaction.ts';
+import { getRepeatableQuestOrThrow } from './get_repeatable_quest_or_throw.ts';
+import { parseRRule } from './parse_rrule.ts';
+import type { CreateRepeatableQuestInput, RepeatableQuest } from './types.ts';
 
 /**
  * Creates a repeatable quest definition.

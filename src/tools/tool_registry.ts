@@ -1,16 +1,16 @@
-import { captureRumorTool } from './capture_rumor_tool';
-import { inspectQuestlogItemTool } from './inspect_questlog_item_tool';
-import { manageRepeatableTool } from './manage_repeatable_tool';
-import { organizeWorkTool } from './organize_work_tool';
-import { planQuestTool } from './plan_quest_tool';
-import { retireWorkTool } from './retire_work_tool';
-import { reviewQuestlogTool } from './review_questlog_tool';
-import { rewardWorkTool } from './reward_work_tool';
-import { runQuestTool } from './run_quest_tool';
-import { searchQuestlogTool } from './search_questlog_tool';
-import { shapeWorkTool } from './shape_work_tool';
-import { tagWorkTool } from './tag_work_tool';
-import type { ToolDefinitionRegistry } from './tool_metadata';
+import { captureRumorTool } from './capture_rumor_tool.ts';
+import { inspectQuestlogItemTool } from './inspect_questlog_item_tool.ts';
+import { manageRepeatableTool } from './manage_repeatable_tool.ts';
+import { organizeWorkTool } from './organize_work_tool.ts';
+import { planQuestTool } from './plan_quest_tool.ts';
+import { retireWorkTool } from './retire_work_tool.ts';
+import { reviewQuestlogTool } from './review_questlog_tool.ts';
+import { rewardWorkTool } from './reward_work_tool.ts';
+import { runQuestTool } from './run_quest_tool.ts';
+import { searchQuestlogTool } from './search_questlog_tool.ts';
+import { shapeWorkTool } from './shape_work_tool.ts';
+import { tagWorkTool } from './tag_work_tool.ts';
+import type { ToolDefinitionRegistry } from './tool_metadata.ts';
 
 export const questlogTools = [
 	searchQuestlogTool,

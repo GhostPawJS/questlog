@@ -1,7 +1,7 @@
 import { strictEqual, throws } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { openTestDatabase } from './open-test-database';
-import { createInitializedQuestlogDb } from './test-db';
+import { openTestDatabase } from './open-test-database.ts';
+import { createInitializedQuestlogDb } from './test-db.ts';
 
 describe('createInitializedQuestlogDb', () => {
 	it('installs the full questlog schema so core tables exist and are queryable', async () => {

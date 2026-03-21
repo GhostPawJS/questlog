@@ -1,5 +1,5 @@
-import type { QuestlogDb } from '../database';
-import type { Quest } from './types';
+import type { QuestlogDb } from '../database.ts';
+import type { Quest } from './types.ts';
 
 /**
  * Computes a quest's effective due date, inheriting from its questline when needed.

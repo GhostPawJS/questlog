@@ -1,6 +1,6 @@
 import { strictEqual, throws } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { assertNonNegativeNumber } from './assert_non_negative_number';
+import { assertNonNegativeNumber } from './assert_non_negative_number.ts';
 
 describe('assertNonNegativeNumber', () => {
 	it('allows null, undefined, and non-negative numbers', () => {

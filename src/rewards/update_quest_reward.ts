@@ -1,9 +1,9 @@
-import { assertNonEmpty } from '../assert_non_empty';
-import { assertNonNegativeNumber } from '../assert_non_negative_number';
-import type { QuestlogDb } from '../database';
-import { resolveNow } from '../resolve_now';
-import { getQuestRewardOrThrow } from './get_quest_reward_or_throw';
-import type { QuestReward, QuestRewardInput } from './types';
+import { assertNonEmpty } from '../assert_non_empty.ts';
+import { assertNonNegativeNumber } from '../assert_non_negative_number.ts';
+import type { QuestlogDb } from '../database.ts';
+import { resolveNow } from '../resolve_now.ts';
+import { getQuestRewardOrThrow } from './get_quest_reward_or_throw.ts';
+import type { QuestReward, QuestRewardInput } from './types.ts';
 
 /**
  * Updates an unclaimed quest reward.

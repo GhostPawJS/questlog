@@ -1,7 +1,7 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { deriveQuestState } from './derive_quest_state';
-import type { Quest } from './types';
+import { deriveQuestState } from './derive_quest_state.ts';
+import type { Quest } from './types.ts';
 
 function q(partial: Partial<Quest> & Pick<Quest, 'id'>): Quest {
 	return {

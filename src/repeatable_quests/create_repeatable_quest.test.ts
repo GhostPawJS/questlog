@@ -1,9 +1,9 @@
 import { strictEqual } from 'node:assert/strict';
 import { beforeEach, describe, it } from 'node:test';
-import type { QuestlogDb } from '../database';
-import { createInitializedQuestlogDb } from '../lib/test-db';
-import { createRepeatableQuest } from './create_repeatable_quest';
-import { updateRepeatableQuest } from './update_repeatable_quest';
+import type { QuestlogDb } from '../database.ts';
+import { createInitializedQuestlogDb } from '../lib/test-db.ts';
+import { createRepeatableQuest } from './create_repeatable_quest.ts';
+import { updateRepeatableQuest } from './update_repeatable_quest.ts';
 
 let db: QuestlogDb;
 

@@ -1,7 +1,12 @@
-import { assertActiveRowExists } from '../assert_active_row_exists';
-import type { QuestlogDb } from '../database';
-import { replaceQuestTags, replaceRepeatableQuestTags, tagQuest, untagQuest } from '../tags';
-import { translateToolError } from './tool_errors';
+import { assertActiveRowExists } from '../assert_active_row_exists.ts';
+import type { QuestlogDb } from '../database.ts';
+import {
+	replaceQuestTags,
+	replaceRepeatableQuestTags,
+	tagQuest,
+	untagQuest,
+} from '../tags/index.ts';
+import { translateToolError } from './tool_errors.ts';
 import {
 	arraySchema,
 	defineQuestlogTool,
@@ -9,10 +14,10 @@ import {
 	integerSchema,
 	objectSchema,
 	stringSchema,
-} from './tool_metadata';
-import { tagWorkToolName } from './tool_names';
-import type { ToolResult } from './tool_types';
-import { toolFailure, toolNoOp, toolSuccess } from './tool_types';
+} from './tool_metadata.ts';
+import { tagWorkToolName } from './tool_names.ts';
+import type { ToolResult } from './tool_types.ts';
+import { toolFailure, toolNoOp, toolSuccess } from './tool_types.ts';
 
 export type TagWorkToolInput =
 	| { action: 'add'; now?: number; tagNames: string[]; target: { id: number; kind: 'quest' } }

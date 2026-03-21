@@ -1,4 +1,4 @@
-import type { QuestlogDb } from './database';
+import type { QuestlogDb } from './database.ts';
 
 /**
  * Throws when a referenced row is missing or soft-deleted.

@@ -1,4 +1,4 @@
-import type { ToolEntityRef, ToolNextStepHint } from './tool_types';
+import type { ToolEntityRef, ToolNextStepHint } from './tool_types.ts';
 
 export function inspectItemNext(target: ToolEntityRef): ToolNextStepHint {
 	return {

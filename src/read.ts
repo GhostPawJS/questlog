@@ -1,4 +1,4 @@
-export { getQuestlineDetail, listQuestlines } from './questlines/index';
+export { getQuestlineDetail, listQuestlines } from './questlines/index.ts';
 export {
 	getQuestDetail,
 	listActiveQuests,
@@ -13,7 +13,7 @@ export {
 	listResolvedQuests,
 	listScheduledForDay,
 	listScheduledNow,
-} from './quests/index';
-export { listDueRepeatableQuestAnchors } from './repeatable_quests/index';
-export { getRumorDetail, getRumorOutputs, listRumors } from './rumors/index';
-export { searchQuestlog } from './search_questlog';
+} from './quests/index.ts';
+export { listDueRepeatableQuestAnchors } from './repeatable_quests/index.ts';
+export { getRumorDetail, getRumorOutputs, listRumors } from './rumors/index.ts';
+export { searchQuestlog } from './search_questlog.ts';

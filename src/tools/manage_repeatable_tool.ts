@@ -1,17 +1,17 @@
-import { getQuestDetail } from '../quests/get_quest_detail';
+import { getQuestDetail } from '../quests/get_quest_detail.ts';
+import { getRepeatableQuestOrThrow } from '../repeatable_quests/get_repeatable_quest_or_throw.ts';
 import {
 	archiveRepeatableQuest,
 	createRepeatableQuest,
 	listDueRepeatableQuestAnchors,
 	spawnDueRepeatableQuests,
 	updateRepeatableQuest,
-} from '../repeatable_quests';
-import { getRepeatableQuestOrThrow } from '../repeatable_quests/get_repeatable_quest_or_throw';
+} from '../repeatable_quests/index.ts';
 import type {
 	CreateRepeatableQuestInput,
 	UpdateRepeatableQuestInput,
-} from '../repeatable_quests/types';
-import { translateToolError } from './tool_errors';
+} from '../repeatable_quests/types.ts';
+import { translateToolError } from './tool_errors.ts';
 import {
 	booleanSchema,
 	defineQuestlogTool,
@@ -19,11 +19,11 @@ import {
 	integerSchema,
 	objectSchema,
 	stringSchema,
-} from './tool_metadata';
-import { manageRepeatableToolName } from './tool_names';
-import { toQuestRef, toRepeatableAnchorListItem, toRepeatableQuestRef } from './tool_ref';
-import type { ToolEntityRef, ToolListItem, ToolResult } from './tool_types';
-import { toolNoOp, toolSuccess, toolWarning } from './tool_types';
+} from './tool_metadata.ts';
+import { manageRepeatableToolName } from './tool_names.ts';
+import { toQuestRef, toRepeatableAnchorListItem, toRepeatableQuestRef } from './tool_ref.ts';
+import type { ToolEntityRef, ToolListItem, ToolResult } from './tool_types.ts';
+import { toolNoOp, toolSuccess, toolWarning } from './tool_types.ts';
 
 export type ManageRepeatableToolInput =
 	| { action: 'archive'; archivedAt?: number; repeatableQuestId: number }

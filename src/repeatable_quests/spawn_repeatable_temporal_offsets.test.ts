@@ -1,10 +1,10 @@
 import { strictEqual } from 'node:assert/strict';
 import { beforeEach, describe, it } from 'node:test';
-import type { QuestlogDb } from '../database';
-import { createInitializedQuestlogDb } from '../lib/test-db';
-import { getQuestDetail } from '../quests/get_quest_detail';
-import { createRepeatableQuest } from './create_repeatable_quest';
-import { spawnDueRepeatableQuests } from './spawn_due_repeatable_quests';
+import type { QuestlogDb } from '../database.ts';
+import { createInitializedQuestlogDb } from '../lib/test-db.ts';
+import { getQuestDetail } from '../quests/get_quest_detail.ts';
+import { createRepeatableQuest } from './create_repeatable_quest.ts';
+import { spawnDueRepeatableQuests } from './spawn_due_repeatable_quests.ts';
 
 let db: QuestlogDb;
 

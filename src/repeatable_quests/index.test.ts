@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import * as repeatable from './index';
+import * as repeatable from './index.ts';
 
 describe('repeatable_quests barrel', () => {
 	it('exports definitions and spawn helpers', () => {

@@ -1,15 +1,15 @@
-import { assertActiveRowExists } from '../assert_active_row_exists';
-import type { QuestlogDb } from '../database';
+import { assertActiveRowExists } from '../assert_active_row_exists.ts';
+import type { QuestlogDb } from '../database.ts';
+import { getQuestRewardOrThrow } from '../rewards/get_quest_reward_or_throw.ts';
 import {
 	addQuestReward,
 	claimQuestReward,
 	removeQuestReward,
 	replaceRepeatableQuestRewards,
 	updateQuestReward,
-} from '../rewards';
-import { getQuestRewardOrThrow } from '../rewards/get_quest_reward_or_throw';
-import type { QuestRewardInput, RepeatableQuestRewardInput } from '../rewards/types';
-import { translateToolError } from './tool_errors';
+} from '../rewards/index.ts';
+import type { QuestRewardInput, RepeatableQuestRewardInput } from '../rewards/types.ts';
+import { translateToolError } from './tool_errors.ts';
 import {
 	arraySchema,
 	defineQuestlogTool,
@@ -17,11 +17,11 @@ import {
 	integerSchema,
 	objectSchema,
 	stringSchema,
-} from './tool_metadata';
-import { rewardWorkToolName } from './tool_names';
-import { toRewardRef } from './tool_ref';
-import type { ToolResult } from './tool_types';
-import { toolNoOp, toolSuccess, toolWarning } from './tool_types';
+} from './tool_metadata.ts';
+import { rewardWorkToolName } from './tool_names.ts';
+import { toRewardRef } from './tool_ref.ts';
+import type { ToolResult } from './tool_types.ts';
+import { toolNoOp, toolSuccess, toolWarning } from './tool_types.ts';
 
 export type RewardWorkToolInput =
 	| { action: 'add'; reward: QuestRewardInput; target: { id: number; kind: 'quest' } }

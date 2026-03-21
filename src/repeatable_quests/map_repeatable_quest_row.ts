@@ -1,4 +1,4 @@
-import type { RepeatableQuest } from './types';
+import type { RepeatableQuest } from './types.ts';
 
 function asBoolean(value: unknown): boolean {
 	return Number(value) === 1;

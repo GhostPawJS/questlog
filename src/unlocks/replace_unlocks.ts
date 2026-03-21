@@ -1,7 +1,7 @@
-import type { QuestlogDb } from '../database';
-import { resolveNow } from '../resolve_now';
-import { withTransaction } from '../with_transaction';
-import { addUnlock } from './add_unlock';
+import type { QuestlogDb } from '../database.ts';
+import { resolveNow } from '../resolve_now.ts';
+import { withTransaction } from '../with_transaction.ts';
+import { addUnlock } from './add_unlock.ts';
 
 /**
  * Replaces the active prerequisites for a target quest.

@@ -1,4 +1,4 @@
-import type { QuestReward } from './types';
+import type { QuestReward } from './types.ts';
 
 /**
  * Maps a quest reward row into its public entity shape.

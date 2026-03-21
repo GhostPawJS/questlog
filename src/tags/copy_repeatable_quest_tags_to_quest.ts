@@ -1,5 +1,5 @@
-import type { QuestlogDb } from '../database';
-import { resolveNow } from '../resolve_now';
+import type { QuestlogDb } from '../database.ts';
+import { resolveNow } from '../resolve_now.ts';
 
 /**
  * Copies active repeatable quest tag templates onto a spawned quest.

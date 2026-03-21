@@ -1,6 +1,6 @@
-import type { QuestlogDb } from '../database';
-import { mapQuestlineRow } from './map_questline_row';
-import type { Questline } from './types';
+import type { QuestlogDb } from '../database.ts';
+import { mapQuestlineRow } from './map_questline_row.ts';
+import type { Questline } from './types.ts';
 
 /**
  * Loads a single active questline or throws.

@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import * as questlog from './index';
+import * as questlog from './index.ts';
 
 describe('questlog public surface', () => {
 	it('exports the intentional contract and hides internal helpers', () => {

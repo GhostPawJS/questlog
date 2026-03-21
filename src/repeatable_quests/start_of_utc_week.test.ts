@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { startOfUtcWeek } from './start_of_utc_week';
+import { startOfUtcWeek } from './start_of_utc_week.ts';
 
 describe('startOfUtcWeek', () => {
 	it('returns Sunday 00:00 UTC for that week given a day boundary', () => {

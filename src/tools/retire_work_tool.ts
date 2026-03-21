@@ -1,13 +1,13 @@
-import type { QuestlogDb } from '../database';
-import { softDeleteQuestline } from '../questlines/soft_delete_questline';
-import { softDeleteQuest } from '../quests/soft_delete_quest';
-import { softDeleteRepeatableQuest } from '../repeatable_quests/soft_delete_repeatable_quest';
-import { softDeleteRumor } from '../rumors/soft_delete_rumor';
-import { translateToolError } from './tool_errors';
-import { defineQuestlogTool, enumSchema, integerSchema, objectSchema } from './tool_metadata';
-import { retireWorkToolName } from './tool_names';
-import type { ToolResult } from './tool_types';
-import { toolNoOp, toolSuccess } from './tool_types';
+import type { QuestlogDb } from '../database.ts';
+import { softDeleteQuestline } from '../questlines/soft_delete_questline.ts';
+import { softDeleteQuest } from '../quests/soft_delete_quest.ts';
+import { softDeleteRepeatableQuest } from '../repeatable_quests/soft_delete_repeatable_quest.ts';
+import { softDeleteRumor } from '../rumors/soft_delete_rumor.ts';
+import { translateToolError } from './tool_errors.ts';
+import { defineQuestlogTool, enumSchema, integerSchema, objectSchema } from './tool_metadata.ts';
+import { retireWorkToolName } from './tool_names.ts';
+import type { ToolResult } from './tool_types.ts';
+import { toolNoOp, toolSuccess } from './tool_types.ts';
 
 export interface RetireWorkToolInput {
 	action: 'hide';

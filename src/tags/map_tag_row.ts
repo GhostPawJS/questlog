@@ -1,4 +1,4 @@
-import type { Tag } from './types';
+import type { Tag } from './types.ts';
 
 /**
  * Maps a tag row into its public entity shape.

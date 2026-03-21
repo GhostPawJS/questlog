@@ -1,6 +1,6 @@
-import type { QuestlogDb } from '../database';
-import { mapRumorRow } from './map_rumor_row';
-import type { Rumor } from './types';
+import type { QuestlogDb } from '../database.ts';
+import { mapRumorRow } from './map_rumor_row.ts';
+import type { Rumor } from './types.ts';
 
 /**
  * Lists all active rumors.

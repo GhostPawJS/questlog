@@ -6,7 +6,7 @@ import {
 	toolNoOp,
 	toolSuccess,
 	toolWarning,
-} from './tool_types';
+} from './tool_types.ts';
 
 describe('tool result helpers', () => {
 	it('build success and no-op envelopes with legal combinations', () => {

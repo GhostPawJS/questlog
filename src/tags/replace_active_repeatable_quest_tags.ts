@@ -1,6 +1,6 @@
-import type { QuestlogDb } from '../database';
-import { resolveNow } from '../resolve_now';
-import { normalizeTagName } from './normalize_tag_name';
+import type { QuestlogDb } from '../database.ts';
+import { resolveNow } from '../resolve_now.ts';
+import { normalizeTagName } from './normalize_tag_name.ts';
 
 function getOrCreateTagId(db: QuestlogDb, name: string, now: number): number {
 	const normalizedName = normalizeTagName(name);

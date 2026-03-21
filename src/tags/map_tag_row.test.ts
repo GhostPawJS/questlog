@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { mapTagRow } from './map_tag_row';
+import { mapTagRow } from './map_tag_row.ts';
 
 describe('mapTagRow', () => {
 	it('preserves display name and normalized key as separate fields', () => {

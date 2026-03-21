@@ -1,11 +1,11 @@
-export { captureRumor } from './capture_rumor';
-export { dismissRumor } from './dismiss_rumor';
-export { getRumorDetail } from './get_rumor_detail';
-export { getRumorOutputs } from './get_rumor_outputs';
-export { listRumors } from './list_rumors';
-export { reopenRumor } from './reopen_rumor';
-export { settleRumor } from './settle_rumor';
-export { softDeleteRumor } from './soft_delete_rumor';
+export { captureRumor } from './capture_rumor.ts';
+export { dismissRumor } from './dismiss_rumor.ts';
+export { getRumorDetail } from './get_rumor_detail.ts';
+export { getRumorOutputs } from './get_rumor_outputs.ts';
+export { listRumors } from './list_rumors.ts';
+export { reopenRumor } from './reopen_rumor.ts';
+export { settleRumor } from './settle_rumor.ts';
+export { softDeleteRumor } from './soft_delete_rumor.ts';
 export type {
 	CaptureRumorInput,
 	Rumor,
@@ -14,4 +14,4 @@ export type {
 	RumorState,
 	SettleRumorInput,
 	SettleRumorResult,
-} from './types';
+} from './types.ts';

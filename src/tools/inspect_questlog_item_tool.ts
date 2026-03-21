@@ -1,21 +1,21 @@
-import { getQuestlineDetail } from '../questlines/get_questline_detail';
-import { getQuestDetail } from '../quests/get_quest_detail';
-import { getRepeatableQuestOrThrow } from '../repeatable_quests/get_repeatable_quest_or_throw';
-import type { RepeatableQuest } from '../repeatable_quests/types';
-import { getRumorDetail } from '../rumors/get_rumor_detail';
-import type { RumorDetail } from '../rumors/types';
-import { translateToolError } from './tool_errors';
-import { defineQuestlogTool, enumSchema, integerSchema, objectSchema } from './tool_metadata';
-import { inspectQuestlogItemToolName } from './tool_names';
+import { getQuestlineDetail } from '../questlines/get_questline_detail.ts';
+import { getQuestDetail } from '../quests/get_quest_detail.ts';
+import { getRepeatableQuestOrThrow } from '../repeatable_quests/get_repeatable_quest_or_throw.ts';
+import type { RepeatableQuest } from '../repeatable_quests/types.ts';
+import { getRumorDetail } from '../rumors/get_rumor_detail.ts';
+import type { RumorDetail } from '../rumors/types.ts';
+import { translateToolError } from './tool_errors.ts';
+import { defineQuestlogTool, enumSchema, integerSchema, objectSchema } from './tool_metadata.ts';
+import { inspectQuestlogItemToolName } from './tool_names.ts';
 import {
 	toQuestlineRef,
 	toQuestRef,
 	toRepeatableQuestRef,
 	toRewardRef,
 	toRumorRef,
-} from './tool_ref';
-import type { ToolEntityRef, ToolResult } from './tool_types';
-import { toolSuccess } from './tool_types';
+} from './tool_ref.ts';
+import type { ToolEntityRef, ToolResult } from './tool_types.ts';
+import { toolSuccess } from './tool_types.ts';
 
 export interface InspectQuestlogItemToolInput {
 	target:

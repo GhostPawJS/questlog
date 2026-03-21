@@ -308,3 +308,7 @@ Read those files when you need exact table shape, constraints, or index detail.
 The codebase has colocated tests for every non-type module under `src/`, so the
 behavior described in these docs is backed by executable coverage rather than
 just prose.
+
+Relative imports in source use explicit `.ts` specifiers (and `*/index.ts` for
+package-style barrels) so Node can load and test TypeScript directly with
+`--experimental-strip-types`, without a separate TypeScript execution shim.

@@ -1,4 +1,4 @@
-import type { QuestlogDb } from '../database';
+import type { QuestlogDb } from '../database.ts';
 
 /**
  * Creates rumor full-text search tables and triggers.

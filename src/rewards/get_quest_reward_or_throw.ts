@@ -1,6 +1,6 @@
-import type { QuestlogDb } from '../database';
-import { mapQuestRewardRow } from './map_quest_reward_row';
-import type { QuestReward } from './types';
+import type { QuestlogDb } from '../database.ts';
+import { mapQuestRewardRow } from './map_quest_reward_row.ts';
+import type { QuestReward } from './types.ts';
 
 /**
  * Loads a single active quest reward or throws.

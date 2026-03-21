@@ -1,5 +1,5 @@
-import type { QuestState } from '../quests/quest_state';
-import type { MarkerId } from './types';
+import type { QuestState } from '../quests/quest_state.ts';
+import type { MarkerId } from './types.ts';
 
 export interface DeriveQuestMarkerIdInput {
 	state: QuestState;

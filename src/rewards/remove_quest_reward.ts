@@ -1,6 +1,6 @@
-import type { QuestlogDb } from '../database';
-import { resolveNow } from '../resolve_now';
-import { getQuestRewardOrThrow } from './get_quest_reward_or_throw';
+import type { QuestlogDb } from '../database.ts';
+import { resolveNow } from '../resolve_now.ts';
+import { getQuestRewardOrThrow } from './get_quest_reward_or_throw.ts';
 
 /**
  * Soft-deletes an unclaimed reward.

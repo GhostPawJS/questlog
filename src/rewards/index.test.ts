@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import * as rewards from './index';
+import * as rewards from './index.ts';
 
 describe('rewards barrel', () => {
 	it('exports reward mutations for quests and repeatables', () => {

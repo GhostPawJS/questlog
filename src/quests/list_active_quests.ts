@@ -1,6 +1,6 @@
-import type { QuestlogDb } from '../database';
-import { listQuestDetails } from './list_quest_details';
-import type { QuestDetail, QuestListFilters } from './types';
+import type { QuestlogDb } from '../database.ts';
+import { listQuestDetails } from './list_quest_details.ts';
+import type { QuestDetail, QuestListFilters } from './types.ts';
 
 /**
  * Lists all non-terminal quests, whether open or already in progress.

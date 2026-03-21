@@ -1,12 +1,12 @@
 import type { SQLInputValue } from 'node:sqlite';
-import type { QuestlogDb } from '../database';
-import { deriveQuestMarkerId } from '../markers/derive_quest_marker_id';
-import { mapQuestRewardRow } from '../rewards/map_quest_reward_row';
-import type { QuestReward } from '../rewards/types';
-import { normalizeTagName } from '../tags/normalize_tag_name';
-import { deriveQuestState } from './derive_quest_state';
-import { mapQuestRow } from './map_quest_row';
-import type { QuestDetail, QuestListFilters } from './types';
+import type { QuestlogDb } from '../database.ts';
+import { deriveQuestMarkerId } from '../markers/derive_quest_marker_id.ts';
+import { mapQuestRewardRow } from '../rewards/map_quest_reward_row.ts';
+import type { QuestReward } from '../rewards/types.ts';
+import { normalizeTagName } from '../tags/normalize_tag_name.ts';
+import { deriveQuestState } from './derive_quest_state.ts';
+import { mapQuestRow } from './map_quest_row.ts';
+import type { QuestDetail, QuestListFilters } from './types.ts';
 
 /**
  * An internal quest detail record with computed blocker metadata for list-style reads.

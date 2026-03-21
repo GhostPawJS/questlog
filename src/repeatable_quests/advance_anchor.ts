@@ -1,4 +1,4 @@
-import type { ParsedRRule } from './parse_rrule';
+import type { ParsedRRule } from './parse_rrule.ts';
 
 const WEEK_MS = 7 * 86_400_000;
 

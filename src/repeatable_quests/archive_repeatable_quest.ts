@@ -1,7 +1,7 @@
-import type { QuestlogDb } from '../database';
-import { resolveNow } from '../resolve_now';
-import type { RepeatableQuest } from './types';
-import { updateRepeatableQuest } from './update_repeatable_quest';
+import type { QuestlogDb } from '../database.ts';
+import { resolveNow } from '../resolve_now.ts';
+import type { RepeatableQuest } from './types.ts';
+import { updateRepeatableQuest } from './update_repeatable_quest.ts';
 
 /**
  * Archives a repeatable quest definition.

@@ -1,7 +1,7 @@
 import { strictEqual } from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { describe, it } from 'node:test';
-import { initQuestTables } from './init_quest_tables';
+import { initQuestTables } from './init_quest_tables.ts';
 
 describe('initQuestTables', () => {
 	it('is safe to call twice on the same connection (idempotent)', () => {

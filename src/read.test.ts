@@ -1,6 +1,6 @@
 import { strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import * as read from './read';
+import * as read from './read.ts';
 
 describe('read barrel', () => {
 	it('re-exports query surface without wiring to write mutations', () => {

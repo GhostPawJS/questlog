@@ -1,4 +1,4 @@
-import { listQuestlines } from '../questlines/list_questlines';
+import { listQuestlines } from '../questlines/list_questlines.ts';
 import {
 	listActiveQuests,
 	listAvailableQuests,
@@ -12,11 +12,11 @@ import {
 	listResolvedQuests,
 	listScheduledForDay,
 	listScheduledNow,
-} from '../quests';
-import type { QuestDetail, QuestListFilters } from '../quests/types';
-import { getRepeatableQuestOrThrow } from '../repeatable_quests/get_repeatable_quest_or_throw';
-import { listDueRepeatableQuestAnchors } from '../repeatable_quests/list_due_repeatable_quest_anchors';
-import { listRumors } from '../rumors/list_rumors';
+} from '../quests/index.ts';
+import type { QuestDetail, QuestListFilters } from '../quests/types.ts';
+import { getRepeatableQuestOrThrow } from '../repeatable_quests/get_repeatable_quest_or_throw.ts';
+import { listDueRepeatableQuestAnchors } from '../repeatable_quests/list_due_repeatable_quest_anchors.ts';
+import { listRumors } from '../rumors/list_rumors.ts';
 import {
 	arraySchema,
 	booleanSchema,
@@ -25,17 +25,17 @@ import {
 	integerSchema,
 	objectSchema,
 	stringSchema,
-} from './tool_metadata';
-import { reviewQuestlogToolName } from './tool_names';
+} from './tool_metadata.ts';
+import { reviewQuestlogToolName } from './tool_names.ts';
 import {
 	toQuestListItem,
 	toQuestlineListItem,
 	toRepeatableAnchorListItem,
 	toRumorListItem,
-} from './tool_ref';
-import { summarizeCount } from './tool_summary';
-import type { ToolListItem, ToolResult } from './tool_types';
-import { toolFailure, toolNeedsClarification, toolSuccess, toolWarning } from './tool_types';
+} from './tool_ref.ts';
+import { summarizeCount } from './tool_summary.ts';
+import type { ToolListItem, ToolResult } from './tool_types.ts';
+import { toolFailure, toolNeedsClarification, toolSuccess, toolWarning } from './tool_types.ts';
 
 export type ReviewQuestlogToolView =
 	| 'questlines'

@@ -1,8 +1,8 @@
-import { assertNonNegativeSeconds } from '../assert_non_negative_seconds';
-import type { QuestlogDb } from '../database';
-import { resolveNow } from '../resolve_now';
-import { getQuestOrThrow } from './get_quest_or_throw';
-import type { PlanQuestTimeInput, Quest } from './types';
+import { assertNonNegativeSeconds } from '../assert_non_negative_seconds.ts';
+import type { QuestlogDb } from '../database.ts';
+import { resolveNow } from '../resolve_now.ts';
+import { getQuestOrThrow } from './get_quest_or_throw.ts';
+import type { PlanQuestTimeInput, Quest } from './types.ts';
 
 /**
  * Updates a quest's temporal planning fields.

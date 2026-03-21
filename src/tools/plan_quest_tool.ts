@@ -1,6 +1,6 @@
-import { getQuestDetail, planQuestTime, reviseQuestObjective } from '../quests';
-import type { PlanQuestTimeInput } from '../quests/types';
-import { translateToolError } from './tool_errors';
+import { getQuestDetail, planQuestTime, reviseQuestObjective } from '../quests/index.ts';
+import type { PlanQuestTimeInput } from '../quests/types.ts';
+import { translateToolError } from './tool_errors.ts';
 import {
 	booleanSchema,
 	defineQuestlogTool,
@@ -8,11 +8,11 @@ import {
 	integerSchema,
 	objectSchema,
 	stringSchema,
-} from './tool_metadata';
-import { planQuestToolName } from './tool_names';
-import { toQuestRef } from './tool_ref';
-import type { ToolResult } from './tool_types';
-import { toolNoOp, toolSuccess } from './tool_types';
+} from './tool_metadata.ts';
+import { planQuestToolName } from './tool_names.ts';
+import { toQuestRef } from './tool_ref.ts';
+import type { ToolResult } from './tool_types.ts';
+import { toolNoOp, toolSuccess } from './tool_types.ts';
 
 export type PlanQuestToolInput =
 	| { action: 'revise_objective'; now?: number; objective: string; questId: number }

@@ -1,8 +1,8 @@
 import { strictEqual, throws } from 'node:assert/strict';
 import { beforeEach, describe, it } from 'node:test';
-import { assertActiveRowExists } from './assert_active_row_exists';
-import type { QuestlogDb } from './database';
-import { createInitializedQuestlogDb } from './lib/test-db';
+import { assertActiveRowExists } from './assert_active_row_exists.ts';
+import type { QuestlogDb } from './database.ts';
+import { createInitializedQuestlogDb } from './lib/test-db.ts';
 
 let db: QuestlogDb;
 

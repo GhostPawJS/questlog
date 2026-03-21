@@ -1,12 +1,16 @@
-import { createQuestline, detachQuestFromQuestline, moveQuestToQuestline } from '../questlines';
-import { getQuestlineDetail } from '../questlines/get_questline_detail';
-import type { CreateQuestlineInput } from '../questlines/types';
-import { createQuest, getQuestDetail } from '../quests';
-import type { CreateQuestInput } from '../quests/types';
-import { dismissRumor, reopenRumor, settleRumor } from '../rumors';
-import { getRumorDetail } from '../rumors/get_rumor_detail';
-import type { SettleRumorInput } from '../rumors/types';
-import { translateToolError } from './tool_errors';
+import { getQuestlineDetail } from '../questlines/get_questline_detail.ts';
+import {
+	createQuestline,
+	detachQuestFromQuestline,
+	moveQuestToQuestline,
+} from '../questlines/index.ts';
+import type { CreateQuestlineInput } from '../questlines/types.ts';
+import { createQuest, getQuestDetail } from '../quests/index.ts';
+import type { CreateQuestInput } from '../quests/types.ts';
+import { getRumorDetail } from '../rumors/get_rumor_detail.ts';
+import { dismissRumor, reopenRumor, settleRumor } from '../rumors/index.ts';
+import type { SettleRumorInput } from '../rumors/types.ts';
+import { translateToolError } from './tool_errors.ts';
 import {
 	arraySchema,
 	defineQuestlogTool,
@@ -14,12 +18,12 @@ import {
 	integerSchema,
 	objectSchema,
 	stringSchema,
-} from './tool_metadata';
-import { shapeWorkToolName } from './tool_names';
-import { inspectItemNext, reviewViewNext } from './tool_next';
-import { toQuestlineRef, toQuestRef, toRumorRef } from './tool_ref';
-import type { ToolEntityRef, ToolResult } from './tool_types';
-import { toolNeedsClarification, toolNoOp, toolSuccess } from './tool_types';
+} from './tool_metadata.ts';
+import { shapeWorkToolName } from './tool_names.ts';
+import { inspectItemNext, reviewViewNext } from './tool_next.ts';
+import { toQuestlineRef, toQuestRef, toRumorRef } from './tool_ref.ts';
+import type { ToolEntityRef, ToolResult } from './tool_types.ts';
+import { toolNeedsClarification, toolNoOp, toolSuccess } from './tool_types.ts';
 
 export type ShapeWorkToolInput =
 	| {

@@ -1,7 +1,7 @@
-import type { QuestlogDb } from '../database';
-import { generateAnchorsUntil } from './generate_anchors_until';
-import { mapRepeatableQuestRow } from './map_repeatable_quest_row';
-import type { DueRepeatableAnchor } from './types';
+import type { QuestlogDb } from '../database.ts';
+import { generateAnchorsUntil } from './generate_anchors_until.ts';
+import { mapRepeatableQuestRow } from './map_repeatable_quest_row.ts';
+import type { DueRepeatableAnchor } from './types.ts';
 
 /**
  * Lists recurrence anchors that should be materialized into concrete quests.

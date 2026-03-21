@@ -1,7 +1,7 @@
-import { assertActiveRowExists } from '../assert_active_row_exists';
-import type { QuestlogDb } from '../database';
-import { resolveNow } from '../resolve_now';
-import { replaceActiveQuestTags } from './replace_active_quest_tags';
+import { assertActiveRowExists } from '../assert_active_row_exists.ts';
+import type { QuestlogDb } from '../database.ts';
+import { resolveNow } from '../resolve_now.ts';
+import { replaceActiveQuestTags } from './replace_active_quest_tags.ts';
 
 /**
  * Adds tags to a concrete quest without disturbing existing active tags.

@@ -1,4 +1,4 @@
-import type { QuestlogDb } from '../database';
+import type { QuestlogDb } from '../database.ts';
 
 /**
  * Creates rumor tables and indices.

@@ -1,7 +1,7 @@
 import { deepStrictEqual, match, strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { markerLookup } from './lookup';
-import type { MarkerId } from './types';
+import { markerLookup } from './lookup.ts';
+import type { MarkerId } from './types.ts';
 
 const markerIds: MarkerId[] = [
 	'attention.available',
