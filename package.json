@@ -1,0 +1,83 @@
+{
+	"name": "@ghostpaw/questlog",
+	"version": "0.0.0",
+	"description": "RPG-flavored productivity engine for Node.js — a fully RPG-themed task and calendar system built on SQLite",
+	"type": "module",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"require": {
+				"types": "./dist/index.d.cts",
+				"default": "./dist/index.cjs"
+			}
+		}
+	},
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"dist"
+	],
+	"sideEffects": false,
+	"scripts": {
+		"build": "tsup",
+		"dev": "tsup --watch",
+		"test": "node --import tsx --test --test-reporter=dot 'src/**/*.test.ts'",
+		"lint": "biome check",
+		"lint:fix": "biome check --fix",
+		"format": "biome format --write",
+		"typecheck": "tsc --noEmit",
+		"check": "biome check && tsc --noEmit",
+		"clean": "rm -rf dist",
+		"prepublishOnly": "npm run check && npm run build",
+		"release:patch": "npm version patch && git push && git push --tags",
+		"release:minor": "npm version minor && git push && git push --tags",
+		"release:major": "npm version major && git push && git push --tags"
+	},
+	"engines": {
+		"node": ">=24"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"keywords": [
+		"quest",
+		"task",
+		"calendar",
+		"sqlite",
+		"rpg",
+		"productivity",
+		"node"
+	],
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/GhostPawJS/questlog.git"
+	},
+	"author": {
+		"name": "Anonyfox",
+		"email": "max@anonyfox.com",
+		"url": "https://anonyfox.com"
+	},
+	"homepage": "https://github.com/GhostPawJS/questlog",
+	"bugs": {
+		"url": "https://github.com/GhostPawJS/questlog/issues"
+	},
+	"funding": {
+		"type": "github",
+		"url": "https://github.com/sponsors/Anonyfox"
+	},
+	"volta": {
+		"node": "24.14.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.4.4",
+		"@types/node": "^25.3.0",
+		"tsup": "^8.0.0",
+		"tsx": "^4.0.0",
+		"typescript": "^5.9.3"
+	}
+}
