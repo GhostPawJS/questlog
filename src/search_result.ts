@@ -1,3 +1,5 @@
+import type { MarkerId } from './markers/types';
+
 /**
  * Search result across questlog content.
  */
@@ -6,4 +8,5 @@ export interface QuestlogSearchResult {
 	entityId: number;
 	title: string;
 	snippet: string;
+	markerId: MarkerId | null;
 }

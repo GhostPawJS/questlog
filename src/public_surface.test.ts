@@ -8,10 +8,15 @@ describe('questlog public surface', () => {
 		strictEqual('createQuest' in questlog, true);
 		strictEqual('listAvailableQuests' in questlog, true);
 		strictEqual('searchQuestlog' in questlog, true);
+		strictEqual('deriveQuestMarkerId' in questlog, true);
+		strictEqual('deriveRumorMarkerId' in questlog, true);
+		strictEqual('markerLookup' in questlog, true);
 		strictEqual('read' in questlog, true);
 		strictEqual('write' in questlog, true);
 		strictEqual('getQuestOrThrow' in questlog.read, false);
 		strictEqual('getRumorOrThrow' in questlog.read, false);
+		strictEqual('deriveQuestMarkerId' in questlog.read, false);
+		strictEqual('markerLookup' in questlog.read, false);
 
 		strictEqual('resolveQuest' in questlog, false);
 		strictEqual('getQuestOrThrow' in questlog, false);

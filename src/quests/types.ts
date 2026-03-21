@@ -1,3 +1,4 @@
+import type { MarkerId } from '../markers/types';
 import type { QuestReward, QuestRewardInput } from '../rewards/types';
 import type { QuestState } from './quest_state';
 
@@ -94,6 +95,7 @@ export interface QuestListFilters {
  */
 export interface QuestDetail extends Quest {
 	state: QuestState;
+	markerId: MarkerId | null;
 	effectiveDueAt: number | null;
 	available: boolean;
 	tagNames: string[];

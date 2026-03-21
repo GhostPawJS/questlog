@@ -1,5 +1,11 @@
 export type { QuestlogDb } from './database';
 export { initQuestlogTables } from './init_questlog_tables';
+export type { MarkerDefinition, MarkerId } from './markers/index';
+export {
+	deriveQuestMarkerId,
+	deriveRumorMarkerId,
+	markerLookup,
+} from './markers/index';
 export * from './questlines/index';
 export * from './quests/index';
 export * as read from './read';

@@ -63,6 +63,16 @@ Typical flow:
 If it is actionable, it should become a quest. If it groups multiple quests, it
 should usually also create a questline.
 
+## Marker Notes
+
+Rumor reads expose a computed `markerId` with intentionally narrow semantics:
+
+- `attention.available`: the rumor is still open and waiting for triage
+- `null`: the rumor was settled into downstream work or explicitly dismissed
+
+This keeps intake visibility obvious without pretending rumors participate in
+quest execution state.
+
 ## Related Tables
 
 - `questlines`: a rumor can produce a questline

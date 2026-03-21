@@ -21,13 +21,16 @@ describe('captureRumor / dismissRumor / reopenRumor', () => {
 		});
 		strictEqual(rumor.title, 'Refactor auth');
 		strictEqual(rumor.dismissedAt, null);
+		strictEqual(rumor.markerId, 'attention.available');
 
 		const dismissed = dismissRumor(db, rumor.id, 20);
 		strictEqual(dismissed.dismissedAt, 20);
+		strictEqual(dismissed.markerId, null);
 
 		const reopened = reopenRumor(db, rumor.id, 30);
 		strictEqual(reopened.dismissedAt, null);
 		strictEqual(reopened.settledAt, null);
+		strictEqual(reopened.markerId, 'attention.available');
 	});
 
 	it('rejects empty rumor titles', () => {

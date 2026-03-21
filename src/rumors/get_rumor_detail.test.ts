@@ -5,6 +5,7 @@ import { createInitializedQuestlogDb } from '../lib/test-db';
 import { createQuestline } from '../questlines/create_questline';
 import { createQuest } from '../quests/create_quest';
 import { captureRumor } from './capture_rumor';
+import { dismissRumor } from './dismiss_rumor';
 import { getRumorDetail } from './get_rumor_detail';
 
 let db: QuestlogDb;
@@ -19,6 +20,7 @@ describe('getRumorDetail', () => {
 		createQuestline(db, { title: 'QL', sourceRumorId: rumor.id, now: 2 });
 		createQuest(db, { title: 'Q', objective: 'o', sourceRumorId: rumor.id, now: 3 });
 		const detail = getRumorDetail(db, rumor.id);
+		strictEqual(detail.markerId, 'attention.available');
 		strictEqual(detail.outputs.length, 2);
 		strictEqual(
 			detail.outputs.some((o) => o.entityKind === 'quest'),
@@ -28,5 +30,14 @@ describe('getRumorDetail', () => {
 			detail.outputs.some((o) => o.entityKind === 'questline'),
 			true,
 		);
+	});
+
+	it('uses null instead of omitting markerId once a rumor is dismissed', () => {
+		const rumor = captureRumor(db, { title: 'Later maybe', now: 1 });
+		dismissRumor(db, rumor.id, 5);
+
+		const detail = getRumorDetail(db, rumor.id);
+		strictEqual('markerId' in detail, true);
+		strictEqual(detail.markerId, null);
 	});
 });

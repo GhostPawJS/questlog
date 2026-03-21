@@ -37,4 +37,17 @@ describe('listDueRepeatableQuestAnchors with soft-deleted spawns', () => {
 		);
 		strictEqual(spawnDueRepeatableQuests(db, 1_000).length, 0);
 	});
+
+	it('marks every due anchor as repeatable available', () => {
+		createRepeatableQuest(db, {
+			title: 'Daily reading',
+			objective: 'Read a chapter',
+			rrule: 'FREQ=DAILY',
+			anchorAt: 1_000,
+			now: 10,
+		});
+
+		const [anchor] = listDueRepeatableQuestAnchors(db, 1_000);
+		strictEqual(anchor?.markerId, 'attention.available.repeatable');
+	});
 });

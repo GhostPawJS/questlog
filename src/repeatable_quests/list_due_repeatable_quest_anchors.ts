@@ -45,7 +45,11 @@ export function listDueRepeatableQuestAnchors(db: QuestlogDb, now: number): DueR
 		const dueAnchors = generateAnchorsUntil(repeatable, now);
 		for (const anchorAt of dueAnchors) {
 			if (!existingAnchors.has(`${repeatable.id}:${anchorAt}`)) {
-				anchors.push({ repeatableQuestId: repeatable.id, anchorAt });
+				anchors.push({
+					repeatableQuestId: repeatable.id,
+					anchorAt,
+					markerId: 'attention.available.repeatable',
+				});
 			}
 		}
 	}

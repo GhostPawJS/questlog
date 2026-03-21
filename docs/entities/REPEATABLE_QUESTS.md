@@ -64,6 +64,15 @@ Typical flow:
 Questlog deliberately creates new quest rows for each occurrence so history
 stays truthful.
 
+## Marker Notes
+
+Due-anchor preview reads expose a computed `markerId` of
+`attention.available.repeatable`.
+
+That marker belongs to the due occurrence preview itself, not to the template as
+a permanent status badge. Once an anchor is materialized into a concrete quest,
+the spawned quest uses the normal quest marker rules instead.
+
 ## Related Tables
 
 - `quests`: spawned concrete instances

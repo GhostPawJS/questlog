@@ -154,6 +154,40 @@ A quest is available when:
 
 Missing a scheduled window is not the same thing as being overdue.
 
+## Marker Semantics
+
+Questlog also computes a small WoW-style marker layer for the read surfaces where
+at-a-glance action state matters:
+
+- `rumors`
+- quest detail and quest list reads
+- repeatable due-anchor reads
+- `searchQuestlog()`
+
+The rules are strict:
+
+- marker ids are computed at read time, never stored in SQLite
+- marker ids are semantic and channel-neutral, not raw HTML snippets
+- visual rendering comes from one lookup in code, so HTML, TTY, and future outputs stay aligned
+- Questlog borrows WoW-style quest-giver and turn-in semantics only, not WoW quest difficulty colors
+
+Canonical mapping:
+
+- `attention.available`: yellow `!`
+- `attention.available.repeatable`: blue `!`
+- `attention.available.future`: gray `!`
+- `progress.incomplete`: gray `?`
+- `progress.complete`: yellow `?`
+
+This means "newly actionable," "recurring and due," "not yet available,"
+"work exists but is not complete," and "turn-in pending" can all be shown
+without pushing presentation rules into domain code.
+
+For quests specifically, `progress.complete` is intentionally narrower than
+"done": it appears only when a quest is successfully resolved and still has at
+least one active unclaimed reward. Once all active rewards are claimed, or if a
+done quest has no active rewards at all, the yellow `?` disappears.
+
 ## Operation Philosophy
 
 Questlog exposes intention-shaped writes, not generic CRUD.
@@ -207,6 +241,7 @@ The result shape is intentionally narrow:
 - `entityId`
 - `title`
 - `snippet`
+- `markerId`
 
 Behavioral notes:
 

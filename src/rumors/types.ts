@@ -1,3 +1,4 @@
+import type { MarkerId } from '../markers/types';
 import type { CreateQuestlineInput, Questline } from '../questlines/types';
 import type { CreateQuestInput, Quest } from '../quests/types';
 
@@ -8,6 +9,7 @@ export interface Rumor {
 	id: number;
 	title: string;
 	details: string | null;
+	markerId: MarkerId | null;
 	createdAt: number;
 	updatedAt: number;
 	settledAt: number | null;

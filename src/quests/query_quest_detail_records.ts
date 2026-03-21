@@ -1,5 +1,6 @@
 import type { SQLInputValue } from 'node:sqlite';
 import type { QuestlogDb } from '../database';
+import { deriveQuestMarkerId } from '../markers/derive_quest_marker_id';
 import { mapQuestRewardRow } from '../rewards/map_quest_reward_row';
 import type { QuestReward } from '../rewards/types';
 import { normalizeTagName } from '../tags/normalize_tag_name';
@@ -158,20 +159,31 @@ export function queryQuestDetailRecords(
 		const quest = mapQuestRow(row);
 		const blockerCount = Number(row.blocker_count ?? 0);
 		const effectiveDueAt = row.effective_due_at == null ? null : Number(row.effective_due_at);
+		const rewards = rewardsByQuestId.get(quest.id) ?? [];
+		const state = deriveQuestState(quest);
 		const available =
 			quest.deletedAt == null &&
 			quest.resolvedAt == null &&
 			(quest.notBeforeAt == null || quest.notBeforeAt <= now) &&
 			blockerCount === 0;
+		const markerId = deriveQuestMarkerId({
+			state,
+			available,
+			hasUnclaimedReward: rewards.some((reward) => reward.claimedAt == null),
+			notBeforeAt: quest.notBeforeAt,
+			blockerCount,
+			now,
+		});
 
 		return {
 			detail: {
 				...quest,
-				state: deriveQuestState(quest),
+				state,
+				markerId,
 				effectiveDueAt,
 				available,
 				tagNames: tagNamesByQuestId.get(quest.id) ?? [],
-				rewards: rewardsByQuestId.get(quest.id) ?? [],
+				rewards,
 				unlocksQuestIds: unlocksByQuestId.get(quest.id) ?? [],
 				unlockedByQuestIds: unlockedByQuestId.get(quest.id) ?? [],
 			},

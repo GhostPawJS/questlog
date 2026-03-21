@@ -1,3 +1,4 @@
+import type { MarkerId } from '../markers/types';
 import type { RepeatableQuestRewardInput } from '../rewards/types';
 
 /**
@@ -67,4 +68,5 @@ export interface UpdateRepeatableQuestInput {
 export interface DueRepeatableAnchor {
 	repeatableQuestId: number;
 	anchorAt: number;
+	markerId: MarkerId;
 }

@@ -4,7 +4,9 @@ import type { Quest } from './types';
 /**
  * Derives quest state from start, resolution, and success timestamps.
  */
-export function deriveQuestState(quest: Quest): QuestState {
+export function deriveQuestState(
+	quest: Pick<Quest, 'startedAt' | 'resolvedAt' | 'success'>,
+): QuestState {
 	if (quest.resolvedAt != null && quest.success === true) {
 		return 'done';
 	}

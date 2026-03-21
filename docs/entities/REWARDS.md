@@ -43,6 +43,11 @@ Typical flow:
 2. Complete the concrete quest successfully.
 3. Claim the concrete reward when it is actually granted or taken.
 
+In the current Questlog marker model, claiming also matters for display
+semantics: a successfully completed quest only shows the yellow WoW-style `?`
+while at least one active attached reward is still unclaimed. Claiming the last
+active reward clears that turn-in marker.
+
 ## Good Uses
 
 - XP, points, credits, or bounty

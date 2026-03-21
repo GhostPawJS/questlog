@@ -71,6 +71,21 @@ Those belong in `rumors`, `repeatable_quests`, `questlines`, `tags`, and
   of reopening old ones.
 - Availability is derived, not manually toggled.
 
+## Marker Notes
+
+Quest reads expose a computed `markerId` so UIs can render WoW-style semantics
+without re-deriving status rules:
+
+- `attention.available`: the quest is open and available now
+- `attention.available.future`: the quest is open but deferred by `not_before_at`
+- `progress.incomplete`: the quest is blocked by prerequisites or already in progress
+- `progress.complete`: the quest is done and still has at least one active unclaimed reward
+- `null`: no WoW-style marker is correct, such as an abandoned quest
+
+These markers are derived from quest state, availability rules, and reward claim
+state, never stored. A done quest with no active rewards, or with all active
+rewards already claimed, does not keep the yellow `?`.
+
 ## Related Tables
 
 - `rumors`: intake source
