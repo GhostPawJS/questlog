@@ -1,7 +1,7 @@
 {
 	"name": "@ghostpaw/questlog",
 	"version": "0.0.0",
-	"description": "RPG-flavored productivity engine for Node.js — a fully RPG-themed task and calendar system built on SQLite",
+	"description": "Unified task and calendar model for Node.js — quests, questlines, recurring commitments, and intake in SQLite, with a built-in LLM tool facade",
 	"type": "module",
 	"exports": {
 		".": {
