@@ -297,7 +297,7 @@ Read those files when you need exact table shape, constraints, or index detail.
 
 ## Supplemental Docs
 
-- `USAGE.md`: end-to-end practical manager playbook
+- `HUMAN.md`: human-facing guide for using Questlog directly through the low-level public API
 - `LLM.md`: top-to-bottom overview of Questlog's soul, tools, and skills as AI-facing building blocks
 - `RESEARCH.md`: broader design and rationale background
 

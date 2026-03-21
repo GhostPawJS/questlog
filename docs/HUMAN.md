@@ -1,35 +1,67 @@
-# Questlog Usage
+# Human Usage
 
-This document shows how a competent professional manager could use Questlog to
-run several distinct responsibilities at once without collapsing everything into
-one flat to-do list.
+This document is for people using Questlog directly in code.
 
-The examples below use only the public API surface documented in `src/index.ts`,
-`src/read.ts`, and `src/write.ts`.
+It assumes a human developer or operator is working with the low-level public
+API surface in `src/index.ts`, `src/read.ts`, and `src/write.ts`.
 
-## Manager Mindset
+If you are wiring Questlog into an agent or LLM harness, read `LLM.md` instead.
+That document covers the soul, tools, and skills layers. This document is about
+people using the underlying library directly.
 
-A strong manager usually has to manage several different kinds of reality at the
-same time:
+## What This Surface Is For
+
+Questlog is strongest when a human uses it as a progression model for work, not
+as a flat task list.
+
+A strong human operator usually has to manage several different kinds of truth
+at once:
 
 - incoming signals that may or may not matter
 - active initiatives with multiple moving parts
-- concrete next actions
+- concrete executable commitments
 - hard prerequisites
-- recurring management rhythms
-- closure and recognition
+- recurring rhythms
+- closure and earned outcomes
 
 Questlog works best when each of those is modeled differently on purpose.
 
-The guiding rule is:
+## The Human Modeling Rule
+
+When using the direct API, keep these boundaries clean:
 
 1. Put uncertainty in `rumors`.
 2. Put multi-step arcs in `questlines`.
-3. Put real executable commitments in `quests`.
+3. Put executable commitments in `quests`.
 4. Put true gating logic in `unlocks`.
 5. Put recurring rhythms in `repeatable_quests`.
-6. Put classification in `tags`.
+6. Put cross-cutting classification in `tags`.
 7. Put earned outcomes in `rewards`.
+
+If those boundaries blur, the system becomes noisy and harder to trust.
+
+## Which API Surface To Use
+
+Human-facing direct usage usually comes from:
+
+- `src/index.ts` for the public package surface
+- `src/read.ts` for read-oriented calls
+- `src/write.ts` for write-oriented calls
+
+This document uses those low-level domain calls directly:
+
+- `captureRumor()`
+- `settleRumor()`
+- `createQuest()`
+- `planQuestTime()`
+- `addUnlock()`
+- `listAvailableQuests()`
+- `startQuest()`
+- `finishQuest()`
+- and the rest of the normal public API
+
+That makes the examples useful for application code, scripts, backends, CLIs,
+or custom interfaces where a human is still deciding what should happen.
 
 ## Example Portfolio
 
@@ -42,15 +74,16 @@ Assume one manager is responsible for four distinct streams:
 
 Each stream needs different treatment.
 
-## The Operating Loop
+## The Human Operating Loop
 
-The daily operating loop is simple:
+The direct-code operating loop is simple:
 
 1. Capture uncertainty.
-2. Settle real work into structure.
-3. Execute from availability views, not memory.
-4. Review blocked, deferred, scheduled, and resolved work.
+2. Settle real work into the right structure.
+3. Shape time and dependencies explicitly.
+4. Execute from derived reads, not memory.
 5. Keep recurring rhythms materialized into fresh concrete quests.
+6. Close loops honestly.
 
 ## 1. Capture Incoming Work As Rumors
 
@@ -79,7 +112,7 @@ Other intake actions:
 - `dismissRumor(db, rumorId, dismissedAt?)` when the signal should not become work
 - `reopenRumor(db, rumorId, now?)` when a dismissed signal becomes relevant again
 
-Manager habit:
+Human habit:
 
 - capture quickly
 - decide later
@@ -91,8 +124,8 @@ Once a rumor becomes real, settle it into the right shape.
 
 ### Product Launch
 
-If launch readiness clearly requires several concrete actions, create a questline
-and its child quests together:
+If launch readiness clearly requires several concrete actions, create a
+questline and its child quests together:
 
 ```ts
 settleRumor(db, launchRumorId, {
@@ -112,8 +145,6 @@ settleRumor(db, launchRumorId, {
 
 ### Vendor Renewal
 
-For a contract renewal:
-
 ```ts
 settleRumor(db, vendorRumorId, {
   settledAt: now,
@@ -131,8 +162,6 @@ settleRumor(db, vendorRumorId, {
 
 ### Hiring Loop
 
-For hiring:
-
 ```ts
 settleRumor(db, hiringRumorId, {
   settledAt: now,
@@ -148,15 +177,15 @@ settleRumor(db, hiringRumorId, {
 });
 ```
 
-If the work is already clear and does not come from intake, the manager can also
-create structure directly:
+If the work is already clear and does not come from intake, create structure
+directly:
 
 - `createQuestline(db, input)`
 - `createQuest(db, input)`
 
 ## 3. Shape Time Explicitly
 
-Once the concrete quests exist, add timing truth.
+Once concrete quests exist, add timing truth.
 
 Use `planQuestTime(db, questId, input)` for:
 
@@ -174,7 +203,7 @@ planQuestTime(db, questId, {
 });
 ```
 
-Manager habit:
+Human habit:
 
 - use `dueAt` for external commitments
 - use `notBeforeAt` to protect attention from premature work
@@ -199,13 +228,13 @@ Other dependency actions:
 - `removeUnlock(db, fromQuestId, toQuestId, now?)`
 - `replaceUnlocks(db, toQuestId, fromQuestIds, now?)`
 
-Manager habit:
+Human habit:
 
 - use unlocks only for true gating
 - do not use them for soft preferred order
 - let `listAvailableQuests()` and `listBlockedQuests()` surface the operational effect
 
-## 5. Run Recurring Management Rhythms With Repeatables
+## 5. Run Recurring Rhythms With Repeatables
 
 Managers do not only manage projects. They also manage rhythm.
 
@@ -236,7 +265,7 @@ listDueRepeatableQuestAnchors(db, now);
 spawnDueRepeatableQuests(db, now);
 ```
 
-Manager habit:
+Human habit:
 
 - keep the template stable when the rhythm is stable
 - update future behavior with `updateRepeatableQuest(db, repeatableQuestId, input)`
@@ -262,14 +291,14 @@ Useful calls:
 - `replaceQuestTags(db, questId, tagNames, now?)`
 - `replaceRepeatableQuestTags(db, repeatableQuestId, tagNames, now?)`
 
-Manager habit:
+Human habit:
 
 - tag for reporting and filtering
 - do not use tags as pseudo-statuses
 
 ## 7. Execute From Reads, Not From Memory
 
-A disciplined manager should drive the day from derived views.
+A disciplined human operator should drive the day from derived views.
 
 Core operational reads:
 
@@ -333,7 +362,7 @@ abandonQuestAndSpawnFollowups(db, questId, 'Current plan is no longer viable.', 
 ], resolvedAt);
 ```
 
-Manager habit:
+Human habit:
 
 - use `startQuest()` when execution truly begins, not when planning starts
 - use `finishQuest()` for successful terminal truth
@@ -359,7 +388,7 @@ Useful calls:
 - `claimQuestReward(db, rewardId, claimedAt?)`
 - `replaceRepeatableQuestRewards(db, repeatableQuestId, rewards, now?)`
 
-Manager habit:
+Human habit:
 
 - attach rewards when a quest should visibly yield something
 - claim them when that outcome is actually realized
@@ -408,7 +437,7 @@ Close loops:
 - archive finished arcs with `archiveQuestline(db, questlineId, archivedAt?)`
 - dismiss intake that proved irrelevant
 
-## 11. What Good Usage Looks Like
+## What Good Human Usage Looks Like
 
 Good usage:
 
@@ -427,7 +456,7 @@ Bad usage:
 - using unlocks for soft preference
 - leaving recurring work as one immortal open quest
 
-## 12. The Core Principle
+## The Core Principle
 
 Questlog is not strongest when treated like a prettier task list.
 
@@ -440,5 +469,5 @@ It is strongest when used as a progression model:
 - repeatables generate rhythm
 - rewards and tags stay secondary
 
-That is what lets a manager handle several different domains at once without
-losing the natural flow from signal to structure to action to closure.
+That is what lets a human operator manage several different domains at once
+without losing the natural flow from signal to structure to action to closure.
