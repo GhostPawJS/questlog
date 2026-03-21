@@ -7,6 +7,6 @@ export default defineConfig({
 	clean: true,
 	target: 'node24',
 	splitting: false,
-	sourcemap: true,
+	sourcemap: false,
 	treeshake: true,
 });

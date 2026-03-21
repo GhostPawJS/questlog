@@ -19,8 +19,7 @@
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"files": [
-		"dist",
-		"!dist/*.map"
+		"dist"
 	],
 	"sideEffects": false,
 	"scripts": {
