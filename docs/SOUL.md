@@ -2,7 +2,8 @@
 
 ## Dedicated Quest Soul
 
-Once the standalone faculty is accepted as the canonical quest engine, the next layer should be a focused quest-management soul with one domain only: quests.
+Once Questlog is accepted as the canonical quest engine, the next layer should be
+a focused quest-management soul with one domain only: quests.
 
 ### Soul Boundaries
 
@@ -42,13 +43,15 @@ The soul prompt should emphasize:
 
 ### Phase 1
 
-Keep the new faculty isolated and callable by tests and any future standalone adapter. Do not partially mix it into the old quest toolchain.
+Keep Questlog isolated and callable by tests and any future standalone adapter.
+Do not partially mix it into the old quest toolchain.
 
 ### Phase 2
 
-Build a dedicated quest tool adapter that maps each quest-soul tool directly onto faculty operations with minimal translation:
+Build a dedicated quest tool adapter that maps each quest-soul tool directly
+onto Questlog operations with minimal translation:
 
-- tool parameters should mirror faculty operations closely
+- tool parameters should mirror Questlog operations closely
 - tool descriptions should encode the correct intent boundaries
 - read tools should surface available, overdue, scheduled, deferred, and rumor-output views directly
 
@@ -69,4 +72,4 @@ Only after the dedicated soul proves reliable should any ecosystem-specific conc
 - autonomous embark behavior
 - reward redemption effects
 
-Those concerns should sit above the faculty boundary, never inside it.
+Those concerns should sit above the Questlog boundary, never inside it.
