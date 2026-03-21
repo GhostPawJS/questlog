@@ -18,7 +18,10 @@ Operators often need to distinguish between:
 
 Unlocks exist for the third case only. They let Questlog derive blocked vs
 available work automatically instead of relying on people to remember invisible
-dependencies.
+dependencies. That explicitness matters because dependency complexity is one of
+the recurring failure modes highlighted in Microsoft's
+[CORPGEN](https://www.microsoft.com/en-us/research/publication/corpgen-simulating-corporate-environments-with-autonomous-digital-employees-in-multi-horizon-task-environments/)
+work on agents operating across concurrent tasks.
 
 ## How To Use Them
 

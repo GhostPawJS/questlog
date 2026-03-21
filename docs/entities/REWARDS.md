@@ -18,6 +18,17 @@ Rewards are separate from quest state because:
 - claiming a reward can be a separate event from finishing the quest
 - recurring work needs future reward defaults without rewriting historical quests
 
+Questlog keeps rewards descriptive and secondary on purpose. The work itself
+remains primary, because the
+[overjustification effect](https://psycnet.apa.org/record/1999-01567-001) is
+real: if the reward layer becomes the meaning of the task, it can distort the
+motivation the task already had. The older research also pointed in a useful
+direction here: [variable-ratio reward schedules are unusually resistant to
+habituation](https://netpsychology.org/loot-boxes-and-addiction-why-we-love-and-fear-randomness-in-games/)
+and [learning can depend more on reward spacing than raw reward frequency](http://www.nature.com/articles/s41593-026-02206-2),
+which is another reason not to treat every quest as if it must pay out the same
+thing every time.
+
 ## How To Use Them
 
 Use rewards when the operator wants to say:

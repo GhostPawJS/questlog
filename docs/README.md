@@ -23,6 +23,27 @@ concepts:
 The schema is implemented in code, while the human meaning of the model lives in
 these docs.
 
+## Why This Model Exists
+
+Questlog exists because agents and humans both pay a cost when commitments are
+split across separate tools and mental buckets. Microsoft's
+[CORPGEN](https://www.microsoft.com/en-us/research/publication/corpgen-simulating-corporate-environments-with-autonomous-digital-employees-in-multi-horizon-task-environments/)
+calls out context saturation, memory interference, dependency complexity, and
+reprioritization overhead as recurring failure modes in multi-horizon work, and
+people using separate calendar and task tools lose
+[roughly six hours a week to context switching](https://akiflow.com/blog/calendar-task-management-integration-productivity),
+with average refocus times of about 23 minutes after interruptions.
+
+The answer here is not "more views." It is one coherent temporal model. That is
+why concrete quests can carry due dates, defer dates, scheduled windows, and
+recurrence context without becoming separate object types, and why Questlog
+refuses the common trap where
+[tasks are forced into calendar slots they do not deserve](https://paperlessmovement.com/articles/the-calendar-trap-why-your-task-management-system-needs-a-complete-overhaul).
+Time-anchored structured records also change what an agent can actually reason
+about: recent work on temporal knowledge graphs reports
+[94.8% deep-memory retrieval accuracy and an 18.5% temporal-reasoning improvement](https://arxiv.org/html/2501.13956v1)
+when facts are anchored in time instead of left as loose text.
+
 ## Entity Manuals
 
 These concept-level manuals live under `docs/entities/`:
@@ -57,6 +78,13 @@ Use the model in this order:
 - If a quest cannot be worked until another concrete quest succeeds, model that with unlocks.
 - If an operator wants classification or reporting, use tags.
 - If an operator wants descriptive recognition for completed work, use rewards.
+
+The model is intentionally strict about this separation because LLMs are
+notoriously unreliable at temporal reasoning without structured help; recent
+benchmarks report only
+[34.5% accuracy without tools and 95.31% with tool augmentation](https://arxiv.org/abs/2511.09993).
+Questlog gives that structure a stable home in SQLite instead of pushing the
+whole burden back into prompts and memory.
 
 ## Lifecycle Truth
 
@@ -187,6 +215,12 @@ Behavioral notes:
 - snippets come from indexed text, not from a separate cache
 - search is currently cross-entity only for `rumors` and `quests`
 
+That matters beyond lookup convenience. Research on
+[autonomous task scheduling for agents](https://zylos.ai/research/2026-02-16-autonomous-task-scheduling-ai-agents)
+keeps converging on the same point: temporal triggers and cheap machine-readable
+state are foundational for proactive behavior. Search and temporal structure are
+part of the same reliability story.
+
 Repeatable quests currently support:
 
 - `FREQ=DAILY|WEEKLY|MONTHLY|YEARLY`
@@ -194,6 +228,11 @@ Repeatable quests currently support:
 - `COUNT=n`
 - `UNTIL=<parseable date>`
 - `BYDAY=...` for weekly rules
+
+Questlog uses standard recurrence syntax because
+[RFC 5545](https://tools.ietf.org/html/rfc5545) already solved the hard cases,
+and recurring-work practitioners keep reaching the same conclusion:
+[do not invent your own recurrence language](https://www.codegenes.net/blog/calendar-recurring-repeating-events-best-storage-method/).
 
 ## Code Source Of Truth
 

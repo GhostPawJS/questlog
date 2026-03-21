@@ -12,6 +12,16 @@ over time.
 
 Recurring work needs different rules from one-off work.
 
+Questlog uses standard recurrence semantics because
+[RFC 5545](https://tools.ietf.org/html/rfc5545) already captures real-world
+patterns, and practitioners keep converging on the same advice:
+[do not invent recurrence formats from scratch](https://www.codegenes.net/blog/calendar-recurring-repeating-events-best-storage-method/).
+RRULE is also [well-documented in implementation practice](https://wimonder.dev/posts/adding-recurrence-to-your-application),
+which means the system can stay interoperable and understandable without a
+Questlog-specific recurrence language.
+The separate repeatable layer also protects history by letting future defaults
+change without rewriting already spawned concrete work.
+
 `repeatable_quests` exists so operators can define:
 
 - what should recur

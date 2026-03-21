@@ -11,6 +11,15 @@ finish, abandon, defer, schedule, and measure.
 
 Questlog treats execution as a first-class thing, not just a checklist row.
 
+That is deliberate: splitting commitments across separate task and calendar
+systems creates [context-switching overhead](https://akiflow.com/blog/calendar-task-management-integration-productivity),
+including roughly six lost hours a week and refocus times around 23 minutes
+after interruptions,
+while forcing every obligation into a calendar-shaped object encourages the
+well-known [calendar trap](https://paperlessmovement.com/articles/the-calendar-trap-why-your-task-management-system-needs-a-complete-overhaul).
+`quests` is where real work gets one truthful record with optional temporal
+context instead of competing object types.
+
 `quests` exists so one record can hold:
 
 - the commitment itself

@@ -13,6 +13,17 @@ makes the child quests make sense together.
 Operators often need more than a flat task list, but they do not always need a
 full project-management system either.
 
+`questlines` exist to provide shared context and honest rollups without
+pretending every child quest is equivalent; that is the same intuition behind
+Basecamp's argument that [raw progress context is more truthful than misleading
+percent-complete abstractions](https://basecamp.com/hill-charts). Visible
+progress also changes behavior: the
+[goal-gradient effect](https://en.wikipedia.org/wiki/Goal_pursuit#Goal_gradient_effect)
+shows that effort rises as completion feels nearer,
+[endowed progress](https://doi.org/10.1086/500480) amplifies that effect, and
+even a simple progress indicator can move completion rates sharply, as in the
+[20% to 55% lift reported for LinkedIn profile completion](https://www.nirandfar.com/how-to-design-for-the-goal-gradient-effect/).
+
 `questlines` exists to give you:
 
 - one place for the shared title and description of a body of work

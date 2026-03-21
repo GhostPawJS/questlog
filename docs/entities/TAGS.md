@@ -17,6 +17,10 @@ Tags exist so operators get:
 - no duplicate active tag identities such as `Work`, `work`, and ` work `
 - clean joins for filtering and reporting
 
+Just as importantly, tags stay separate from status, dependency, and scheduling
+truth so classification can stay flexible without corrupting the operational
+meaning of the work itself.
+
 ## How To Use Them
 
 Operators usually do not manage tag rows directly.

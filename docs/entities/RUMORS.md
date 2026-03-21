@@ -13,6 +13,14 @@ signals that still need judgment.
 Most systems force the operator to turn uncertainty into tasks too early.
 Questlog does not.
 
+That matters because [making a concrete plan reduces the cognitive pull of open
+goals](https://users.wfu.edu/masicaej/MasicampoBaumeister2011JPSP.pdf), but
+[cognitive offloading is only safe when the external system is trustworthy](https://www.nature.com/articles/s44159-025-00432-2).
+`rumors` gives loose work a durable home before it deserves the weight of a
+real commitment. It is also intentionally low-pressure: people report
+[substantial anxiety around unprocessed inboxes](https://www.readless.app/blog/inbox-zero-statistics-2026),
+so intake needs to feel like capture without premature obligation.
+
 `rumors` exists so you can capture incoming work without pretending you already
 know:
 
