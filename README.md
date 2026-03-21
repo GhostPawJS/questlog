@@ -221,6 +221,12 @@ npm run build       # ESM + CJS + declarations via tsup
 
 The repo is pinned to **Node 24.14.0** via `.nvmrc` / `.node-version` / `.tool-versions` / `mise.toml` / Volta. Use whichever version manager you prefer.
 
-## License
+### Support
 
-MIT
+If this package helps your project, consider sponsoring its maintenance:
+
+[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-EA4AAA?style=for-the-badge&logo=github&logoColor=white)](https://github.com/sponsors/Anonyfox)
+
+---
+
+**[Anonyfox](https://anonyfox.com) • [MIT License](LICENSE)**

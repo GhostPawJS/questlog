@@ -1,7 +1,7 @@
 {
 	"name": "@ghostpaw/questlog",
 	"version": "0.0.0",
-	"description": "Unified task and calendar model for Node.js — quests, questlines, recurring commitments, and intake in SQLite, with a built-in LLM tool facade",
+	"description": "Unified task and calendar model for Node.js — SQLite, zero dependencies, with a built-in LLM tool facade",
 	"type": "module",
 	"exports": {
 		".": {
@@ -46,11 +46,19 @@
 	"keywords": [
 		"quest",
 		"task",
+		"todo",
 		"calendar",
 		"sqlite",
 		"rpg",
 		"productivity",
-		"node"
+		"llm",
+		"ai",
+		"agent",
+		"tools",
+		"rrule",
+		"recurrence",
+		"typescript",
+		"zero-dependencies"
 	],
 	"license": "MIT",
 	"repository": {
