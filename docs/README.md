@@ -296,6 +296,7 @@ Read those files when you need exact table shape, constraints, or index detail.
 
 ## Supplemental Docs
 
+- `USAGE.md`: end-to-end practical manager playbook
 - `SOUL.md`: future quest-soul integration notes
 - `RESEARCH.md`: broader design and rationale background
 
