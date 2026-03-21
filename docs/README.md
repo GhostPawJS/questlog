@@ -300,7 +300,6 @@ Read those files when you need exact table shape, constraints, or index detail.
 - `USAGE.md`: end-to-end practical manager playbook
 - `SOUL.md`: future quest-soul integration notes
 - `TOOLS.md`: guidance for designing LLM-facing tools well, including schema, clarification, and recovery contracts
-- `TOOL_SURFACE.md`: Questlog's runtime-ready LLM tool facade, including registry helpers and compact-vs-full detail behavior
 - `RESEARCH.md`: broader design and rationale background
 
 ## Quality Bar

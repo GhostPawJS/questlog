@@ -1,6 +1,5 @@
 import { deepStrictEqual, ok, strictEqual } from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { questlogToolMappings } from './tool_mapping.ts';
 import {
 	getQuestlogToolByName,
 	listQuestlogToolDefinitions,
@@ -57,30 +56,5 @@ describe('tool registry', () => {
 			'reward_work',
 			'retire_work',
 		]);
-	});
-
-	it('exposes a public-api reconciliation matrix', () => {
-		ok(questlogToolMappings.length >= 49);
-		ok(
-			questlogToolMappings.some(
-				(mapping) => mapping.source === 'searchQuestlog' && mapping.tool === 'search_questlog',
-			),
-		);
-		ok(
-			questlogToolMappings.some(
-				(mapping) =>
-					mapping.source === 'abandonQuestAndSpawnFollowups' &&
-					mapping.tool === 'run_quest' &&
-					mapping.action === 'abandon_and_spawn_followups',
-			),
-		);
-		ok(
-			questlogToolMappings.some(
-				(mapping) =>
-					mapping.source === 'softDeleteRepeatableQuest' &&
-					mapping.tool === 'retire_work' &&
-					mapping.notes?.includes('Canonical hide path'),
-			),
-		);
 	});
 });
