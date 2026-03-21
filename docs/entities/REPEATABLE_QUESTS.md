@@ -41,11 +41,11 @@ Create a repeatable quest when the operator wants to say:
 
 Typical flow:
 
-1. `createRepeatableQuest()` with title, objective, RRULE, and timing offsets.
-2. Periodically call `spawnDueRepeatableQuests()`.
+1. `write.createRepeatableQuest()` with title, objective, RRULE, and timing offsets.
+2. Periodically call `write.spawnDueRepeatableQuests()`.
 3. Work the resulting concrete quests as normal.
-4. `updateRepeatableQuest()` when future occurrences should change.
-5. `archiveRepeatableQuest()` when the series should stop generating new work.
+4. `write.updateRepeatableQuest()` when future occurrences should change.
+5. `write.archiveRepeatableQuest()` when the series should stop generating new work.
 
 ## Good Uses
 
@@ -84,12 +84,12 @@ the spawned quest uses the normal quest marker rules instead.
 
 ### Writes
 
-- `createRepeatableQuest(db, input)`: define a new recurring quest template.
-- `updateRepeatableQuest(db, repeatableQuestId, input)`: change future materialization behavior.
-- `archiveRepeatableQuest(db, repeatableQuestId, archivedAt?)`: stop future spawning without deleting history.
-- `spawnDueRepeatableQuests(db, now)`: materialize due recurring anchors into concrete quests.
-- `softDeleteRepeatableQuest(db, repeatableQuestId, deletedAt?)`: hide a repeatable definition from normal active reads.
+- `write.createRepeatableQuest(db, input)`: define a new recurring quest template.
+- `write.updateRepeatableQuest(db, repeatableQuestId, input)`: change future materialization behavior.
+- `write.archiveRepeatableQuest(db, repeatableQuestId, archivedAt?)`: stop future spawning without deleting history.
+- `write.spawnDueRepeatableQuests(db, now)`: materialize due recurring anchors into concrete quests.
+- `write.softDeleteRepeatableQuest(db, repeatableQuestId, deletedAt?)`: hide a repeatable definition from normal active reads.
 
 ### Reads
 
-- `listDueRepeatableQuestAnchors(db, now)`: preview which recurring anchors are currently due to spawn.
+- `read.listDueRepeatableQuestAnchors(db, now)`: preview which recurring anchors are currently due to spawn.

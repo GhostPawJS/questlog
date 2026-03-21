@@ -3,7 +3,7 @@
 This document is for people using Questlog directly in code.
 
 It assumes a human developer or operator is working with the low-level public
-API surface in `src/index.ts`, `src/read.ts`, and `src/write.ts`.
+API surface exposed at the package root through `read` and `write`.
 
 If you are wiring Questlog into an agent or LLM harness, read `LLM.md` instead.
 That document covers the soul, tools, and skills layers. This document is about
@@ -42,22 +42,22 @@ If those boundaries blur, the system becomes noisy and harder to trust.
 
 ## Which API Surface To Use
 
-Human-facing direct usage usually comes from:
+Human-facing direct usage usually looks like:
 
-- `src/index.ts` for the public package surface
-- `src/read.ts` for read-oriented calls
-- `src/write.ts` for write-oriented calls
+```ts
+import { read, write } from '@ghostpaw/questlog';
+```
 
 This document uses those low-level domain calls directly:
 
-- `captureRumor()`
-- `settleRumor()`
-- `createQuest()`
-- `planQuestTime()`
-- `addUnlock()`
-- `listAvailableQuests()`
-- `startQuest()`
-- `finishQuest()`
+- `write.captureRumor()`
+- `write.settleRumor()`
+- `write.createQuest()`
+- `write.planQuestTime()`
+- `write.addUnlock()`
+- `read.listAvailableQuests()`
+- `write.startQuest()`
+- `write.finishQuest()`
 - and the rest of the normal public API
 
 That makes the examples useful for application code, scripts, backends, CLIs,
@@ -99,7 +99,7 @@ Examples:
 Use:
 
 ```ts
-captureRumor(db, {
+write.captureRumor(db, {
   title: 'Legal says the vendor terms changed',
   details: 'Need to understand pricing delta and termination language.',
 });
@@ -107,10 +107,10 @@ captureRumor(db, {
 
 Other intake actions:
 
-- `listRumors(db)` to review the open intake pool
-- `getRumorDetail(db, rumorId)` to inspect one rumor plus any outputs it later produced
-- `dismissRumor(db, rumorId, dismissedAt?)` when the signal should not become work
-- `reopenRumor(db, rumorId, now?)` when a dismissed signal becomes relevant again
+- `read.listRumors(db)` to review the open intake pool
+- `read.getRumorDetail(db, rumorId)` to inspect one rumor plus any outputs it later produced
+- `write.dismissRumor(db, rumorId, dismissedAt?)` when the signal should not become work
+- `write.reopenRumor(db, rumorId, now?)` when a dismissed signal becomes relevant again
 
 Human habit:
 
@@ -128,7 +128,7 @@ If launch readiness clearly requires several concrete actions, create a
 questline and its child quests together:
 
 ```ts
-settleRumor(db, launchRumorId, {
+write.settleRumor(db, launchRumorId, {
   settledAt: now,
   questline: {
     title: 'Spring Launch',
@@ -146,7 +146,7 @@ settleRumor(db, launchRumorId, {
 ### Vendor Renewal
 
 ```ts
-settleRumor(db, vendorRumorId, {
+write.settleRumor(db, vendorRumorId, {
   settledAt: now,
   questline: {
     title: 'Vendor Renewal',
@@ -163,7 +163,7 @@ settleRumor(db, vendorRumorId, {
 ### Hiring Loop
 
 ```ts
-settleRumor(db, hiringRumorId, {
+write.settleRumor(db, hiringRumorId, {
   settledAt: now,
   questline: {
     title: 'Senior Designer Hiring',
@@ -180,14 +180,14 @@ settleRumor(db, hiringRumorId, {
 If the work is already clear and does not come from intake, create structure
 directly:
 
-- `createQuestline(db, input)`
-- `createQuest(db, input)`
+- `write.createQuestline(db, input)`
+- `write.createQuest(db, input)`
 
 ## 3. Shape Time Explicitly
 
 Once concrete quests exist, add timing truth.
 
-Use `planQuestTime(db, questId, input)` for:
+Use `write.planQuestTime(db, questId, input)` for:
 
 - `notBeforeAt` when work should not become actionable yet
 - `dueAt` when work has a real completion boundary
@@ -196,7 +196,7 @@ Use `planQuestTime(db, questId, input)` for:
 Example:
 
 ```ts
-planQuestTime(db, questId, {
+write.planQuestTime(db, questId, {
   dueAt: friday5pm,
   scheduledStartAt: thursday2pm,
   scheduledEndAt: thursday3pm,
@@ -220,19 +220,19 @@ Example:
 Use:
 
 ```ts
-addUnlock(db, reviewPricingQuestId, financeApprovalQuestId, now);
+write.addUnlock(db, reviewPricingQuestId, financeApprovalQuestId, now);
 ```
 
 Other dependency actions:
 
-- `removeUnlock(db, fromQuestId, toQuestId, now?)`
-- `replaceUnlocks(db, toQuestId, fromQuestIds, now?)`
+- `write.removeUnlock(db, fromQuestId, toQuestId, now?)`
+- `write.replaceUnlocks(db, toQuestId, fromQuestIds, now?)`
 
 Human habit:
 
 - use unlocks only for true gating
 - do not use them for soft preferred order
-- let `listAvailableQuests()` and `listBlockedQuests()` surface the operational effect
+- let `read.listAvailableQuests()` and `read.listBlockedQuests()` surface the operational effect
 
 ## 5. Run Recurring Rhythms With Repeatables
 
@@ -248,7 +248,7 @@ Good repeatable examples:
 Create them once:
 
 ```ts
-createRepeatableQuest(db, {
+write.createRepeatableQuest(db, {
   title: 'Weekly executive update',
   objective: 'Prepare and send the weekly executive update.',
   rrule: 'FREQ=WEEKLY;BYDAY=FR',
@@ -261,15 +261,15 @@ createRepeatableQuest(db, {
 Then operate them in two steps:
 
 ```ts
-listDueRepeatableQuestAnchors(db, now);
-spawnDueRepeatableQuests(db, now);
+read.listDueRepeatableQuestAnchors(db, now);
+write.spawnDueRepeatableQuests(db, now);
 ```
 
 Human habit:
 
 - keep the template stable when the rhythm is stable
-- update future behavior with `updateRepeatableQuest(db, repeatableQuestId, input)`
-- stop new occurrences with `archiveRepeatableQuest(db, repeatableQuestId, archivedAt?)`
+- update future behavior with `write.updateRepeatableQuest(db, repeatableQuestId, input)`
+- stop new occurrences with `write.archiveRepeatableQuest(db, repeatableQuestId, archivedAt?)`
 
 ## 6. Tag For Cross-Cutting Views
 
@@ -286,10 +286,10 @@ Examples:
 
 Useful calls:
 
-- `tagQuest(db, questId, tagName, now?)`
-- `untagQuest(db, questId, tagName, now?)`
-- `replaceQuestTags(db, questId, tagNames, now?)`
-- `replaceRepeatableQuestTags(db, repeatableQuestId, tagNames, now?)`
+- `write.tagQuest(db, questId, tagName, now?)`
+- `write.untagQuest(db, questId, tagName, now?)`
+- `write.replaceQuestTags(db, questId, tagNames, now?)`
+- `write.replaceRepeatableQuestTags(db, repeatableQuestId, tagNames, now?)`
 
 Human habit:
 
@@ -302,18 +302,18 @@ A disciplined human operator should drive the day from derived views.
 
 Core operational reads:
 
-- `listAvailableQuests(db, filters?, now?)`
-- `listBlockedQuests(db, filters?, now?)`
-- `listDeferredQuests(db, filters?, now?)`
-- `listInProgressQuests(db, filters?, now?)`
-- `listDueSoonQuests(db, horizonMs, filters?, now?)`
-- `listScheduledNow(db, filters?, now?)`
-- `listMissedScheduledQuests(db, filters?, now?)`
-- `listResolvedQuests(db, filters?, now?)`
-- `getQuestDetail(db, questId, now?)`
-- `listQuestlines(db, now?)`
-- `getQuestlineDetail(db, questlineId, now?)`
-- `searchQuestlog(db, query)`
+- `read.listAvailableQuests(db, filters?, now?)`
+- `read.listBlockedQuests(db, filters?, now?)`
+- `read.listDeferredQuests(db, filters?, now?)`
+- `read.listInProgressQuests(db, filters?, now?)`
+- `read.listDueSoonQuests(db, horizonMs, filters?, now?)`
+- `read.listScheduledNow(db, filters?, now?)`
+- `read.listMissedScheduledQuests(db, filters?, now?)`
+- `read.listResolvedQuests(db, filters?, now?)`
+- `read.getQuestDetail(db, questId, now?)`
+- `read.listQuestlines(db, now?)`
+- `read.getQuestlineDetail(db, questlineId, now?)`
+- `read.searchQuestlog(db, query)`
 
 Interpretation:
 
@@ -331,32 +331,32 @@ Interpretation:
 Once someone is actually doing the work:
 
 ```ts
-startQuest(db, questId, startedAt);
-logQuestEffort(db, questId, 1800, now);
+write.startQuest(db, questId, startedAt);
+write.logQuestEffort(db, questId, 1800, now);
 ```
 
 If the objective is still mutable and the work has not really started yet:
 
 ```ts
-reviseQuestObjective(db, questId, 'Updated concrete objective', now);
+write.reviseQuestObjective(db, questId, 'Updated concrete objective', now);
 ```
 
 When the work resolves:
 
 ```ts
-finishQuest(db, questId, 'Scope frozen and signed off.', resolvedAt);
+write.finishQuest(db, questId, 'Scope frozen and signed off.', resolvedAt);
 ```
 
 If the work fails or should stop:
 
 ```ts
-abandonQuest(db, questId, 'Renewal deferred to next quarter.', resolvedAt);
+write.abandonQuest(db, questId, 'Renewal deferred to next quarter.', resolvedAt);
 ```
 
 If abandoning the work should immediately create successor actions:
 
 ```ts
-abandonQuestAndSpawnFollowups(db, questId, 'Current plan is no longer viable.', [
+write.abandonQuestAndSpawnFollowups(db, questId, 'Current plan is no longer viable.', [
   { title: 'Find interim vendor option', objective: 'Identify short-term fallback.' },
   { title: 'Re-scope budget request', objective: 'Prepare revised budget path.' },
 ], resolvedAt);
@@ -364,9 +364,9 @@ abandonQuestAndSpawnFollowups(db, questId, 'Current plan is no longer viable.', 
 
 Human habit:
 
-- use `startQuest()` when execution truly begins, not when planning starts
-- use `finishQuest()` for successful terminal truth
-- use `abandonQuest()` when reality changed
+- use `write.startQuest()` when execution truly begins, not when planning starts
+- use `write.finishQuest()` for successful terminal truth
+- use `write.abandonQuest()` when reality changed
 - use follow-up spawning when failure naturally creates the next actions
 
 ## 9. Use Rewards For Earned Outcomes
@@ -382,11 +382,11 @@ Examples:
 
 Useful calls:
 
-- `addQuestReward(db, questId, input)`
-- `updateQuestReward(db, rewardId, input)`
-- `removeQuestReward(db, rewardId, now?)`
-- `claimQuestReward(db, rewardId, claimedAt?)`
-- `replaceRepeatableQuestRewards(db, repeatableQuestId, rewards, now?)`
+- `write.addQuestReward(db, questId, input)`
+- `write.updateQuestReward(db, rewardId, input)`
+- `write.removeQuestReward(db, rewardId, now?)`
+- `write.claimQuestReward(db, rewardId, claimedAt?)`
+- `write.replaceRepeatableQuestRewards(db, repeatableQuestId, rewards, now?)`
 
 Human habit:
 
@@ -400,7 +400,7 @@ Human habit:
 
 Review intake:
 
-- `listRumors(db)`
+- `read.listRumors(db)`
 
 Settle the rumors that are now clearly real:
 
@@ -410,16 +410,16 @@ Settle the rumors that are now clearly real:
 
 Then inspect:
 
-- `listAvailableQuests(db, {}, now)`
-- `listBlockedQuests(db, {}, now)`
-- `listDueSoonQuests(db, threeDaysMs, {}, now)`
+- `read.listAvailableQuests(db, {}, now)`
+- `read.listBlockedQuests(db, {}, now)`
+- `read.listDueSoonQuests(db, threeDaysMs, {}, now)`
 
 ### Wednesday
 
 Materialize recurring management rhythms:
 
-- `listDueRepeatableQuestAnchors(db, now)`
-- `spawnDueRepeatableQuests(db, now)`
+- `read.listDueRepeatableQuestAnchors(db, now)`
+- `write.spawnDueRepeatableQuests(db, now)`
 
 Then work the spawned concrete quests like any other quest.
 
@@ -427,14 +427,14 @@ Then work the spawned concrete quests like any other quest.
 
 Review the week:
 
-- `listResolvedQuests(db, {}, now)`
-- `listQuestlines(db, now)`
-- `getQuestlineDetail(db, questlineId, now)`
+- `read.listResolvedQuests(db, {}, now)`
+- `read.listQuestlines(db, now)`
+- `read.getQuestlineDetail(db, questlineId, now)`
 
 Close loops:
 
 - claim rewards that were actually earned
-- archive finished arcs with `archiveQuestline(db, questlineId, archivedAt?)`
+- archive finished arcs with `write.archiveQuestline(db, questlineId, archivedAt?)`
 - dismiss intake that proved irrelevant
 
 ## What Good Human Usage Looks Like

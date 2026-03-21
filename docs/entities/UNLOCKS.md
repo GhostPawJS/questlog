@@ -34,7 +34,7 @@ Use unlocks when the operator means:
 Typical flow:
 
 1. Create the concrete quests first.
-2. Add the prerequisite edges with `addUnlock()` or `replaceUnlocks()`.
+2. Add the prerequisite edges with `write.addUnlock()` or `write.replaceUnlocks()`.
 3. Let Questlog derive blocked and available states.
 4. Remove the edge if the dependency was temporary or mistaken.
 
@@ -66,11 +66,11 @@ property of work someone could actually do right now.
 
 ### Writes
 
-- `addUnlock(db, fromQuestId, toQuestId, now?)`: add one hard prerequisite edge.
-- `removeUnlock(db, fromQuestId, toQuestId, now?)`: remove one prerequisite edge.
-- `replaceUnlocks(db, toQuestId, fromQuestIds, now?)`: replace the full blocker set for a target quest.
+- `write.addUnlock(db, fromQuestId, toQuestId, now?)`: add one hard prerequisite edge.
+- `write.removeUnlock(db, fromQuestId, toQuestId, now?)`: remove one prerequisite edge.
+- `write.replaceUnlocks(db, toQuestId, fromQuestIds, now?)`: replace the full blocker set for a target quest.
 
 ### Reads
 
 - There is no dedicated unlock read surface.
-- Use quest views such as `listAvailableQuests()` and `listBlockedQuests()` to see unlock effects operationally.
+- Use quest views such as `read.listAvailableQuests()` and `read.listBlockedQuests()` to see unlock effects operationally.

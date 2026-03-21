@@ -39,11 +39,11 @@ Create a quest when the operator wants to say:
 
 Typical flow:
 
-1. `createQuest()` directly or through `settleRumor()` or recurrence spawning.
-2. `planQuestTime()` to set not-before, due, or scheduled windows.
-3. `startQuest()` when execution truly begins.
-4. `logQuestEffort()` as work happens.
-5. `finishQuest()` or `abandonQuest()` when the work resolves.
+1. `write.createQuest()` directly or through `write.settleRumor()` or recurrence spawning.
+2. `write.planQuestTime()` to set not-before, due, or scheduled windows.
+3. `write.startQuest()` when execution truly begins.
+4. `write.logQuestEffort()` as work happens.
+5. `write.finishQuest()` or `write.abandonQuest()` when the work resolves.
 
 ## Good Uses
 
@@ -99,28 +99,28 @@ rewards already claimed, does not keep the yellow `?`.
 
 ### Writes
 
-- `createQuest(db, input)`: create one concrete quest.
-- `reviseQuestObjective(db, questId, objective, now?)`: edit the objective before actual start.
-- `planQuestTime(db, questId, input)`: set or change due, defer, and schedule fields.
-- `startQuest(db, questId, startedAt?)`: begin execution.
-- `logQuestEffort(db, questId, effortSeconds, now?)`: add effort after start.
-- `finishQuest(db, questId, outcome, resolvedAt?)`: resolve successfully.
-- `abandonQuest(db, questId, outcome, resolvedAt?)`: resolve unsuccessfully.
-- `abandonQuestAndSpawnFollowups(db, questId, outcome, followups, resolvedAt?)`: abandon and create successor quests atomically.
-- `softDeleteQuest(db, questId, deletedAt?)`: hide a quest from normal active reads.
+- `write.createQuest(db, input)`: create one concrete quest.
+- `write.reviseQuestObjective(db, questId, objective, now?)`: edit the objective before actual start.
+- `write.planQuestTime(db, questId, input)`: set or change due, defer, and schedule fields.
+- `write.startQuest(db, questId, startedAt?)`: begin execution.
+- `write.logQuestEffort(db, questId, effortSeconds, now?)`: add effort after start.
+- `write.finishQuest(db, questId, outcome, resolvedAt?)`: resolve successfully.
+- `write.abandonQuest(db, questId, outcome, resolvedAt?)`: resolve unsuccessfully.
+- `write.abandonQuestAndSpawnFollowups(db, questId, outcome, followups, resolvedAt?)`: abandon and create successor quests atomically.
+- `write.softDeleteQuest(db, questId, deletedAt?)`: hide a quest from normal active reads.
 
 ### Reads
 
-- `getQuestDetail(db, questId, now?)`: load one quest with derived state and related detail.
-- `listOpenQuests(db, filters?, now?)`: list unresolved quests that have not started.
-- `listInProgressQuests(db, filters?, now?)`: list started but unresolved quests.
-- `listActiveQuests(db, filters?, now?)`: list unresolved quests whether open or in progress.
-- `listAvailableQuests(db, filters?, now?)`: list unresolved quests currently available to work on.
-- `listBlockedQuests(db, filters?, now?)`: list unresolved quests blocked by unlocks.
-- `listDeferredQuests(db, filters?, now?)`: list unresolved quests deferred into the future.
-- `listResolvedQuests(db, filters?, now?)`: list finished or abandoned quests.
-- `listOverdueQuests(db, filters?, now?)`: list unresolved quests past their effective due date.
-- `listDueSoonQuests(db, horizonMs, filters?, now?)`: list unresolved quests due within a near horizon.
-- `listScheduledForDay(db, dayStart, dayEnd, filters?, now?)`: list quests whose schedule overlaps a day window.
-- `listScheduledNow(db, filters?, now?)`: list quests scheduled right now.
-- `listMissedScheduledQuests(db, filters?, now?)`: list unresolved quests whose scheduled window has already passed.
+- `read.getQuestDetail(db, questId, now?)`: load one quest with derived state and related detail.
+- `read.listOpenQuests(db, filters?, now?)`: list unresolved quests that have not started.
+- `read.listInProgressQuests(db, filters?, now?)`: list started but unresolved quests.
+- `read.listActiveQuests(db, filters?, now?)`: list unresolved quests whether open or in progress.
+- `read.listAvailableQuests(db, filters?, now?)`: list unresolved quests currently available to work on.
+- `read.listBlockedQuests(db, filters?, now?)`: list unresolved quests blocked by unlocks.
+- `read.listDeferredQuests(db, filters?, now?)`: list unresolved quests deferred into the future.
+- `read.listResolvedQuests(db, filters?, now?)`: list finished or abandoned quests.
+- `read.listOverdueQuests(db, filters?, now?)`: list unresolved quests past their effective due date.
+- `read.listDueSoonQuests(db, horizonMs, filters?, now?)`: list unresolved quests due within a near horizon.
+- `read.listScheduledForDay(db, dayStart, dayEnd, filters?, now?)`: list quests whose schedule overlaps a day window.
+- `read.listScheduledNow(db, filters?, now?)`: list quests scheduled right now.
+- `read.listMissedScheduledQuests(db, filters?, now?)`: list unresolved quests whose scheduled window has already passed.

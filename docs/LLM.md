@@ -27,8 +27,11 @@ The AI-facing runtime surfaces are all exported directly from the library:
 - `src/tools/`: action surface
 - `src/skills/`: reusable workflow guidance
 
-These are also re-exported from the package root so an adapter can load them
-without scraping docs or comments.
+At the package root, they are grouped as sibling namespaces:
+
+```ts
+import { skills, soul, tools } from '@ghostpaw/questlog';
+```
 
 ## Soul
 
@@ -38,12 +41,12 @@ It does not define what the model can do. It defines how the model should see
 the domain, which boundaries it should protect, and what kind of judgment it
 should apply before touching state.
 
-Questlog exports this foundation from `src/soul.ts`:
+Questlog exports this foundation through the root `soul` namespace:
 
-- `questlogSoul`
-- `questlogSoulEssence`
-- `questlogSoulTraits`
-- `renderQuestlogSoulPromptFoundation()`
+- `soul.questlogSoul`
+- `soul.questlogSoulEssence`
+- `soul.questlogSoulTraits`
+- `soul.renderQuestlogSoulPromptFoundation()`
 
 The runtime soul shape is:
 
@@ -116,14 +119,15 @@ interface QuestlogToolDefinition<TInput, TResult> {
 }
 ```
 
-The canonical registry lives in `src/tools/tool_registry.ts` and is exported as:
+The canonical registry lives in `src/tools/tool_registry.ts` and is surfaced at
+the package root through `tools`:
 
-- `questlogTools`
-- `listQuestlogToolDefinitions()`
-- `getQuestlogToolByName()`
+- `tools.questlogTools`
+- `tools.listQuestlogToolDefinitions()`
+- `tools.getQuestlogToolByName()`
 
 The public API reconciliation table is exported from `src/tools/tool_mapping.ts`
-as `questlogToolMappings`.
+as `tools.questlogToolMappings`.
 
 The tool layer is designed to make four things cheap for the model:
 
@@ -209,13 +213,13 @@ The skill `content` references the tool facade directly and teaches:
 - how to interpret outcomes
 - how to handle clarifications, no-ops, and failures
 
-The registry lives in `src/skills/skill_registry.ts` and is exported through
-`src/skills/index.ts` as:
+The registry lives in `src/skills/skill_registry.ts` and is surfaced at the
+package root through `skills`:
 
-- `questlogSkills`
-- `listQuestlogSkills()`
-- `getQuestlogSkillByName()`
-- `defineQuestlogSkill()`
+- `skills.questlogSkills`
+- `skills.listQuestlogSkills()`
+- `skills.getQuestlogSkillByName()`
+- `skills.defineQuestlogSkill()`
 
 Questlog currently ships the following built-in skills:
 

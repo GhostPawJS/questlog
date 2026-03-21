@@ -41,7 +41,7 @@ Create a questline when the operator wants to say:
 
 Typical flow:
 
-1. `createQuestline()` directly, or create one during `settleRumor()`.
+1. `write.createQuestline()` directly, or create one during `write.settleRumor()`.
 2. Add or move quests into it.
 3. Update the title, description, or shared timing as the arc becomes clearer.
 4. Archive it when the grouping is no longer active but still worth preserving.
@@ -72,14 +72,14 @@ blocks another, use `quest_unlocks`.
 
 ### Writes
 
-- `createQuestline(db, input)`: create a new questline.
-- `updateQuestline(db, questlineId, input)`: change title, description, or timing.
-- `archiveQuestline(db, questlineId, archivedAt?)`: stop treating a questline as active.
-- `moveQuestToQuestline(db, questId, questlineId, now?)`: attach a quest to a questline.
-- `detachQuestFromQuestline(db, questId, now?)`: remove a quest from its questline.
-- `softDeleteQuestline(db, questlineId, deletedAt?)`: hide a questline from normal active reads.
+- `write.createQuestline(db, input)`: create a new questline.
+- `write.updateQuestline(db, questlineId, input)`: change title, description, or timing.
+- `write.archiveQuestline(db, questlineId, archivedAt?)`: stop treating a questline as active.
+- `write.moveQuestToQuestline(db, questId, questlineId, now?)`: attach a quest to a questline.
+- `write.detachQuestFromQuestline(db, questId, now?)`: remove a quest from its questline.
+- `write.softDeleteQuestline(db, questlineId, deletedAt?)`: hide a questline from normal active reads.
 
 ### Reads
 
-- `getQuestlineDetail(db, questlineId, now?)`: load one questline with rollup stats.
-- `listQuestlines(db, now?)`: list active questlines with aggregate progress.
+- `read.getQuestlineDetail(db, questlineId, now?)`: load one questline with rollup stats.
+- `read.listQuestlines(db, now?)`: list active questlines with aggregate progress.

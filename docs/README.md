@@ -162,7 +162,7 @@ at-a-glance action state matters:
 - `rumors`
 - quest detail and quest list reads
 - repeatable due-anchor reads
-- `searchQuestlog()`
+- `read.searchQuestlog()`
 
 The rules are strict:
 
@@ -206,11 +206,11 @@ That keeps system truth aligned with what actually happened.
 ## Public Surface
 
 - `initQuestlogTables(db)`: initialize the full schema
-- `src/index.ts`: full public surface
-- `src/read.ts`: read-only surface
-- `src/write.ts`: write-only surface
+- package root namespaces: `read`, `write`, `tools`, `skills`, `soul`, `markers`
+- `read.*`: read-oriented direct-code surface
+- `write.*`: write-oriented direct-code surface
 - `src/tools/index.ts`: additive LLM-oriented tool facade with runtime metadata, JSON-Schema-compatible input schemas, and adapter helpers
-- `searchQuestlog(db, query)`: cross-entity full-text search
+- `read.searchQuestlog(db, query)`: cross-entity full-text search
 
 If you need exact public calls for a specific concept, use the corresponding
 entity manual.
@@ -234,7 +234,7 @@ Under the hood:
 
 The public cross-entity search call is:
 
-- `searchQuestlog(db, query)`
+- `read.searchQuestlog(db, query)`
 
 The result shape is intentionally narrow:
 

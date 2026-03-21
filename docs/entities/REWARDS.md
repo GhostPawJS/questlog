@@ -79,13 +79,13 @@ rewriting rewards that were already attached to past spawned quests.
 
 ### Writes
 
-- `addQuestReward(db, questId, input)`: attach one reward to a concrete quest.
-- `updateQuestReward(db, rewardId, input)`: change an unclaimed concrete reward.
-- `removeQuestReward(db, rewardId, now?)`: soft-delete an unclaimed concrete reward.
-- `claimQuestReward(db, rewardId, claimedAt?)`: claim a concrete reward after successful completion.
-- `replaceRepeatableQuestRewards(db, repeatableQuestId, rewards, now?)`: replace the future reward template set for a recurring quest.
+- `write.addQuestReward(db, questId, input)`: attach one reward to a concrete quest.
+- `write.updateQuestReward(db, rewardId, input)`: change an unclaimed concrete reward.
+- `write.removeQuestReward(db, rewardId, now?)`: soft-delete an unclaimed concrete reward.
+- `write.claimQuestReward(db, rewardId, claimedAt?)`: claim a concrete reward after successful completion.
+- `write.replaceRepeatableQuestRewards(db, repeatableQuestId, rewards, now?)`: replace the future reward template set for a recurring quest.
 
 ### Reads
 
 - There is no dedicated reward read surface.
-- Rewards are surfaced through richer quest reads such as `getQuestDetail()`.
+- Rewards are surfaced through richer quest reads such as `read.getQuestDetail()`.

@@ -27,9 +27,9 @@ Operators usually do not manage tag rows directly.
 
 Instead, tags are created implicitly when you call:
 
-- `replaceQuestTags()`
-- `tagQuest()`
-- `replaceRepeatableQuestTags()`
+- `write.replaceQuestTags()`
+- `write.tagQuest()`
+- `write.replaceRepeatableQuestTags()`
 
 Those operations normalize names and attach the tag where it belongs.
 
@@ -70,12 +70,12 @@ future recurring templates.
 
 ### Writes
 
-- `replaceQuestTags(db, questId, tagNames, now?)`: replace the full tag set on a concrete quest.
-- `tagQuest(db, questId, tagNames, now?)`: add tags to a concrete quest without disturbing the rest.
-- `untagQuest(db, questId, tagNames, now?)`: remove specific tags from a concrete quest.
-- `replaceRepeatableQuestTags(db, repeatableQuestId, tagNames, now?)`: replace the future auto-tag template set on a recurring quest.
+- `write.replaceQuestTags(db, questId, tagNames, now?)`: replace the full tag set on a concrete quest.
+- `write.tagQuest(db, questId, tagNames, now?)`: add tags to a concrete quest without disturbing the rest.
+- `write.untagQuest(db, questId, tagNames, now?)`: remove specific tags from a concrete quest.
+- `write.replaceRepeatableQuestTags(db, repeatableQuestId, tagNames, now?)`: replace the future auto-tag template set on a recurring quest.
 
 ### Reads
 
 - There is no dedicated tag read surface.
-- Tags are surfaced through richer quest reads such as `getQuestDetail()` and list views built on quest detail.
+- Tags are surfaced through richer quest reads such as `read.getQuestDetail()` and list views built on quest detail.

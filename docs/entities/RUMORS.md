@@ -40,11 +40,11 @@ Use a rumor when the operator wants to say:
 
 Typical flow:
 
-1. `captureRumor()` when something arrives.
+1. `write.captureRumor()` when something arrives.
 2. Review it while it is still open.
-3. `settleRumor()` when you know what real work it should create.
-4. `dismissRumor()` when it is not worth acting on.
-5. `reopenRumor()` if a dismissed item becomes relevant again.
+3. `write.settleRumor()` when you know what real work it should create.
+4. `write.dismissRumor()` when it is not worth acting on.
+5. `write.reopenRumor()` if a dismissed item becomes relevant again.
 
 ## Good Uses
 
@@ -82,14 +82,14 @@ quest execution state.
 
 ### Writes
 
-- `captureRumor(db, input)`: create a new intake item.
-- `settleRumor(db, rumorId, input)`: resolve intake into nothing, quests, a questline, or both.
-- `dismissRumor(db, rumorId, dismissedAt?)`: explicitly decline a rumor.
-- `reopenRumor(db, rumorId, now?)`: return a dismissed rumor to the open pool.
-- `softDeleteRumor(db, rumorId, now?)`: hide a rumor from normal active reads.
+- `write.captureRumor(db, input)`: create a new intake item.
+- `write.settleRumor(db, rumorId, input)`: resolve intake into nothing, quests, a questline, or both.
+- `write.dismissRumor(db, rumorId, dismissedAt?)`: explicitly decline a rumor.
+- `write.reopenRumor(db, rumorId, now?)`: return a dismissed rumor to the open pool.
+- `write.softDeleteRumor(db, rumorId, now?)`: hide a rumor from normal active reads.
 
 ### Reads
 
-- `getRumorDetail(db, rumorId)`: load one rumor with derived state and outputs.
-- `getRumorOutputs(db, rumorId)`: list the quests and questlines produced from a rumor.
-- `listRumors(db)`: list all active rumors.
+- `read.getRumorDetail(db, rumorId)`: load one rumor with derived state and outputs.
+- `read.getRumorOutputs(db, rumorId)`: list the quests and questlines produced from a rumor.
+- `read.listRumors(db)`: list all active rumors.
