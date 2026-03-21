@@ -16,6 +16,13 @@ export { searchQuestlog } from './search_questlog.ts';
 export type { QuestlogSearchResult } from './search_result.ts';
 export * from './skills/index.ts';
 export * as skills from './skills/index.ts';
+export type { QuestlogSoul, QuestlogSoulTrait } from './soul.ts';
+export {
+	questlogSoul,
+	questlogSoulEssence,
+	questlogSoulTraits,
+	renderQuestlogSoulPromptFoundation,
+} from './soul.ts';
 export * from './tags/index.ts';
 export * from './tools/index.ts';
 export * as tools from './tools/index.ts';

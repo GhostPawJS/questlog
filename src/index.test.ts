@@ -5,10 +5,12 @@ import * as questlog from './index.ts';
 describe('package index (public entry)', () => {
 	it('exposes the intentional public surface', () => {
 		strictEqual(typeof questlog.read, 'object');
+		strictEqual(typeof questlog.questlogSoul, 'object');
 		strictEqual(typeof questlog.skills, 'object');
 		strictEqual(typeof questlog.tools, 'object');
 		strictEqual(typeof questlog.write, 'object');
 		strictEqual(typeof questlog.initQuestlogTables, 'function');
+		strictEqual(typeof questlog.renderQuestlogSoulPromptFoundation, 'function');
 		strictEqual(typeof questlog.searchQuestlog, 'function');
 		strictEqual(typeof questlog.createQuest, 'function');
 		strictEqual(typeof questlog.listAvailableQuests, 'function');
