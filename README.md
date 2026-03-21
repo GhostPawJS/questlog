@@ -1,5 +1,11 @@
 # @ghostpaw/questlog
 
+[![npm](https://img.shields.io/npm/v/@ghostpaw/questlog)](https://www.npmjs.com/package/@ghostpaw/questlog)
+[![node](https://img.shields.io/node/v/@ghostpaw/questlog)](https://nodejs.org)
+[![license](https://img.shields.io/npm/l/@ghostpaw/questlog)](LICENSE)
+[![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)](package.json)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+
 A unified task and calendar model for Node.js, built on SQLite.
 
 Questlog treats tasks, events, deadlines, recurring commitments, and loose intake as one coherent data model instead of separate systems. It ships as a single prebundled blob with zero runtime dependencies, designed for two audiences at once: human developers working directly in code, and LLM agents operating through a structured tool facade.
