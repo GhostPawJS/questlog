@@ -60,6 +60,16 @@ Seven concepts, strict separation of concerns:
 | **Reward** | Descriptive outcome attached to completed work, with a claim lifecycle |
 | **Tag** | Cross-cutting label for filtering and reporting |
 
+The unified model means one entity type covers every temporal intention:
+
+| What it looks like | What it actually is |
+|---|---|
+| A todo item | A quest with no temporal metadata |
+| A deadline | A quest with `dueAt` |
+| A calendar event | A quest with `scheduledStartAt` and `scheduledEndAt` |
+| A recurring commitment | A repeatable quest with an RRULE |
+| A completed action | A quest resolved via `finishQuest` |
+
 State is derived, not toggled. A quest's availability comes from its lifecycle, timing fields, and unlock graph — computed at read time, never stored as a status flag.
 
 ### Lifecycle at a glance
@@ -207,7 +217,6 @@ import type {
 | [LLM.md](docs/LLM.md) | Agent builders wiring tools, skills, and soul into LLM systems |
 | [docs/README.md](docs/README.md) | Architecture overview: model, invariants, lifecycle, markers |
 | [docs/entities/](docs/entities/) | Per-entity manuals with exact public API listings |
-| [RESEARCH.md](docs/RESEARCH.md) | Design rationale and research background |
 
 ## Development
 

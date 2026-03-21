@@ -129,6 +129,7 @@ agree.
 - recurrence creates new quest rows instead of reopening old ones
 - recurring deduplication is based on repeatable origin plus anchor
 - soft delete is the only deletion model in v1
+- graceful cold start: empty tables produce empty result sets, every read returns sensible defaults, and the system is fully functional from the first `initQuestlogTables` call
 
 ## Temporal And Availability Semantics
 
@@ -170,6 +171,7 @@ The rules are strict:
 - marker ids are semantic and channel-neutral, not raw HTML snippets
 - visual rendering comes from one lookup in code, so HTML, TTY, and future outputs stay aligned
 - Questlog borrows WoW-style quest-giver and turn-in semantics only, not WoW quest difficulty colors
+- the original `!` and `?` markers [solved the visibility problem at scale in WoW](https://www.gamedeveloper.com/game-platforms/gdc-learning-from-i-world-of-warcraft-i-s-quest-design-mistakes) — 2,600 quests at launch, 7,650 later, 16 million completed daily — and the same visual language works here
 
 Canonical mapping:
 
@@ -299,7 +301,6 @@ Read those files when you need exact table shape, constraints, or index detail.
 
 - `HUMAN.md`: human-facing guide for using Questlog directly through the low-level public API
 - `LLM.md`: top-to-bottom overview of Questlog's soul, tools, and skills as AI-facing building blocks
-- `RESEARCH.md`: broader design and rationale background
 
 ## Quality Bar
 

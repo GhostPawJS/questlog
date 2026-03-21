@@ -63,6 +63,12 @@ Typical flow:
 Those belong in `rumors`, `repeatable_quests`, `questlines`, `tags`, and
 `quest_rewards`.
 
+Quests track **commitments and events** — not knowledge, not relationships, not
+procedures, not conversation history. If the information answers "what is
+happening or what needs doing?" it belongs in a quest. If it answers "what do we
+know?", "who is involved?", or "how do we do this?" it belongs in another
+subsystem.
+
 ## Operator Notes
 
 - Starting a quest is the moment the objective becomes execution truth.

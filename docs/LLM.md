@@ -91,7 +91,10 @@ The tools are the action surface.
 Questlog exposes a dedicated LLM-oriented tool facade under `src/tools/`. This
 surface is additive: it does not replace the lower-level domain API, but it
 packages Questlog into a smaller, clearer, runtime-ready contract for agent
-systems.
+systems. The count is deliberately small — [tool selection accuracy degrades
+sharply past a modest
+count](https://vercel.com/blog/we-removed-80-percent-of-our-agents-tools), so
+Questlog keeps the total at 12.
 
 Each tool exports:
 
