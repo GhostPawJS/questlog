@@ -1,27 +1,27 @@
 #!/usr/bin/env node
-import { mkdir, writeFile } from "node:fs/promises";
-import { join } from "node:path";
-import * as esbuild from "esbuild";
+import { mkdir, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import * as esbuild from 'esbuild';
 
-const OUT_DIR = "demo";
-const ENTRY = "src/demo/main.tsx";
-const WATCH = process.argv.includes("--watch");
+const OUT_DIR = 'demo';
+const ENTRY = 'src/demo/main.tsx';
+const WATCH = process.argv.includes('--watch');
 
 /** @type {import("esbuild").BuildOptions} */
 const buildOptions = {
 	entryPoints: [ENTRY],
 	outdir: OUT_DIR,
 	bundle: true,
-	format: "esm",
-	platform: "browser",
-	target: ["es2022"],
+	format: 'esm',
+	platform: 'browser',
+	target: ['es2022'],
 	sourcemap: true,
-	jsx: "automatic",
-	jsxImportSource: "preact",
-	loader: { ".wasm": "file" },
-	entryNames: "app",
-	assetNames: "assets/[name]-[hash]",
-	alias: { fs: "./src/demo/empty_module.ts", path: "./src/demo/empty_module.ts" },
+	jsx: 'automatic',
+	jsxImportSource: 'preact',
+	loader: { '.wasm': 'file' },
+	entryNames: 'app',
+	assetNames: 'assets/[name]-[hash]',
+	alias: { fs: './src/demo/empty_module.ts', path: './src/demo/empty_module.ts' },
 };
 
 // ---------------------------------------------------------------------------
@@ -804,14 +804,14 @@ async function main() {
 	if (WATCH) {
 		const ctx = await esbuild.context(buildOptions);
 		await ctx.watch();
-		console.log("[demo] watching for changes …");
+		console.log('[demo] watching for changes …');
 	} else {
 		await esbuild.build(buildOptions);
-		console.log("[demo] build complete");
+		console.log('[demo] build complete');
 	}
 
-	await writeFile(join(OUT_DIR, "index.html"), writeHtmlShell());
-	console.log("[demo] wrote index.html");
+	await writeFile(join(OUT_DIR, 'index.html'), writeHtmlShell());
+	console.log('[demo] wrote index.html');
 }
 
 main().catch((err) => {

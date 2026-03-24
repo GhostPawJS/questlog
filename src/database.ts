@@ -5,9 +5,7 @@ export interface QuestlogRunResult {
 
 export interface QuestlogStatement {
 	run(...params: unknown[]): QuestlogRunResult;
-	get<TRecord = Record<string, unknown>>(
-		...params: unknown[]
-	): TRecord | undefined;
+	get<TRecord = Record<string, unknown>>(...params: unknown[]): TRecord | undefined;
 	all<TRecord = Record<string, unknown>>(...params: unknown[]): TRecord[];
 }
 
