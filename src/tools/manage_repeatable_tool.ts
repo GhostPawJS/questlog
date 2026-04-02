@@ -220,70 +220,41 @@ export const manageRepeatableTool = defineQuestlogTool<
 	},
 	outputDescription:
 		'Returns the changed repeatable quest, due anchor preview items, or spawned quest details for the selected recurrence action. Empty previews and empty spawns return structured success or no-op results, and repeatable hiding is now intentionally routed through `retire_work`.',
-	inputSchema: {
-		type: 'object',
-		oneOf: [
-			objectSchema(
+	inputSchema: objectSchema(
+		{
+			action: enumSchema('Action to perform.', [
+				'archive',
+				'create',
+				'preview_due',
+				'spawn_due',
+				'update',
+			]),
+			repeatableQuestId: integerSchema('Repeatable quest to archive or update.'),
+			repeatableQuest: objectSchema(
 				{
-					action: enumSchema('Action to perform.', ['archive']),
-					archivedAt: integerSchema('Optional archive timestamp.'),
-					repeatableQuestId: integerSchema('Repeatable quest to archive.'),
+					title: stringSchema('Title for the new repeatable quest.'),
+					objective: stringSchema('Objective for the new repeatable quest.'),
+					rrule: stringSchema('RRULE describing recurrence.'),
+					anchorAt: integerSchema('Recurrence anchor timestamp.'),
 				},
-				['action', 'repeatableQuestId'],
+				['title', 'objective', 'rrule', 'anchorAt'],
 			),
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['create']),
-					repeatableQuest: objectSchema(
-						{
-							title: stringSchema('Title for the new repeatable quest.'),
-							objective: stringSchema('Objective for the new repeatable quest.'),
-							rrule: stringSchema('RRULE describing recurrence.'),
-							anchorAt: integerSchema('Recurrence anchor timestamp.'),
-						},
-						['title', 'objective', 'rrule', 'anchorAt'],
-					),
-				},
-				['action', 'repeatableQuest'],
-			),
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['preview_due']),
-					now: integerSchema('Evaluation timestamp for due anchors.'),
-				},
-				['action'],
-			),
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['spawn_due']),
-					now: integerSchema('Evaluation timestamp for materializing due anchors.'),
-				},
-				['action', 'now'],
-			),
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['update']),
-					repeatableQuestId: integerSchema('Repeatable quest to update.'),
-					title: stringSchema('Optional new title.'),
-					objective: stringSchema('Optional new objective.'),
-					questlineId: integerSchema('Optional new questline id.'),
-					rrule: stringSchema('Optional new RRULE.'),
-					anchorAt: integerSchema('Optional new recurrence anchor timestamp.'),
-					notBeforeOffsetSeconds: integerSchema('Optional new not-before offset in seconds.'),
-					dueOffsetSeconds: integerSchema('Optional new due offset in seconds.'),
-					scheduledStartOffsetSeconds: integerSchema(
-						'Optional new scheduled-start offset in seconds.',
-					),
-					scheduledEndOffsetSeconds: integerSchema('Optional new scheduled-end offset in seconds.'),
-					allDay: booleanSchema('Whether future schedules are all-day.'),
-					estimateSeconds: integerSchema('Optional new effort estimate.'),
-					archivedAt: integerSchema('Optional archive timestamp.'),
-					now: integerSchema('Optional update timestamp.'),
-				},
-				['action', 'repeatableQuestId'],
-			),
-		],
-		description: 'Manage repeatable quest definitions and due materialization.',
-	},
+			title: stringSchema('Optional new title for the update action.'),
+			objective: stringSchema('Optional new objective for the update action.'),
+			questlineId: integerSchema('Optional new questline id.'),
+			rrule: stringSchema('Optional new RRULE.'),
+			anchorAt: integerSchema('Optional new recurrence anchor timestamp.'),
+			notBeforeOffsetSeconds: integerSchema('Optional new not-before offset in seconds.'),
+			dueOffsetSeconds: integerSchema('Optional new due offset in seconds.'),
+			scheduledStartOffsetSeconds: integerSchema('Optional new scheduled-start offset in seconds.'),
+			scheduledEndOffsetSeconds: integerSchema('Optional new scheduled-end offset in seconds.'),
+			allDay: booleanSchema('Whether future schedules are all-day.'),
+			estimateSeconds: integerSchema('Optional new effort estimate.'),
+			archivedAt: integerSchema('Optional archive timestamp.'),
+			now: integerSchema('Evaluation or update timestamp.'),
+		},
+		['action'],
+		'Manage repeatable quest definitions and due materialization.',
+	),
 	handler: manageRepeatableToolHandler,
 });

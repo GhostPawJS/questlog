@@ -298,94 +298,49 @@ export const shapeWorkTool = defineQuestlogTool<ShapeWorkToolInput, ShapeWorkToo
 	},
 	outputDescription:
 		'Returns the changed or created rumor, quest, questline, or created quest set for the selected shape-work action, plus purpose-shaped primary and created or updated refs. Repeated safe actions return structured no-op results, and rumor settlement can ask for missing structure instead of failing.',
-	inputSchema: {
-		type: 'object',
-		oneOf: [
-			objectSchema(
+	inputSchema: objectSchema(
+		{
+			action: enumSchema('Action to perform.', [
+				'attach_quest_to_questline',
+				'create_quest',
+				'create_questline',
+				'detach_quest_from_questline',
+				'dismiss_rumor',
+				'reopen_rumor',
+				'settle_rumor',
+			]),
+			questId: integerSchema('Quest to attach or detach.'),
+			questlineId: integerSchema('Questline that should receive the quest.'),
+			quest: objectSchema(
 				{
-					action: enumSchema('Action to perform.', ['attach_quest_to_questline']),
-					now: integerSchema('Optional timestamp for the membership change.'),
-					questId: integerSchema('Quest to attach.'),
-					questlineId: integerSchema('Questline that should receive the quest.'),
+					title: stringSchema('Title for the new quest.'),
+					objective: stringSchema('Objective for the new quest.'),
 				},
-				['action', 'questId', 'questlineId'],
+				['title', 'objective'],
 			),
-			objectSchema(
+			questline: objectSchema(
 				{
-					action: enumSchema('Action to perform.', ['create_quest']),
-					quest: objectSchema(
-						{
-							title: stringSchema('Title for the new quest.'),
-							objective: stringSchema('Objective for the new quest.'),
-						},
-						['title', 'objective'],
-					),
+					title: stringSchema('Questline title.'),
 				},
-				['action', 'quest'],
+				[],
 			),
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['create_questline']),
-					questline: objectSchema(
-						{
-							title: stringSchema('Title for the new questline.'),
-						},
-						['title'],
-					),
-				},
-				['action', 'questline'],
+			rumorId: integerSchema('Rumor to settle, dismiss, or reopen.'),
+			dismissedAt: integerSchema('Optional dismissal timestamp.'),
+			settledAt: integerSchema('Optional settlement timestamp.'),
+			quests: arraySchema(
+				objectSchema(
+					{
+						title: stringSchema('Title for a created quest.'),
+						objective: stringSchema('Objective for a created quest.'),
+					},
+					['title', 'objective'],
+				),
+				'Quests to create during rumor settlement.',
 			),
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['detach_quest_from_questline']),
-					now: integerSchema('Optional timestamp for the membership change.'),
-					questId: integerSchema('Quest to detach.'),
-				},
-				['action', 'questId'],
-			),
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['dismiss_rumor']),
-					dismissedAt: integerSchema('Optional dismissal timestamp.'),
-					rumorId: integerSchema('Rumor to dismiss.'),
-				},
-				['action', 'rumorId'],
-			),
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['reopen_rumor']),
-					now: integerSchema('Optional reopen timestamp.'),
-					rumorId: integerSchema('Rumor to reopen.'),
-				},
-				['action', 'rumorId'],
-			),
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['settle_rumor']),
-					rumorId: integerSchema('Rumor to settle.'),
-					settledAt: integerSchema('Optional settlement timestamp.'),
-					questline: objectSchema(
-						{
-							title: stringSchema('Optional questline title to create during settlement.'),
-						},
-						[],
-					),
-					quests: arraySchema(
-						objectSchema(
-							{
-								title: stringSchema('Title for a created quest.'),
-								objective: stringSchema('Objective for a created quest.'),
-							},
-							['title', 'objective'],
-						),
-						'Optional quests to create during settlement.',
-					),
-				},
-				['action', 'rumorId'],
-			),
-		],
-		description:
-			'Shape the work graph by settling rumors, creating work, or moving quests into questlines.',
-	},
+			now: integerSchema('Optional timestamp for membership or reopen changes.'),
+		},
+		['action'],
+		'Shape the work graph by settling rumors, creating work, or moving quests into questlines.',
+	),
 	handler: shapeWorkToolHandler,
 });

@@ -7,11 +7,7 @@ import {
 } from './tool_registry.ts';
 
 function topLevelSchemaFields(tool: (typeof questlogTools)[number]): string[] {
-	const direct = Object.keys(tool.inputSchema.properties ?? {});
-	const fromOneOf = (tool.inputSchema.oneOf ?? []).flatMap((schema) =>
-		Object.keys(schema.properties ?? {}),
-	);
-	return [...new Set([...direct, ...fromOneOf])];
+	return Object.keys(tool.inputSchema.properties ?? {});
 }
 
 describe('tool registry', () => {
@@ -34,6 +30,10 @@ describe('tool registry', () => {
 				tool.inputSchema.type,
 				'object',
 				`${tool.name} inputSchema must have type: "object" at root for cross-provider compatibility`,
+			);
+			ok(
+				topLevelSchemaFields(tool).length > 0,
+				`${tool.name} inputSchema must have non-empty properties`,
 			);
 			for (const field of topLevelSchemaFields(tool)) {
 				ok(tool.inputDescriptions[field], `missing input description for ${tool.name}.${field}`);
@@ -62,12 +62,142 @@ describe('tool registry', () => {
 		]);
 	});
 
-	it('every tool inputSchema has type "object" at the root for cross-provider compatibility', () => {
+	it('every tool inputSchema is a flat object with properties for cross-provider compatibility', () => {
 		for (const tool of questlogTools) {
 			strictEqual(
 				tool.inputSchema.type,
 				'object',
-				`${tool.name}: root inputSchema.type must be "object" — bare oneOf without type is rejected by OpenAI function calling`,
+				`${tool.name}: root inputSchema.type must be "object"`,
+			);
+			strictEqual(
+				tool.inputSchema.oneOf,
+				undefined,
+				`${tool.name}: root inputSchema must not use oneOf — flatten action variants into properties`,
+			);
+			ok(
+				Object.keys(tool.inputSchema.properties ?? {}).length > 0,
+				`${tool.name}: root inputSchema must have populated properties`,
+			);
+		}
+	});
+
+	it('multi-action tools expose all action variants in their flattened schema', () => {
+		const expectedActions: Record<string, string[]> = {
+			plan_quest: ['revise_objective', 'set_time'],
+			run_quest: ['start', 'log_effort', 'finish', 'abandon', 'abandon_and_spawn_followups'],
+			shape_work: [
+				'attach_quest_to_questline',
+				'create_quest',
+				'create_questline',
+				'detach_quest_from_questline',
+				'dismiss_rumor',
+				'reopen_rumor',
+				'settle_rumor',
+			],
+			organize_work: [
+				'add_unlock',
+				'archive_questline',
+				'remove_unlock',
+				'replace_unlocks',
+				'set_questline_fields',
+			],
+			manage_repeatable: ['archive', 'create', 'preview_due', 'spawn_due', 'update'],
+			tag_work: ['add', 'remove', 'replace'],
+			reward_work: ['add', 'claim', 'remove', 'replace_repeatable_template', 'update'],
+			retire_work: ['hide'],
+		};
+
+		for (const [name, actions] of Object.entries(expectedActions)) {
+			const tool = getQuestlogToolByName(name);
+			ok(tool, `tool ${name} not found`);
+			const actionProp = tool.inputSchema.properties?.action;
+			ok(actionProp, `tool ${name} has no action property in schema`);
+			deepStrictEqual(
+				[...(actionProp.enum as string[])].sort(),
+				[...actions].sort(),
+				`${name}: action enum mismatch`,
+			);
+		}
+	});
+
+	it('multi-action tools list all variant properties at the root level', () => {
+		const expectedProperties: Record<string, string[]> = {
+			plan_quest: [
+				'action',
+				'questId',
+				'objective',
+				'notBeforeAt',
+				'dueAt',
+				'scheduledStartAt',
+				'scheduledEndAt',
+				'allDay',
+				'estimateSeconds',
+				'now',
+			],
+			run_quest: [
+				'action',
+				'questId',
+				'startedAt',
+				'effortSeconds',
+				'now',
+				'outcome',
+				'resolvedAt',
+				'followups',
+			],
+			shape_work: [
+				'action',
+				'questId',
+				'questlineId',
+				'quest',
+				'questline',
+				'rumorId',
+				'dismissedAt',
+				'settledAt',
+				'quests',
+				'now',
+			],
+			organize_work: [
+				'action',
+				'questlineId',
+				'title',
+				'description',
+				'startsAt',
+				'dueAt',
+				'archivedAt',
+				'toQuestId',
+				'fromQuestId',
+				'fromQuestIds',
+				'now',
+			],
+			manage_repeatable: [
+				'action',
+				'repeatableQuestId',
+				'repeatableQuest',
+				'title',
+				'objective',
+				'questlineId',
+				'rrule',
+				'anchorAt',
+				'notBeforeOffsetSeconds',
+				'dueOffsetSeconds',
+				'scheduledStartOffsetSeconds',
+				'scheduledEndOffsetSeconds',
+				'allDay',
+				'estimateSeconds',
+				'archivedAt',
+				'now',
+			],
+			tag_work: ['action', 'target', 'tagNames', 'now'],
+			reward_work: ['action', 'target', 'reward', 'rewards', 'claimedAt', 'now'],
+		};
+
+		for (const [name, properties] of Object.entries(expectedProperties)) {
+			const tool = getQuestlogToolByName(name);
+			ok(tool, `tool ${name} not found`);
+			deepStrictEqual(
+				Object.keys(tool.inputSchema.properties ?? {}).sort(),
+				[...properties].sort(),
+				`${name}: property set mismatch`,
 			);
 		}
 	});

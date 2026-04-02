@@ -228,59 +228,28 @@ export const organizeWorkTool = defineQuestlogTool<OrganizeWorkToolInput, Organi
 	},
 	outputDescription:
 		'Returns the updated questline detail or target quest detail after grouping or dependency changes. Repeated equivalent changes return structured no-op results.',
-	inputSchema: {
-		type: 'object',
-		oneOf: [
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['add_unlock']),
-					fromQuestId: integerSchema('Prerequisite quest id.'),
-					now: integerSchema('Optional timestamp for the unlock change.'),
-					toQuestId: integerSchema('Quest whose blockers should change.'),
-				},
-				['action', 'fromQuestId', 'toQuestId'],
-			),
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['archive_questline']),
-					archivedAt: integerSchema('Optional archive timestamp.'),
-					questlineId: integerSchema('Questline to archive.'),
-				},
-				['action', 'questlineId'],
-			),
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['remove_unlock']),
-					fromQuestId: integerSchema('Prerequisite quest id.'),
-					now: integerSchema('Optional timestamp for the unlock change.'),
-					toQuestId: integerSchema('Quest whose blockers should change.'),
-				},
-				['action', 'fromQuestId', 'toQuestId'],
-			),
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['replace_unlocks']),
-					fromQuestIds: arraySchema(integerSchema('Quest id.'), 'Full prerequisite quest id set.'),
-					now: integerSchema('Optional timestamp for the unlock change.'),
-					toQuestId: integerSchema('Quest whose blockers should change.'),
-				},
-				['action', 'fromQuestIds', 'toQuestId'],
-			),
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['set_questline_fields']),
-					questlineId: integerSchema('Questline to update.'),
-					title: stringSchema('Optional new questline title.'),
-					description: stringSchema('Optional new questline description.'),
-					startsAt: integerSchema('Optional questline start timestamp.'),
-					dueAt: integerSchema('Optional questline due timestamp.'),
-					archivedAt: integerSchema('Optional archive timestamp.'),
-					now: integerSchema('Optional update timestamp.'),
-				},
-				['action', 'questlineId'],
-			),
-		],
-		description: 'Organize questline fields and unlock dependencies.',
-	},
+	inputSchema: objectSchema(
+		{
+			action: enumSchema('Action to perform.', [
+				'add_unlock',
+				'archive_questline',
+				'remove_unlock',
+				'replace_unlocks',
+				'set_questline_fields',
+			]),
+			questlineId: integerSchema('Questline to update or archive.'),
+			title: stringSchema('Optional new questline title.'),
+			description: stringSchema('Optional new questline description.'),
+			startsAt: integerSchema('Optional questline start timestamp.'),
+			dueAt: integerSchema('Optional questline due timestamp.'),
+			archivedAt: integerSchema('Optional archive timestamp.'),
+			toQuestId: integerSchema('Quest whose blockers should change.'),
+			fromQuestId: integerSchema('Prerequisite quest id.'),
+			fromQuestIds: arraySchema(integerSchema('Quest id.'), 'Full prerequisite quest id set.'),
+			now: integerSchema('Optional timestamp.'),
+		},
+		['action'],
+		'Organize questline fields and unlock dependencies.',
+	),
 	handler: organizeWorkToolHandler,
 });

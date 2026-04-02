@@ -180,104 +180,45 @@ export const rewardWorkTool = defineQuestlogTool<RewardWorkToolInput, RewardWork
 	},
 	outputDescription:
 		'Returns the updated or claimed reward when one concrete reward changes, or a structured success result for repeatable future template replacement. Already-claimed rewards return a structured no-op for claim and an error for invalid update or remove attempts.',
-	inputSchema: {
-		type: 'object',
-		oneOf: [
-			objectSchema(
+	inputSchema: objectSchema(
+		{
+			action: enumSchema('Action to perform.', [
+				'add',
+				'claim',
+				'remove',
+				'replace_repeatable_template',
+				'update',
+			]),
+			target: objectSchema(
 				{
-					action: enumSchema('Action to perform.', ['add']),
-					reward: objectSchema(
-						{
-							kind: stringSchema('Reward kind.'),
-							name: stringSchema('Reward name.'),
-						},
-						['kind', 'name'],
-					),
-					target: objectSchema(
-						{
-							id: integerSchema('Quest id.'),
-							kind: enumSchema('Target kind.', ['quest']),
-						},
-						['id', 'kind'],
-					),
+					id: integerSchema('Target entity id.'),
+					kind: enumSchema('Target kind.', ['quest', 'reward', 'repeatable_quest']),
 				},
-				['action', 'reward', 'target'],
+				['id', 'kind'],
 			),
-			objectSchema(
+			reward: objectSchema(
 				{
-					action: enumSchema('Action to perform.', ['claim']),
-					claimedAt: integerSchema('Optional claim timestamp.'),
-					target: objectSchema(
-						{
-							id: integerSchema('Reward id.'),
-							kind: enumSchema('Target kind.', ['reward']),
-						},
-						['id', 'kind'],
-					),
+					kind: stringSchema('Reward kind.'),
+					name: stringSchema('Reward name.'),
+					now: integerSchema('Optional update timestamp for the update action.'),
 				},
-				['action', 'target'],
+				[],
 			),
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['remove']),
-					now: integerSchema('Optional removal timestamp.'),
-					target: objectSchema(
-						{
-							id: integerSchema('Reward id.'),
-							kind: enumSchema('Target kind.', ['reward']),
-						},
-						['id', 'kind'],
-					),
-				},
-				['action', 'target'],
+			rewards: arraySchema(
+				objectSchema(
+					{
+						kind: stringSchema('Reward kind.'),
+						name: stringSchema('Reward name.'),
+					},
+					['kind', 'name'],
+				),
+				'Full future reward template set. Required for replace_repeatable_template.',
 			),
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['replace_repeatable_template']),
-					now: integerSchema('Optional timestamp for replacing templates.'),
-					rewards: arraySchema(
-						objectSchema(
-							{
-								kind: stringSchema('Reward kind.'),
-								name: stringSchema('Reward name.'),
-							},
-							['kind', 'name'],
-						),
-						'Full future reward template set.',
-					),
-					target: objectSchema(
-						{
-							id: integerSchema('Repeatable quest id.'),
-							kind: enumSchema('Target kind.', ['repeatable_quest']),
-						},
-						['id', 'kind'],
-					),
-				},
-				['action', 'target', 'rewards'],
-			),
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['update']),
-					reward: objectSchema(
-						{
-							kind: stringSchema('Optional reward kind.'),
-							name: stringSchema('Optional reward name.'),
-							now: integerSchema('Optional update timestamp.'),
-						},
-						[],
-					),
-					target: objectSchema(
-						{
-							id: integerSchema('Reward id.'),
-							kind: enumSchema('Target kind.', ['reward']),
-						},
-						['id', 'kind'],
-					),
-				},
-				['action', 'target', 'reward'],
-			),
-		],
-		description: 'Manage quest rewards and repeatable reward templates.',
-	},
+			claimedAt: integerSchema('Optional claim timestamp.'),
+			now: integerSchema('Optional timestamp for removal or template replacement.'),
+		},
+		['action', 'target'],
+		'Manage quest rewards and repeatable reward templates.',
+	),
 	handler: rewardWorkToolHandler,
 });

@@ -132,34 +132,21 @@ export const planQuestTool = defineQuestlogTool<PlanQuestToolInput, PlanQuestToo
 	},
 	outputDescription:
 		'Returns the updated quest detail after objective or planning changes. If the requested planning state is already present, the tool returns a structured no-op result.',
-	inputSchema: {
-		type: 'object',
-		oneOf: [
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['revise_objective']),
-					now: integerSchema('Optional update timestamp.'),
-					objective: stringSchema('The new quest objective text.'),
-					questId: integerSchema('The quest to refine.'),
-				},
-				['action', 'questId', 'objective'],
-			),
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['set_time']),
-					questId: integerSchema('The quest to refine.'),
-					notBeforeAt: integerSchema('Optional earliest actionable timestamp.'),
-					dueAt: integerSchema('Optional latest acceptable completion timestamp.'),
-					scheduledStartAt: integerSchema('Optional planned schedule window start.'),
-					scheduledEndAt: integerSchema('Optional planned schedule window end.'),
-					allDay: booleanSchema('Whether the planned schedule window is all-day.'),
-					estimateSeconds: integerSchema('Optional active-effort estimate in seconds.'),
-					now: integerSchema('Optional update timestamp.'),
-				},
-				['action', 'questId'],
-			),
-		],
-		description: 'Refine a quest objective or planning state.',
-	},
+	inputSchema: objectSchema(
+		{
+			action: enumSchema('Action to perform.', ['revise_objective', 'set_time']),
+			questId: integerSchema('The quest to refine.'),
+			objective: stringSchema('The new quest objective text. Required for revise_objective.'),
+			notBeforeAt: integerSchema('Optional earliest actionable timestamp.'),
+			dueAt: integerSchema('Optional latest acceptable completion timestamp.'),
+			scheduledStartAt: integerSchema('Optional planned schedule window start.'),
+			scheduledEndAt: integerSchema('Optional planned schedule window end.'),
+			allDay: booleanSchema('Whether the planned schedule window is all-day.'),
+			estimateSeconds: integerSchema('Optional active-effort estimate in seconds.'),
+			now: integerSchema('Optional update timestamp.'),
+		},
+		['action', 'questId'],
+		'Refine a quest objective or planning state.',
+	),
 	handler: planQuestToolHandler,
 });

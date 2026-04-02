@@ -215,59 +215,21 @@ export const tagWorkTool = defineQuestlogTool<TagWorkToolInput, TagWorkToolResul
 	},
 	outputDescription:
 		'Returns the normalized final tag set for the target after the selected tag action. Repeated equivalent changes return structured no-op results.',
-	inputSchema: {
-		type: 'object',
-		oneOf: [
-			objectSchema(
+	inputSchema: objectSchema(
+		{
+			action: enumSchema('Action to perform.', ['add', 'remove', 'replace']),
+			target: objectSchema(
 				{
-					action: enumSchema('Action to perform.', ['add']),
-					now: integerSchema('Optional timestamp for the tag mutation.'),
-					tagNames: arraySchema(stringSchema('Tag name.'), 'Tags to add.'),
-					target: objectSchema(
-						{
-							id: integerSchema('Quest id.'),
-							kind: enumSchema('Target kind.', ['quest']),
-						},
-						['id', 'kind'],
-					),
+					id: integerSchema('Target entity id.'),
+					kind: enumSchema('Target kind.', ['quest', 'repeatable_quest']),
 				},
-				['action', 'target', 'tagNames'],
+				['id', 'kind'],
 			),
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['remove']),
-					now: integerSchema('Optional timestamp for the tag mutation.'),
-					tagNames: arraySchema(stringSchema('Tag name.'), 'Tags to remove.'),
-					target: objectSchema(
-						{
-							id: integerSchema('Quest id.'),
-							kind: enumSchema('Target kind.', ['quest']),
-						},
-						['id', 'kind'],
-					),
-				},
-				['action', 'target', 'tagNames'],
-			),
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['replace']),
-					now: integerSchema('Optional timestamp for the tag mutation.'),
-					tagNames: arraySchema(
-						stringSchema('Tag name.'),
-						'Tags to make the full replacement set.',
-					),
-					target: objectSchema(
-						{
-							id: integerSchema('Target id.'),
-							kind: enumSchema('Target kind.', ['quest', 'repeatable_quest']),
-						},
-						['id', 'kind'],
-					),
-				},
-				['action', 'target', 'tagNames'],
-			),
-		],
-		description: 'Mutate tags on quests or repeatable quests.',
-	},
+			tagNames: arraySchema(stringSchema('Tag name.'), 'Tag names to add, remove, or replace.'),
+			now: integerSchema('Optional timestamp for the tag mutation.'),
+		},
+		['action', 'target', 'tagNames'],
+		'Mutate tags on quests or repeatable quests.',
+	),
 	handler: tagWorkToolHandler,
 });

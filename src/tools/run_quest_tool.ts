@@ -208,65 +208,38 @@ export const runQuestTool = defineQuestlogTool<RunQuestToolInput, RunQuestToolRe
 	},
 	outputDescription:
 		'Returns the updated quest detail after the selected lifecycle action, plus purpose-shaped primary, updated, and created refs when follow-up work is spawned. Safe repeated starts return structured no-op results.',
-	inputSchema: {
-		type: 'object',
-		oneOf: [
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['abandon']),
-					outcome: stringSchema('Terminal outcome text.'),
-					questId: integerSchema('Quest to abandon.'),
-					resolvedAt: integerSchema('Optional resolved timestamp.'),
-				},
-				['action', 'questId', 'outcome'],
+	inputSchema: objectSchema(
+		{
+			action: enumSchema('Action to perform.', [
+				'start',
+				'log_effort',
+				'finish',
+				'abandon',
+				'abandon_and_spawn_followups',
+			]),
+			questId: integerSchema('Quest whose execution state should change.'),
+			startedAt: integerSchema('Optional start timestamp for the start action.'),
+			effortSeconds: integerSchema(
+				'Positive active-effort increment in seconds. Required for log_effort.',
 			),
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['abandon_and_spawn_followups']),
-					followups: arraySchema(
-						objectSchema(
-							{
-								title: stringSchema('Title for a follow-up quest.'),
-								objective: stringSchema('Objective for a follow-up quest.'),
-							},
-							['title', 'objective'],
-						),
-						'Follow-up quests to create atomically.',
-					),
-					outcome: stringSchema('Terminal outcome text.'),
-					questId: integerSchema('Quest to abandon.'),
-					resolvedAt: integerSchema('Optional resolved timestamp.'),
-				},
-				['action', 'questId', 'outcome', 'followups'],
+			now: integerSchema('Optional effort-log timestamp.'),
+			outcome: stringSchema(
+				'Terminal outcome text. Required for finish, abandon, and abandon_and_spawn_followups.',
 			),
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['finish']),
-					outcome: stringSchema('Terminal outcome text.'),
-					questId: integerSchema('Quest to finish.'),
-					resolvedAt: integerSchema('Optional resolved timestamp.'),
-				},
-				['action', 'questId', 'outcome'],
+			resolvedAt: integerSchema('Optional resolved timestamp for finish or abandon actions.'),
+			followups: arraySchema(
+				objectSchema(
+					{
+						title: stringSchema('Title for a follow-up quest.'),
+						objective: stringSchema('Objective for a follow-up quest.'),
+					},
+					['title', 'objective'],
+				),
+				'Follow-up quests to create atomically. Required for abandon_and_spawn_followups.',
 			),
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['log_effort']),
-					effortSeconds: integerSchema('Positive active-effort increment in seconds.'),
-					now: integerSchema('Optional effort-log timestamp.'),
-					questId: integerSchema('Quest to update.'),
-				},
-				['action', 'questId', 'effortSeconds'],
-			),
-			objectSchema(
-				{
-					action: enumSchema('Action to perform.', ['start']),
-					questId: integerSchema('Quest to start.'),
-					startedAt: integerSchema('Optional start timestamp.'),
-				},
-				['action', 'questId'],
-			),
-		],
-		description: 'Run quest lifecycle actions.',
-	},
+		},
+		['action', 'questId'],
+		'Run quest lifecycle actions.',
+	),
 	handler: runQuestToolHandler,
 });
