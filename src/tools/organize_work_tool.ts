@@ -229,6 +229,7 @@ export const organizeWorkTool = defineQuestlogTool<OrganizeWorkToolInput, Organi
 	outputDescription:
 		'Returns the updated questline detail or target quest detail after grouping or dependency changes. Repeated equivalent changes return structured no-op results.',
 	inputSchema: {
+		type: 'object',
 		oneOf: [
 			objectSchema(
 				{

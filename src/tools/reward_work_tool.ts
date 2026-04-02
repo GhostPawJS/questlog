@@ -181,6 +181,7 @@ export const rewardWorkTool = defineQuestlogTool<RewardWorkToolInput, RewardWork
 	outputDescription:
 		'Returns the updated or claimed reward when one concrete reward changes, or a structured success result for repeatable future template replacement. Already-claimed rewards return a structured no-op for claim and an error for invalid update or remove attempts.',
 	inputSchema: {
+		type: 'object',
 		oneOf: [
 			objectSchema(
 				{

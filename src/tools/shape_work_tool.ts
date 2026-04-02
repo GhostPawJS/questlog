@@ -299,6 +299,7 @@ export const shapeWorkTool = defineQuestlogTool<ShapeWorkToolInput, ShapeWorkToo
 	outputDescription:
 		'Returns the changed or created rumor, quest, questline, or created quest set for the selected shape-work action, plus purpose-shaped primary and created or updated refs. Repeated safe actions return structured no-op results, and rumor settlement can ask for missing structure instead of failing.',
 	inputSchema: {
+		type: 'object',
 		oneOf: [
 			objectSchema(
 				{

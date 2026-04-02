@@ -30,7 +30,11 @@ describe('tool registry', () => {
 			ok(Object.keys(tool.inputDescriptions).length > 0);
 			ok(tool.sideEffects === 'none' || tool.sideEffects === 'writes_state');
 			ok(tool.targetKinds.length > 0);
-			ok(tool.inputSchema.type === 'object' || (tool.inputSchema.oneOf?.length ?? 0) > 0);
+			strictEqual(
+				tool.inputSchema.type,
+				'object',
+				`${tool.name} inputSchema must have type: "object" at root for cross-provider compatibility`,
+			);
 			for (const field of topLevelSchemaFields(tool)) {
 				ok(tool.inputDescriptions[field], `missing input description for ${tool.name}.${field}`);
 			}
@@ -56,5 +60,15 @@ describe('tool registry', () => {
 			'reward_work',
 			'retire_work',
 		]);
+	});
+
+	it('every tool inputSchema has type "object" at the root for cross-provider compatibility', () => {
+		for (const tool of questlogTools) {
+			strictEqual(
+				tool.inputSchema.type,
+				'object',
+				`${tool.name}: root inputSchema.type must be "object" — bare oneOf without type is rejected by OpenAI function calling`,
+			);
+		}
 	});
 });

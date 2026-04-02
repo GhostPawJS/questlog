@@ -209,6 +209,7 @@ export const runQuestTool = defineQuestlogTool<RunQuestToolInput, RunQuestToolRe
 	outputDescription:
 		'Returns the updated quest detail after the selected lifecycle action, plus purpose-shaped primary, updated, and created refs when follow-up work is spawned. Safe repeated starts return structured no-op results.',
 	inputSchema: {
+		type: 'object',
 		oneOf: [
 			objectSchema(
 				{

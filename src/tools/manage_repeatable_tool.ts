@@ -221,6 +221,7 @@ export const manageRepeatableTool = defineQuestlogTool<
 	outputDescription:
 		'Returns the changed repeatable quest, due anchor preview items, or spawned quest details for the selected recurrence action. Empty previews and empty spawns return structured success or no-op results, and repeatable hiding is now intentionally routed through `retire_work`.',
 	inputSchema: {
+		type: 'object',
 		oneOf: [
 			objectSchema(
 				{

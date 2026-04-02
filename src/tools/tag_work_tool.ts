@@ -216,6 +216,7 @@ export const tagWorkTool = defineQuestlogTool<TagWorkToolInput, TagWorkToolResul
 	outputDescription:
 		'Returns the normalized final tag set for the target after the selected tag action. Repeated equivalent changes return structured no-op results.',
 	inputSchema: {
+		type: 'object',
 		oneOf: [
 			objectSchema(
 				{

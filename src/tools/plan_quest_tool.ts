@@ -133,6 +133,7 @@ export const planQuestTool = defineQuestlogTool<PlanQuestToolInput, PlanQuestToo
 	outputDescription:
 		'Returns the updated quest detail after objective or planning changes. If the requested planning state is already present, the tool returns a structured no-op result.',
 	inputSchema: {
+		type: 'object',
 		oneOf: [
 			objectSchema(
 				{
