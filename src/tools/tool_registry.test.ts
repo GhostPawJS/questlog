@@ -120,6 +120,44 @@ describe('tool registry', () => {
 		}
 	});
 
+	it('shape_work quest schemas expose full CreateQuestInput fields for single-call creation', () => {
+		const tool = getQuestlogToolByName('shape_work');
+		ok(tool);
+
+		const expectedQuestFields = [
+			'title',
+			'objective',
+			'questlineId',
+			'tags',
+			'rewards',
+			'dueAt',
+			'notBeforeAt',
+			'scheduledStartAt',
+			'scheduledEndAt',
+			'allDay',
+			'estimateSeconds',
+		];
+
+		const questProps = tool.inputSchema.properties?.quest?.properties ?? {};
+		deepStrictEqual(
+			Object.keys(questProps).sort(),
+			[...expectedQuestFields].sort(),
+			'shape_work quest object must include timing, tags, and rewards for single-call creation',
+		);
+
+		const questsItemProps = tool.inputSchema.properties?.quests?.items?.properties ?? {};
+		const expectedQuestsItemFields = expectedQuestFields.filter((f) => f !== 'questlineId');
+		deepStrictEqual(
+			Object.keys(questsItemProps).sort(),
+			[...expectedQuestsItemFields].sort(),
+			'shape_work quests[] items must include timing, tags, and rewards for single-call settlement',
+		);
+
+		const questlineProps = tool.inputSchema.properties?.questline?.properties ?? {};
+		ok('title' in questlineProps, 'questline must have title');
+		ok('description' in questlineProps, 'questline must have description');
+	});
+
 	it('multi-action tools list all variant properties at the root level', () => {
 		const expectedProperties: Record<string, string[]> = {
 			plan_quest: [

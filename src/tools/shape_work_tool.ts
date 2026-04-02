@@ -13,6 +13,7 @@ import type { SettleRumorInput } from '../rumors/types.ts';
 import { translateToolError } from './tool_errors.ts';
 import {
 	arraySchema,
+	booleanSchema,
 	defineQuestlogTool,
 	enumSchema,
 	integerSchema,
@@ -273,9 +274,9 @@ export function shapeWorkToolHandler(
 export const shapeWorkTool = defineQuestlogTool<ShapeWorkToolInput, ShapeWorkToolResult>({
 	name: shapeWorkToolName,
 	description:
-		'Shape real work structure by settling rumors, creating quests or questlines, and attaching or detaching quests from questlines.',
+		'Create a quest (with timing, tags, and objective in one call), create a questline, settle a rumor into concrete work, or manage quest-questline membership. Use create_quest for clear commitments — include tags and timing directly to avoid follow-up calls.',
 	whenToUse:
-		'Use this when deciding what real work exists and how it should be grouped before or around execution.',
+		'Use this when deciding what real work exists and how it should be grouped before or around execution. Prefer a single create_quest call with all fields over separate create + plan_quest + tag_work calls.',
 	whenNotToUse:
 		'Do not use this for quest execution steps like starting, finishing, abandoning, or logging effort.',
 	sideEffects: 'writes_state',
@@ -287,10 +288,12 @@ export const shapeWorkTool = defineQuestlogTool<ShapeWorkToolInput, ShapeWorkToo
 			'Which structure-shaping action to perform, such as settling a rumor, creating a quest, or attaching a quest to a questline.',
 		rumorId: 'The rumor to dismiss, reopen, or settle when the action targets intake.',
 		questline:
-			'Questline creation data used when creating a questline directly or as part of rumor settlement.',
-		quests: 'Concrete quest creation inputs used when settling a rumor into real work.',
+			'Questline creation data used when creating a questline directly or as part of rumor settlement. Include description for context.',
+		quests:
+			'Concrete quest creation inputs when settling a rumor into real work. Each quest supports the same fields as the quest property — include timing and tags directly.',
 		settledAt: 'Optional settlement timestamp for rumor settlement.',
-		quest: 'Quest creation input used when directly creating one concrete quest.',
+		quest:
+			'Quest creation input when directly creating one concrete quest. Include timing fields (dueAt, scheduledStartAt, etc.), tags, and rewards to create a fully specified quest in one call.',
 		questId: 'The concrete quest being attached to or detached from a questline.',
 		questlineId: 'The questline that should receive the quest for attach actions.',
 		dismissedAt: 'Optional dismissal timestamp for dismissing a rumor.',
@@ -315,12 +318,31 @@ export const shapeWorkTool = defineQuestlogTool<ShapeWorkToolInput, ShapeWorkToo
 				{
 					title: stringSchema('Title for the new quest.'),
 					objective: stringSchema('Objective for the new quest.'),
+					questlineId: integerSchema('Optional questline to place the quest in.'),
+					tags: arraySchema(stringSchema('Tag name.'), 'Optional tags to apply at creation.'),
+					rewards: arraySchema(
+						objectSchema(
+							{
+								kind: stringSchema('Reward kind.'),
+								name: stringSchema('Reward name.'),
+							},
+							['kind', 'name'],
+						),
+						'Optional rewards to attach at creation.',
+					),
+					dueAt: integerSchema('Optional latest acceptable completion timestamp.'),
+					notBeforeAt: integerSchema('Optional earliest actionable timestamp.'),
+					scheduledStartAt: integerSchema('Optional planned schedule window start.'),
+					scheduledEndAt: integerSchema('Optional planned schedule window end.'),
+					allDay: booleanSchema('Whether the scheduled window is all-day.'),
+					estimateSeconds: integerSchema('Optional active-effort estimate in seconds.'),
 				},
 				['title', 'objective'],
 			),
 			questline: objectSchema(
 				{
 					title: stringSchema('Questline title.'),
+					description: stringSchema('Optional questline description.'),
 				},
 				[],
 			),
@@ -332,15 +354,32 @@ export const shapeWorkTool = defineQuestlogTool<ShapeWorkToolInput, ShapeWorkToo
 					{
 						title: stringSchema('Title for a created quest.'),
 						objective: stringSchema('Objective for a created quest.'),
+						tags: arraySchema(stringSchema('Tag name.'), 'Optional tags to apply at creation.'),
+						rewards: arraySchema(
+							objectSchema(
+								{
+									kind: stringSchema('Reward kind.'),
+									name: stringSchema('Reward name.'),
+								},
+								['kind', 'name'],
+							),
+							'Optional rewards to attach at creation.',
+						),
+						dueAt: integerSchema('Optional latest acceptable completion timestamp.'),
+						notBeforeAt: integerSchema('Optional earliest actionable timestamp.'),
+						scheduledStartAt: integerSchema('Optional planned schedule window start.'),
+						scheduledEndAt: integerSchema('Optional planned schedule window end.'),
+						allDay: booleanSchema('Whether the scheduled window is all-day.'),
+						estimateSeconds: integerSchema('Optional active-effort estimate in seconds.'),
 					},
 					['title', 'objective'],
 				),
-				'Quests to create during rumor settlement.',
+				'Quests to create during rumor settlement. Include timing and tags directly.',
 			),
 			now: integerSchema('Optional timestamp for membership or reopen changes.'),
 		},
 		['action'],
-		'Shape the work graph by settling rumors, creating work, or moving quests into questlines.',
+		'Create quests with timing and tags, create questlines, settle rumors into work, or manage quest-questline membership.',
 	),
 	handler: shapeWorkToolHandler,
 });
