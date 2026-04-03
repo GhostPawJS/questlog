@@ -8,7 +8,7 @@ import type { CreateQuestlineInput } from '../questlines/types.ts';
 import { createQuest, getQuestDetail } from '../quests/index.ts';
 import type { CreateQuestInput } from '../quests/types.ts';
 import { getRumorDetail } from '../rumors/get_rumor_detail.ts';
-import { dismissRumor, reopenRumor, settleRumor } from '../rumors/index.ts';
+import { dismissRumor, reopenRumor, settleRumor, updateRumor } from '../rumors/index.ts';
 import type { SettleRumorInput } from '../rumors/types.ts';
 import { translateToolError } from './tool_errors.ts';
 import {
@@ -38,7 +38,8 @@ export type ShapeWorkToolInput =
 	| { action: 'detach_quest_from_questline'; now?: number; questId: number }
 	| { action: 'dismiss_rumor'; dismissedAt?: number; rumorId: number }
 	| { action: 'reopen_rumor'; now?: number; rumorId: number }
-	| ({ action: 'settle_rumor'; rumorId: number } & SettleRumorInput);
+	| ({ action: 'settle_rumor'; rumorId: number } & SettleRumorInput)
+	| { action: 'update_rumor'; rumorId: number; title?: string; details?: string; now?: number };
 
 export interface ShapeWorkToolData {
 	action: ShapeWorkToolInput['action'];
@@ -263,6 +264,27 @@ export function shapeWorkToolHandler(
 					},
 				);
 			}
+			case 'update_rumor': {
+				updateRumor(db, input.rumorId, {
+					...(input.title != null && { title: input.title }),
+					...(input.details != null && { details: input.details }),
+					...(input.now != null && { now: input.now }),
+				});
+				const detail = getRumorDetail(db, input.rumorId);
+				return toolSuccess(
+					`Updated rumor \`${detail.title}\`.`,
+					{
+						action: input.action,
+						primary: toRumorRef(detail),
+						updated: [toRumorRef(detail)],
+						rumor: detail,
+					},
+					{
+						entities: [toRumorRef(detail)],
+						next: [inspectItemNext(toRumorRef(detail))],
+					},
+				);
+			}
 		}
 	} catch (error) {
 		return translateToolError(error, {
@@ -297,7 +319,10 @@ export const shapeWorkTool = defineQuestlogTool<ShapeWorkToolInput, ShapeWorkToo
 		questId: 'The concrete quest being attached to or detached from a questline.',
 		questlineId: 'The questline that should receive the quest for attach actions.',
 		dismissedAt: 'Optional dismissal timestamp for dismissing a rumor.',
-		now: 'Optional timestamp for reopen or questline membership changes.',
+		now: 'Optional timestamp for reopen, questline membership, or rumor update.',
+		title: 'New title for the update_rumor action.',
+		details:
+			'New or enriched context for the update_rumor action. Append evidence as rumors accumulate information across conversations.',
 	},
 	outputDescription:
 		'Returns the changed or created rumor, quest, questline, or created quest set for the selected shape-work action, plus purpose-shaped primary and created or updated refs. Repeated safe actions return structured no-op results, and rumor settlement can ask for missing structure instead of failing.',
@@ -311,6 +336,7 @@ export const shapeWorkTool = defineQuestlogTool<ShapeWorkToolInput, ShapeWorkToo
 				'dismiss_rumor',
 				'reopen_rumor',
 				'settle_rumor',
+				'update_rumor',
 			]),
 			questId: integerSchema('Quest to attach or detach.'),
 			questlineId: integerSchema('Questline that should receive the quest.'),
@@ -376,10 +402,12 @@ export const shapeWorkTool = defineQuestlogTool<ShapeWorkToolInput, ShapeWorkToo
 				),
 				'Quests to create during rumor settlement. Include timing and tags directly.',
 			),
-			now: integerSchema('Optional timestamp for membership or reopen changes.'),
+			now: integerSchema('Optional timestamp for membership, reopen, or rumor update.'),
+			title: stringSchema('New title for the update_rumor action.'),
+			details: stringSchema('New or enriched context text for the update_rumor action.'),
 		},
 		['action'],
-		'Create quests with timing and tags, create questlines, settle rumors into work, or manage quest-questline membership.',
+		'Create quests with timing and tags, create questlines, settle rumors into work, manage quest-questline membership, or enrich open rumors with new context.',
 	),
 	handler: shapeWorkToolHandler,
 });

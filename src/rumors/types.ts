@@ -32,6 +32,16 @@ export interface CaptureRumorInput {
 }
 
 /**
+ * Input for enriching an existing open rumor with new title or details.
+ * At least one of title or details must be provided.
+ */
+export interface UpdateRumorInput {
+	title?: string;
+	details?: string;
+	now?: number;
+}
+
+/**
  * A downstream artifact created from rumor settlement.
  */
 export interface RumorOutput {

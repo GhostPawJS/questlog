@@ -93,6 +93,7 @@ describe('tool registry', () => {
 				'dismiss_rumor',
 				'reopen_rumor',
 				'settle_rumor',
+				'update_rumor',
 			],
 			organize_work: [
 				'add_unlock',
@@ -193,6 +194,8 @@ describe('tool registry', () => {
 				'settledAt',
 				'quests',
 				'now',
+				'title',
+				'details',
 			],
 			organize_work: [
 				'action',

@@ -37,6 +37,7 @@ export {
 	reopenRumor,
 	settleRumor,
 	softDeleteRumor,
+	updateRumor,
 } from './rumors/index.ts';
 export {
 	replaceQuestTags,

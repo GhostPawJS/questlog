@@ -14,4 +14,6 @@ export type {
 	RumorState,
 	SettleRumorInput,
 	SettleRumorResult,
+	UpdateRumorInput,
 } from './types.ts';
+export { updateRumor } from './update_rumor.ts';
