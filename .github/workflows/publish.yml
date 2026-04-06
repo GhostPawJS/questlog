@@ -47,7 +47,6 @@ jobs:
 
       - name: Publish to npm
         run: npm publish --provenance
-        env:
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
