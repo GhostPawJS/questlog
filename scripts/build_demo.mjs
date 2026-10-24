@@ -2,6 +2,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import * as esbuild from 'esbuild';
+import { addDocsChrome, minifyCss } from './docs_chrome.mjs';
 
 const OUT_DIR = 'demo';
 const ENTRY = 'src/demo/main.tsx';
@@ -16,6 +17,7 @@ const buildOptions = {
 	platform: 'browser',
 	target: ['es2022'],
 	sourcemap: true,
+	minify: !WATCH,
 	jsx: 'automatic',
 	jsxImportSource: 'preact',
 	loader: { '.wasm': 'file' },
@@ -777,6 +779,9 @@ details.explainer .explainer-body {
 
 const FAVICON = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='30' fill='%23080c14' stroke='%23ffaa00' stroke-width='3'/><text x='32' y='46' text-anchor='middle' font-family='sans-serif' font-weight='bold' font-size='40' fill='%23ffaa00'>!</text></svg>`;
 
+// The top bar and footer sit in the page flow around the demo.
+const LAYOUT_CSS = '';
+
 function writeHtmlShell() {
 	return `<!DOCTYPE html>
 <html lang="en">
@@ -798,7 +803,7 @@ function writeHtmlShell() {
 <!-- ghostpaw-docs-shell -->
 <style>.pre{max-width:42rem;margin:4rem auto;padding:0 1.25rem;font:400 1rem/1.6 system-ui,sans-serif;color:#dce7f3}.pre h1{font-size:1.6rem;line-height:1.25;margin:0 0 .75rem}.pre a{color:#62e6f2}.pre li{margin:.25rem 0}#app:not(:empty)~.pre{display:none}@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}</style>
 <link rel="icon" href="${FAVICON}" />
-<style>${CSS}</style>
+<style>${minifyCss(CSS)}</style>
 </head>
 <body>
 <div id="app"></div>
@@ -833,7 +838,10 @@ async function main() {
 		console.log('[demo] build complete');
 	}
 
-	await writeFile(join(OUT_DIR, 'index.html'), writeHtmlShell());
+	await writeFile(
+		join(OUT_DIR, 'index.html'),
+		addDocsChrome(writeHtmlShell(), { lib: 'questlog', layoutCss: LAYOUT_CSS }),
+	);
 	console.log('[demo] wrote index.html');
 }
 
