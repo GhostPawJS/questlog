@@ -181,6 +181,8 @@ The current tool set is:
 These tools are intentionally shaped around user intent rather than raw storage
 operations. They are the layer an agent should execute against.
 
+For `run_quest` with `action: "start"`, unmet unlock prerequisites return an `invalid_state` error naming the blockers, with hints to inspect and finish them. The quest stays unstarted. Optional `force: true` starts it with a warning; the default is false. The library `startQuest` remains permissive.
+
 ## Skills
 
 The skills are the workflow layer.

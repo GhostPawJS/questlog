@@ -34,6 +34,12 @@ errors include `error`. Optional `warnings` and `next` give further guidance.
 
 ## Layout
 
+- `src/surfaces/`: generic MCP, stdio, CLI, skill and manifest renderers.
+- `src/surface/`: Questlog bindings; `src/mcp.ts`, `src/cli.ts`, `src/mcp_server_bin.ts`: entries.
+- `scripts/surfaces/`: generates `SKILL.md`, `skills/questlog/`, directory manifests and MCP Bundle metadata. Run `npm run surfaces`; do not edit outputs by hand.
+- `scripts/guard/`: size, API, consumer, startup and ratchet guards; `scripts/bench/`: benchmarks.
+
+
 - `src/index.ts`: public entry; `src/read.ts` and `src/write.ts`: operation namespaces.
 - `src/quests/`, `questlines/`, `rumors/`, `repeatable_quests/`, `tags/`,
   `rewards/`, `unlocks/`: domain operations and schemas under `src/`.
@@ -49,7 +55,7 @@ Run the full gate after changes:
 
 ```sh
 export PATH=/opt/node24/bin:$PATH
-npm run lint && npm run typecheck && npm test && npm run build
+npm run check
 ```
 
 Use `node:test` and `node:assert` in colocated `*.test.ts` files. Assert real
@@ -65,3 +71,10 @@ Maintainers release with `npm run release:patch` or `npm run release:minor`.
 These commands increment the version, create a tag, and push commits and tags;
 the tag triggers CI verification and npm publication with provenance.
 Leave review changes uncommitted; do not run release or deployment commands during a sweep.
+
+
+The single `npm run check` gate checks types, lint, tests, build, dependencies,
+generated surfaces, size, API, packed consumers, startup, and ratchet.
+Budget increases require `[budget-increase-approved]`, API changes require
+`[api-change-approved]`, and guard, workflow or lint configuration changes
+require `[guardrails-change-approved]` in the maintainer commit message.

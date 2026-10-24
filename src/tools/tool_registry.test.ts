@@ -177,6 +177,7 @@ describe('tool registry', () => {
 				'action',
 				'questId',
 				'startedAt',
+				'force',
 				'effortSeconds',
 				'now',
 				'outcome',

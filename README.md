@@ -1,4 +1,5 @@
 # @ghostpaw/questlog
+[![MCP Registry](https://img.shields.io/badge/MCP_Registry-io.github.GhostPawJS%2Fquestlog-06d6a0)](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.GhostPawJS%2Fquestlog/versions/latest)
 
 [![npm](https://img.shields.io/npm/v/@ghostpaw/questlog)](https://www.npmjs.com/package/@ghostpaw/questlog)
 [![node](https://img.shields.io/node/v/@ghostpaw/questlog)](https://nodejs.org)
@@ -10,6 +11,78 @@
 A unified task and calendar model for Node.js, built on SQLite.
 
 Questlog treats tasks, events, deadlines, recurring commitments, and loose intake as one coherent data model instead of separate systems. It ships as a single prebundled blob with zero runtime dependencies, designed for two audiences at once: human developers working directly in code, and LLM agents operating through a structured tool facade.
+
+## MCP server
+
+Every client below starts the same stdio server: `npx -y @ghostpaw/questlog mcp`.
+Data lives in `~/.ghostpaw/questlog.db` unless the `GHOSTPAW_QUESTLOG_DB`
+environment variable (absolute path) or `--db <path>` says otherwise.
+
+**Claude Code**
+
+```bash
+claude mcp add ghostpaw-questlog -- npx -y @ghostpaw/questlog mcp
+```
+
+or as a plugin, which also installs the skill:
+
+```bash
+/plugin marketplace add GhostPawJS/questlog
+/plugin install ghostpaw-questlog@ghostpaw-questlog
+```
+
+**Codex CLI** (`~/.codex/config.toml`)
+
+```toml
+[mcp_servers.ghostpaw-questlog]
+command = "npx"
+args = ["-y", "@ghostpaw/questlog", "mcp"]
+```
+
+**Cursor** (`.cursor/mcp.json`), **Claude Desktop** (`claude_desktop_config.json`)
+or a project `.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "ghostpaw-questlog": {
+      "command": "npx",
+      "args": ["-y", "@ghostpaw/questlog", "mcp"]
+    }
+  }
+}
+```
+
+Claude Desktop users can also install `server.mcpb` from the
+[latest GitHub release](https://github.com/GhostPawJS/questlog/releases/latest).
+A Dockerfile is included for container hosts:
+`docker build -t ghostpaw-questlog . && docker run -i --rm -v questlog:/data ghostpaw-questlog`.
+
+The server speaks MCP 2026-07-28 (stateless, `server/discover`) and the
+initialize-based revisions 2025-11-25, 2025-06-18, 2025-03-26 and 2024-11-05.
+
+## CLI
+
+```bash
+npx -y @ghostpaw/questlog tools
+npx -y @ghostpaw/questlog call capture_rumor '{"title":"Review release notes"}'
+npx -y @ghostpaw/questlog call search_questlog '{"query":"release notes"}'
+```
+
+Install globally for the `ghostpaw-questlog` binary: `npm i -g @ghostpaw/questlog`.
+`ghostpaw-questlog mcp` starts the stdio server.
+
+## Agent Skill
+
+`SKILL.md` (repo root) and `skills/questlog/SKILL.md` follow the
+[Agent Skills](https://agentskills.io) format and ship in the npm package.
+Copy `skills/questlog/` into your agent's skills folder, or print it:
+
+```bash
+npx -y @ghostpaw/questlog skill > SKILL.md
+```
+
+
 
 ## Install
 
@@ -175,6 +248,8 @@ Twelve tools shaped around operator intent, not raw storage operations:
 | `retire_work` | Soft-delete or archive things that should leave the active surface |
 
 Each tool exports runtime metadata — name, description, JSON Schema, input descriptions, side-effect level — so agent harnesses can wire them without reading docs.
+
+The `run_quest` tool refuses to start a quest with unmet unlock prerequisites and returns the blocking quests with inspection hints. Set `force: true` to start anyway with a warning. The library `startQuest` function remains permissive.
 
 ## Key Properties
 

@@ -10,6 +10,7 @@ import type { FollowupQuestInput } from '../quests/types.ts';
 import { translateToolError } from './tool_errors.ts';
 import {
 	arraySchema,
+	booleanSchema,
 	defineQuestlogTool,
 	enumSchema,
 	integerSchema,
@@ -33,7 +34,7 @@ export type RunQuestToolInput =
 	  }
 	| { action: 'finish'; outcome: string; questId: number; resolvedAt?: number }
 	| { action: 'log_effort'; effortSeconds: number; now?: number; questId: number }
-	| { action: 'start'; questId: number; startedAt?: number };
+	| { action: 'start'; questId: number; startedAt?: number; force?: boolean };
 
 export interface RunQuestToolData {
 	action: RunQuestToolInput['action'];
@@ -74,6 +75,33 @@ export function runQuestToolHandler(
 						},
 					);
 				}
+				const blockers = db
+					.prepare(
+						`SELECT blocker.id FROM quest_unlocks prerequisite
+                     JOIN quests blocker ON blocker.id = prerequisite.from_quest_id
+                     WHERE prerequisite.to_quest_id = ?
+                       AND prerequisite.deleted_at IS NULL
+                       AND blocker.deleted_at IS NULL
+                       AND NOT (blocker.resolved_at IS NOT NULL AND blocker.success = 1)
+                     ORDER BY blocker.id`,
+					)
+					.all<{ id: number }>(current.id)
+					.map(({ id }) => getQuestDetail(db, id));
+				if (blockers.length && !input.force) {
+					return toolFailure(
+						'domain',
+						'invalid_state',
+						`Quest "${current.title}" is blocked by ${blockers.map((quest) => quest.title).join(', ')}.`,
+						'Finish the blocking prerequisites before starting this quest, or set force to true.',
+						{
+							entities: [toQuestRef(current), ...blockers.map(toQuestRef)],
+							next: blockers.map((quest) => ({
+								...inspectItemNext(toQuestRef(quest)),
+								message: `Inspect and finish blocker "${quest.title}".`,
+							})),
+						},
+					);
+				}
 				startQuest(db, input.questId, input.startedAt);
 				const detail = getQuestDetail(db, input.questId);
 				return toolSuccess(
@@ -86,6 +114,14 @@ export function runQuestToolHandler(
 					},
 					{
 						entities: [toQuestRef(detail)],
+						warnings: blockers.length
+							? [
+									{
+										code: 'derived_value_used',
+										message: `Forced start with unmet prerequisites: ${blockers.map((quest) => quest.title).join(', ')}.`,
+									},
+								]
+							: undefined,
 					},
 				);
 			}
@@ -199,6 +235,7 @@ export const runQuestTool = defineQuestlogTool<RunQuestToolInput, RunQuestToolRe
 		action: 'Which execution lifecycle step to perform on the quest.',
 		questId: 'The concrete quest whose execution state should change.',
 		startedAt: 'Optional actual start timestamp for the start action.',
+		force: 'Start despite unmet unlock prerequisites. Defaults to false.',
 		effortSeconds: 'Positive active-effort increment in seconds for the log-effort action.',
 		now: 'Optional timestamp for the effort log action.',
 		outcome: 'Terminal outcome text for finish or abandon actions.',
@@ -219,6 +256,7 @@ export const runQuestTool = defineQuestlogTool<RunQuestToolInput, RunQuestToolRe
 			]),
 			questId: integerSchema('Quest whose execution state should change.'),
 			startedAt: integerSchema('Optional start timestamp for the start action.'),
+			force: booleanSchema('Start despite unmet unlock prerequisites. Defaults to false.'),
 			effortSeconds: integerSchema(
 				'Positive active-effort increment in seconds. Required for log_effort.',
 			),

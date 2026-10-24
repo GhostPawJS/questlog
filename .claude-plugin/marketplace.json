@@ -1,0 +1,13 @@
+{
+  "name": "ghostpaw-questlog",
+  "owner": {
+    "name": "Anonyfox"
+  },
+  "plugins": [
+    {
+      "name": "ghostpaw-questlog",
+      "source": "./",
+      "description": "Local tasks, calendar commitments, and recurring work."
+    }
+  ]
+}

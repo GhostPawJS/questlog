@@ -1,0 +1,125 @@
+{
+  "manifest_version": "0.3",
+  "name": "ghostpaw-questlog",
+  "display_name": "GhostPaw Questlog",
+  "version": "0.5.1",
+  "description": "Local tasks, calendar commitments, and recurring work.",
+  "long_description": "Local tasks, calendar commitments, and recurring work. Stores data in a local SQLite database.",
+  "author": {
+    "name": "Anonyfox",
+    "email": "max@anonyfox.com",
+    "url": "https://anonyfox.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GhostPawJS/questlog.git"
+  },
+  "homepage": "https://github.com/GhostPawJS/questlog",
+  "documentation": "https://github.com/GhostPawJS/questlog/blob/main/README.md",
+  "support": "https://github.com/GhostPawJS/questlog/issues",
+  "license": "MIT",
+  "keywords": [
+    "quest",
+    "task",
+    "todo",
+    "calendar",
+    "sqlite",
+    "rpg",
+    "productivity",
+    "llm",
+    "ai",
+    "agent",
+    "tools",
+    "rrule",
+    "recurrence",
+    "typescript",
+    "zero-dependencies",
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "agent-skills",
+    "cli"
+  ],
+  "server": {
+    "type": "node",
+    "entry_point": "server/mcp-server.js",
+    "mcp_config": {
+      "command": "node",
+      "args": [
+        "${__dirname}/server/mcp-server.js"
+      ],
+      "env": {
+        "GHOSTPAW_QUESTLOG_DB": "${user_config.db_path}"
+      }
+    }
+  },
+  "user_config": {
+    "db_path": {
+      "type": "string",
+      "title": "Database path",
+      "description": "Path to the local SQLite database.",
+      "required": false,
+      "default": "${HOME}/.ghostpaw/questlog.db"
+    }
+  },
+  "tools": [
+    {
+      "name": "search_questlog",
+      "description": "Search quests and rumors by text when you need to find an existing item before inspecting or changing it."
+    },
+    {
+      "name": "review_questlog",
+      "description": "Review one operational questlog surface such as available quests, open rumors, blocked work, or due repeatable anchors."
+    },
+    {
+      "name": "inspect_questlog_item",
+      "description": "Inspect one specific questlog item in depth and return its richer structured detail and important related refs."
+    },
+    {
+      "name": "capture_rumor",
+      "description": "Capture uncertain incoming work as a rumor so it can be triaged later without prematurely turning it into committed execution."
+    },
+    {
+      "name": "shape_work",
+      "description": "Create a quest (with timing, tags, and objective in one call), create a questline, settle a rumor into concrete work, or manage quest-questline membership. Use create_quest for clear commitments — include tags and timing directly to avoid follow-up calls."
+    },
+    {
+      "name": "plan_quest",
+      "description": "Refine a quest by revising its objective before actual start or by changing its temporal planning fields."
+    },
+    {
+      "name": "run_quest",
+      "description": "Run quest lifecycle actions such as starting, logging effort, finishing, abandoning, or abandoning and spawning follow-up quests atomically."
+    },
+    {
+      "name": "organize_work",
+      "description": "Organize grouping and dependency structure by updating questlines or changing hard unlock prerequisites between concrete quests."
+    },
+    {
+      "name": "manage_repeatable",
+      "description": "Manage recurring work definitions by creating, updating, previewing, spawning, or archiving repeatable quests."
+    },
+    {
+      "name": "tag_work",
+      "description": "Classify work by adding, removing, or replacing tags on quests and by replacing the future tag template set on repeatable quests."
+    },
+    {
+      "name": "reward_work",
+      "description": "Manage rewards by adding, updating, removing, or claiming quest rewards, or by replacing future reward templates on repeatable quests."
+    },
+    {
+      "name": "retire_work",
+      "description": "Hide an item from normal active operation without rewriting history by soft-deleting a rumor, quest, questline, or repeatable quest."
+    }
+  ],
+  "compatibility": {
+    "platforms": [
+      "darwin",
+      "win32",
+      "linux"
+    ],
+    "runtimes": {
+      "node": ">=24.0.0"
+    }
+  }
+}

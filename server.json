@@ -1,0 +1,36 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.GhostPawJS/questlog",
+  "description": "Local tasks, calendar commitments, and recurring work.",
+  "title": "GhostPaw Questlog",
+  "version": "0.5.1",
+  "repository": {
+    "url": "https://github.com/GhostPawJS/questlog.git",
+    "source": "github"
+  },
+  "websiteUrl": "https://github.com/GhostPawJS/questlog",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "@ghostpaw/questlog",
+      "version": "0.5.1",
+      "transport": {
+        "type": "stdio"
+      },
+      "packageArguments": [
+        {
+          "type": "positional",
+          "value": "mcp"
+        }
+      ],
+      "environmentVariables": [
+        {
+          "name": "GHOSTPAW_QUESTLOG_DB",
+          "description": "SQLite database path (default: ~/.ghostpaw/questlog.db)",
+          "isRequired": false
+        }
+      ]
+    }
+  ]
+}

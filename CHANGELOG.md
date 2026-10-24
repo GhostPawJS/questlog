@@ -7,11 +7,15 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ### Added
 
+- MCP stdio server and public MCP entry, CLI, and Agent Skill generated from the tool registry.
+- Directory manifests, Dockerfile, and MCP Bundle packaging.
+- Size, API, consumer, startup, and ratchet guards with benchmark fixtures.
 - Contributor and usage guidance, including caller-managed SQLite WAL and a 5000 ms busy timeout (2026-10-24).
 - Release history reconstructed from version tags and commits (2026-10-24).
 
 ### Changed
 
+- run_quest refuses to start a blocked quest unless force is true; the library startQuest is unchanged.
 - CI verifies that the package has no runtime dependencies (2026-10-24).
 
 ### Fixed

@@ -1,0 +1,45 @@
+{
+  "name": "ghostpaw-questlog",
+  "version": "0.5.1",
+  "description": "Local tasks, calendar commitments, and recurring work.",
+  "author": {
+    "name": "Anonyfox",
+    "email": "max@anonyfox.com",
+    "url": "https://anonyfox.com"
+  },
+  "homepage": "https://github.com/GhostPawJS/questlog",
+  "repository": "https://github.com/GhostPawJS/questlog.git",
+  "license": "MIT",
+  "keywords": [
+    "quest",
+    "task",
+    "todo",
+    "calendar",
+    "sqlite",
+    "rpg",
+    "productivity",
+    "llm",
+    "ai",
+    "agent",
+    "tools",
+    "rrule",
+    "recurrence",
+    "typescript",
+    "zero-dependencies",
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "agent-skills",
+    "cli"
+  ],
+  "mcpServers": {
+    "ghostpaw-questlog": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@ghostpaw/questlog@0.5.1",
+        "mcp"
+      ]
+    }
+  }
+}
