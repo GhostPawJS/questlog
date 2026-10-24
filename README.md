@@ -1,13 +1,14 @@
+<a href="https://questlog.ghostpaw.dev/"><img src="https://raw.githubusercontent.com/GhostPawJS/questlog/main/.github/social-preview.png" alt="GhostPaw questlog: Your agent said it was done. Was it?" width="100%"></a>
+
 # @ghostpaw/questlog
 
-[![npm](https://img.shields.io/npm/v/@ghostpaw/questlog)](https://www.npmjs.com/package/@ghostpaw/questlog)
-[![node](https://img.shields.io/node/v/@ghostpaw/questlog)](https://nodejs.org)
-[![license](https://img.shields.io/npm/l/@ghostpaw/questlog)](LICENSE)
-[![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)](package.json)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
-[![Live Demo](https://img.shields.io/badge/demo-live-06d6a0?style=flat&logo=github)](https://questlog.ghostpaw.dev/docs/)
-[![MCP Registry](https://img.shields.io/badge/MCP_Registry-io.github.GhostPawJS%2Fquestlog-06d6a0)](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.GhostPawJS%2Fquestlog/versions/latest)
-[![Site](https://img.shields.io/badge/site-questlog.ghostpaw.dev-62e6f2)](https://questlog.ghostpaw.dev/)
+[![npm](https://img.shields.io/npm/v/@ghostpaw/questlog?style=flat-square&labelColor=0a1119&color=62e6f2&label=npm)](https://www.npmjs.com/package/@ghostpaw/questlog) [![CI](https://img.shields.io/github/actions/workflow/status/GhostPawJS/questlog/ci.yml?branch=main&style=flat-square&labelColor=0a1119&label=CI)](https://github.com/GhostPawJS/questlog/actions/workflows/ci.yml) [![site](https://img.shields.io/badge/site-questlog.ghostpaw.dev-62e6f2?style=flat-square&labelColor=0a1119)](https://questlog.ghostpaw.dev/) [![runtime deps](https://img.shields.io/badge/runtime_deps-0-7af0b4?style=flat-square&labelColor=0a1119)](package.json) [![MCP Registry](https://img.shields.io/badge/MCP_Registry-io.github.GhostPawJS%2Fquestlog-b39dff?style=flat-square&labelColor=0a1119)](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.GhostPawJS%2Fquestlog/versions/latest) [![node](https://img.shields.io/badge/node-%E2%89%A524-93a5b9?style=flat-square&labelColor=0a1119)](https://nodejs.org) [![license](https://img.shields.io/npm/l/@ghostpaw/questlog?style=flat-square&labelColor=0a1119&color=93a5b9)](LICENSE)
+
+**Agent tasks as quests that finish only with a written outcome.**
+
+```bash
+npm install @ghostpaw/questlog
+```
 
 A unified task and calendar model for Node.js, built on SQLite.
 
