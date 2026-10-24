@@ -7,6 +7,8 @@ import type { QuestlogSearchResult } from './search_result.ts';
 
 /**
  * Full-text search across quest and rumor content.
+ * CROSS JOIN keeps the FTS table as the outer loop; with a plain JOIN SQLite
+ * may walk idx_quests_deleted_at and probe the FTS index once per quest.
  */
 export function searchQuestlog(db: QuestlogDb, query: string): QuestlogSearchResult[] {
 	const trimmed = query.trim();
@@ -40,8 +42,7 @@ export function searchQuestlog(db: QuestlogDb, query: string): QuestlogSearchRes
                   AND blocker.deleted_at IS NULL
                   AND NOT (blocker.resolved_at IS NOT NULL AND blocker.success = 1)
               ) AS has_blockers
-       FROM quests_fts
-       JOIN quests q ON q.id = quests_fts.rowid
+       FROM quests_fts CROSS JOIN quests q ON q.id = quests_fts.rowid
        WHERE quests_fts MATCH ? AND q.deleted_at IS NULL`,
 		)
 		.all(trimmed)
@@ -79,8 +80,7 @@ export function searchQuestlog(db: QuestlogDb, query: string): QuestlogSearchRes
               snippet(rumors_fts, 1, '[', ']', '…', 10) AS snippet,
               r.settled_at,
               r.dismissed_at
-       FROM rumors_fts
-       JOIN rumors r ON r.id = rumors_fts.rowid
+       FROM rumors_fts CROSS JOIN rumors r ON r.id = rumors_fts.rowid
        WHERE rumors_fts MATCH ? AND r.deleted_at IS NULL`,
 		)
 		.all(trimmed)

@@ -5,6 +5,10 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Changed
+
+- Search no longer scans the quests table and probes the full-text index once per row. The full-text index now drives the join, which takes a search over 10,000 quests from hundreds of milliseconds to well under a millisecond for selective queries. Results and ordering are unchanged, and no schema change or migration is needed.
+
 ## [0.6.0] - 2026-10-24
 
 ### Added

@@ -147,3 +147,32 @@ describe('searchQuestlog', () => {
 		strictEqual(markerByKey.get(`rumor:${dismissedRumor.id}`), null);
 	});
 });
+
+describe('searchQuestlog query plan', () => {
+	it('drives the joins from the FTS index, not a base-table scan', () => {
+		const trace: string[] = [];
+		const prepare = db.prepare.bind(db);
+		const spy = Object.assign(Object.create(db), {
+			prepare: (sql: string) => {
+				trace.push(sql);
+				return prepare(sql);
+			},
+		}) as QuestlogDb;
+		createQuest(db, { title: 'Comet', objective: 'Track the comet', now: 1 });
+		captureRumor(db, { title: 'Comet rumor', details: 'comet sighting', now: 1 });
+		strictEqual(searchQuestlog(spy, 'comet').length, 2);
+		strictEqual(trace.length, 2);
+		for (const sql of trace) {
+			const plan = db
+				.prepare(`EXPLAIN QUERY PLAN ${sql}`)
+				.all('comet')
+				.map((row) => String(row.detail));
+			strictEqual(plan[0]?.includes('VIRTUAL TABLE'), true, plan.join(' | '));
+			strictEqual(
+				plan.some((detail) => /USING (INTEGER PRIMARY KEY|INDEX sqlite_autoindex)/.test(detail)),
+				true,
+				plan.join(' | '),
+			);
+		}
+	});
+});

@@ -260,6 +260,24 @@ The `run_quest` tool refuses to start a quest with unmet unlock prerequisites an
 - **WoW-style markers.** Semantic marker IDs (`attention.available`, `progress.complete`, ...) computed on every read, renderable to any channel.
 - **Colocated tests.** Every non-type module has a colocated `.test.ts` file. The behavior described in docs is backed by executable coverage.
 
+## Performance
+
+Measured with `npm run bench` on Node 24.14.0, Linux, Intel Xeon (shared
+cloud vCPU), 10,000 quests in a file-backed database:
+
+| Operation | p50 | p95 |
+|---|---:|---:|
+| `search_questlog` (tool) | 0.06 ms | 0.07 ms |
+| MCP `tools/call` search, stdio framing included | 0.07 ms | 0.08 ms |
+| `read.searchQuestlog`, one matching quest | 0.07 ms | 0.08 ms |
+| `read.searchQuestlog`, all 10,000 quests matching | 26.6 ms | 41.9 ms |
+| `write.createQuest` | 0.22 ms | 0.69 ms |
+
+The library search returns every match with a highlighted snippet, so a query
+that matches the whole log pays for building all of those rows. Cold start
+(process spawn to first response, median) is about 30 ms for `--version` and
+the MCP server.
+
 ## Package Surface
 
 ```ts

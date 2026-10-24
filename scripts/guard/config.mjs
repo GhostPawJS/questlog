@@ -76,6 +76,7 @@ export function hotPaths(api, db, server) {
 	return {
 		'write.createQuest': (i) => api.write.createQuest(db, seedClaim(i)),
 		'read.searchQuestlog': () => api.read.searchQuestlog(db, 'planning'),
+		'read.searchQuestlog 1 hit': () => api.read.searchQuestlog(db, '"project 4242"'),
 		search_questlog: () => api.tools.getQuestlogToolByName('search_questlog').handler(db, search),
 		'MCP tools/call': () => server.handleLine(JSON.stringify(searchRequest)),
 	};
