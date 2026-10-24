@@ -207,7 +207,7 @@ All domain types are also available at the root for TypeScript consumers:
 import type {
   QuestlogDb,
   QuestState,
-  QuestDetailRecord,
+  QuestDetail,
   CreateQuestInput,
   QuestlogSearchResult,
   QuestlogToolDefinition,
