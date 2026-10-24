@@ -21,17 +21,17 @@
 </head>
 <body>
 <header class="top">
-  <a class="brand" href="{{.urls.home}}">GhostPaw</a>
+  <a class="brand" href="{{.urls.home}}">GhostPaw<span class="crumb">/questlog</span></a>
   <nav aria-label="questlog elsewhere">
+    <a href="{{.urls.demo}}">Live demo</a>
     <a href="{{.urls.github}}">GitHub</a>
     <a href="{{.urls.npm}}">npm</a>
-    <a href="{{.urls.demo}}">Live demo</a>
   </nav>
 </header>
 <main>
   <section class="hero" aria-labelledby="hero-title">
     <div class="hero-copy">
-      <p class="kicker"><code>@ghostpaw/questlog</code> 0.6.2</p>
+      <p class="kicker"><code>@ghostpaw/questlog</code> <span class="ver">0.6.2</span></p>
       <h1 id="hero-title">Your agent said it was done. Was it?</h1>
       <p class="lede">An agent that ticks its own box gets to grade its own homework, so questlog makes it write the homework down: no quest is done without an outcome, and work that waits on other work stays blocked until that work is done.</p>
       <div class="install">
@@ -177,12 +177,12 @@ read.listDueSoonQuests(db, 7 * DAY);
       <div><dt>Runtime dependencies</dt><dd>0</dd></div>
       <div><dt>Node.js</dt><dd>24 or newer (node:sqlite)</dd></div>
       <div><dt>Size of dist/index.js, gzip</dt><dd>42.1 KB</dd></div>
-      <div><dt>Import time</dt><dd>about 4.6 ms</dd></div>
+      <div><dt>Import time</dt><dd>about 3.7 ms</dd></div>
       <div><dt>Tests</dt><dd>352 passing</dd></div>
       <div><dt>Line coverage</dt><dd>96.0%</dd></div>
       <div><dt>Agent tools</dt><dd>12</dd></div>
     </dl>
-    <p class="note">Measured 2026-10-24 on the maintainer's machine with Node.js 24.14.0 against questlog 0.6.1: size of the published dist/index.js at gzip -9, median of 11 cold imports, tests and coverage from the v0.6.1 tag. 0.6.2 only changes the version string and homepage, so the numbers carry over.</p>
+    <p class="note">Measured 2026-10-24 on the maintainer's machine with Node.js 24.14.0 against questlog 0.6.1: size of the published dist/index.js at gzip -9, median of 11 cold imports, tests and coverage from the v0.6.1 tag. Import time re-measured on 0.6.2 at low machine load. 0.6.2 only changes the version string and homepage, so size and tests carry over.</p>
   </section>
 
   <section class="start" aria-labelledby="start-title">
@@ -214,12 +214,12 @@ const available = read.listAvailableQuests(db);
 const dueSoon = read.listDueSoonQuests(db, 7 * 24 * 60 * 60 * 1000);</code></pre>
     <p>Agents get twelve tools, among them <code>review_questlog</code>, <code>capture_rumor</code>, <code>shape_work</code>, <code>run_quest</code> and <code>reward_work</code>, and each one returns success, no_op, needs_clarification or error with a hint for the next step.</p>
     <p class="links"><a class="more" href="{{.urls.readme}}">Read the README</a><a href="{{.urls.demo}}">Open the live demo</a><a href="{{.urls.npm}}">questlog on npm</a></p>
-    <p class="links"><a href="{{.urls.home}}">All seven GhostPaw libraries</a><a href="{{.urls.agentMemory}}">codex, for agent memory</a></p>
   </section>
 </main>
 <footer class="foot">
-  <p>questlog is maintained in the open by GhostPaw under the MIT licence.</p>
-  <p class="foot-links"><a href="{{.urls.github}}">Source</a><a href="{{.urls.impressum}}">Impressum</a><a href="{{.urls.privacy}}">Datenschutz</a></p>
+  <nav class="foot-libs" aria-label="GhostPaw libraries"><a href="{{.urls.agentMemory}}">codex</a><a href="{{.url}}" aria-current="page">questlog</a><a href="{{.urls.agentContacts}}">affinity</a><a href="{{.urls.agentIdentity}}">souls</a><a href="{{.urls.agentSkills}}">grimoire</a><a href="{{.urls.agentEmail}}">email</a><a href="{{.urls.agentTelegram}}">telegram</a></nav>
+  <p>questlog is one of seven GhostPaw libraries, maintained in the open under the MIT licence.</p>
+  <p class="foot-links"><a href="{{.urls.home}}">GhostPaw home</a><a href="{{.urls.github}}">Source on GitHub</a><a href="{{.urls.npm}}">questlog on npm</a><a href="{{.urls.impressum}}">Impressum</a><a href="{{.urls.privacy}}">Datenschutz</a></p>
 </footer>
 {{script "assets/scripts/main.js"}}
 </body>

@@ -22,7 +22,7 @@ A Node.js developer whose agent keeps its work in TODO.md, PROGRESS.md or HEARTB
 1. Is this the "said it was done" problem? → hero names it and shows a quest that cannot finish without a written outcome.
 2. How is it different from TODO.md? → the board: the same three headings become quests whose state is derived, and finishing one unlocks the next.
 3. What about deadlines and recurring work? → due soon, overdue and repeatable quests on the same board (RRULE).
-4. Is it small? → 0 runtime dependencies, Node 24+, 352 tests, 42.1 KB gzip, about 4.6 ms import.
+4. Is it small? → 0 runtime dependencies, Node 24+, 352 tests, 42.1 KB gzip, about 3.7 ms import.
 5. How do I start? → install line, quick start code, GitHub and the live demo.
 
 ## Mechanism
@@ -48,7 +48,7 @@ Delivery: `npm install @ghostpaw/questlog` into a Node.js 24+ project; tables ar
 - A deadline is a quest with dueAt; a calendar event is a quest with a scheduled start and end; repeatable quests use RRULE. https://github.com/GhostPawJS/questlog
 - Twelve tools for agents, among them review_questlog, capture_rumor, shape_work, run_quest and reward_work. https://github.com/GhostPawJS/questlog
 - 352 tests with 95.98% line, 87.91% branch and 96.35% function coverage, measured 2026-10-24. https://github.com/GhostPawJS/questlog
-- dist is 42.1 KB gzip and imports in about 4.6 ms on the maintainer box, measured 2026-10-24. https://github.com/GhostPawJS/questlog
+- dist is 42.1 KB gzip and imports in about 3.7 ms on the maintainer box (0.6.2, median of 11 at low load), measured 2026-10-24. https://github.com/GhostPawJS/questlog
 - A TODO.md with three headings, Todo, Doing and Done, is a common agent task store. V025
 
 ## Axes
@@ -95,7 +95,7 @@ Done needs an outcome, on a dark scope. The page centres on a small quest board 
 2. The board: four quests, Finish with outcome, unlock, +7 days; the call under each move. V038 V008
 3. From TODO.md: the three headings mapped to derived states, plus rumors for work not yet shaped. V025 V026 V044
 4. Deadlines and repeats: dueAt, scheduled windows, RRULE repeatable quests. V009 V040
-5. Numbers: 0 runtime deps, Node 24+, 352 tests, 96.0% lines, 42.1 KB gzip, about 4.6 ms import, 12 tools. V028 V029
+5. Numbers: 0 runtime deps, Node 24+, 352 tests, 96.0% lines, 42.1 KB gzip, about 3.7 ms import, 12 tools. V028 V029
 6. Start: install, quick start, GitHub, README, live demo, back to GhostPaw home.
 7. Footer: Impressum, Datenschutz.
 
@@ -120,7 +120,7 @@ Done needs an outcome, on a dark scope. The page centres on a small quest board 
 | code and file names | Martian Mono, Cascadia Mono, Consolas, monospace | crisp, slightly narrow mono for install lines, calls and file names like MEMORY.md V025 |
 
 ## Form
-Quests are panes: panel ground, 1px rule border, a 12px chamfer on the top right corner and a 3px top bar lit by state (cyan available, violet in progress, rose blocked, green done). No drop shadows. Status tags are small outlined labels with a faint fill of their color; nothing is rotated. One column on phones with the call log below the board; on desktop three panes side by side with the TODO.md text beside its mapping. The page ground carries the shared faint 48px grid.
+Quests are panes: panel ground, 1px rule border, a 12px chamfer on the top right corner and a 3px top bar lit by state (cyan available, violet in progress, rose blocked, green done). No drop shadows. Status tags are small outlined labels with a faint fill of their color; nothing is rotated. One column on phones with the call log below the board; on desktop three panes side by side with the TODO.md text beside its mapping. The page ground is plain void with one faint cyan glow at the top right.
 
 ## Imagery
 | Image | Job | Art direction | Source |
@@ -144,6 +144,7 @@ Reduced motion: no sweep, shake or dissolve; text and tag states change in place
 - Never present voices as customers; describe what developers report in our words. V034 V036
 
 ## Changelog
+- 2026-10-24: portal chrome pass. Shared top bar (GhostPaw/<lib>, Live demo or Docs, GitHub, npm), version badge, footer row of all seven libraries; sibling links row dropped from the start section; import time re-measured at low machine load; the ruled grid on the page ground was replaced by one radial glow (lfm 0.1.9 rejects ruled ground textures); share card relabelled GhostPaw/<lib> with the install line.
 - 2026-10-24: questlog 0.6.2 on npm (same dist apart from version and homepage). Refusal and forced-start warning re-run against 0.6.2; kicker, intro and JSON-LD version bumped; numbers stay from the v0.6.1 measurement and say so.
 - 2026-10-24: questlog 0.6.1. Real run repeated against 0.6.1 (same lists and errors); #3 gets a "Start with run_quest" button that replays the tool's invalid_state refusal; the blocked note now says the tool refuses unless force is true while startQuest stays permissive; MCP install line added; numbers remeasured (352 tests, 42.1 KB gzip, 4.6 ms import).
 - 2026-10-24: visual rebuild after owner review: paper cards and stamps replaced by the shared dark spectral identity (void, spectral cyan, wraith violet, alarm rose, ward green; Tektur, system sans, Martian Mono; generated paw-on-marker and dependency-graph art). Board replay, refusals, numbers and copy rules kept; direction 3 struck and direction 9 chosen.
