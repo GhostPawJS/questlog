@@ -31,6 +31,7 @@
 		"format": "biome format --write",
 		"typecheck": "tsc --noEmit",
 		"check": "biome check && tsc --noEmit",
+		"check:deps": "node scripts/check-zero-deps.mjs",
 		"clean": "rm -rf dist",
 		"demo:build": "node scripts/build_demo.mjs",
 		"demo:watch": "node scripts/build_demo.mjs --watch",
