@@ -7,6 +7,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Live Demo](https://img.shields.io/badge/demo-live-06d6a0?style=flat&logo=github)](https://questlog.ghostpaw.dev/docs/)
 [![MCP Registry](https://img.shields.io/badge/MCP_Registry-io.github.GhostPawJS%2Fquestlog-06d6a0)](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.GhostPawJS%2Fquestlog/versions/latest)
+[![Site](https://img.shields.io/badge/site-questlog.ghostpaw.dev-62e6f2)](https://questlog.ghostpaw.dev/)
 
 A unified task and calendar model for Node.js, built on SQLite.
 
