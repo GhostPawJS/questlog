@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "url": "https://questlog.ghostpaw.dev/",
+  "language": "en",
+  "title": "questlog: an agent task list that will not mark work done without an outcome",
+  "description": "@ghostpaw/questlog keeps agent tasks as quests in SQLite. Finishing one needs a written outcome, blocked quests stay off the available list until their prerequisite succeeds, and due dates turn overdue on their own. Node.js 24, zero dependencies, MIT.",
+  "socialImage": {
+    "src": "assets/images/share.png",
+    "alt": "A glowing paw pressing a hexagonal exclamation marker on black, beside the line: Your agent said it was done. Was it?"
+  },
+  "urls": {
+    "home": "https://ghostpaw.dev/",
+    "agentMemory": "https://codex.ghostpaw.dev/",
+    "github": "https://github.com/GhostPawJS/questlog",
+    "readme": "https://github.com/GhostPawJS/questlog#readme",
+    "npm": "https://www.npmjs.com/package/@ghostpaw/questlog",
+    "demo": "https://questlog.ghostpaw.dev/docs/",
+    "impressum": "https://lab.anonyfox.com/impressum/",
+    "privacy": "https://lab.anonyfox.com/datenschutz/",
+    "mit": "https://opensource.org/license/mit",
+    "orgId": "https://ghostpaw.dev/#org"
+  },
+  "jsonld": {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareSourceCode",
+        "name": "@ghostpaw/questlog",
+        "description": "{{.description}}",
+        "codeRepository": "{{.urls.github}}",
+        "programmingLanguage": "TypeScript",
+        "runtimePlatform": "Node.js 24",
+        "version": "0.6.2",
+        "license": "{{.urls.mit}}",
+        "author": {
+          "@type": "Organization",
+          "@id": "{{.urls.orgId}}",
+          "name": "GhostPaw"
+        }
+      }
+    ]
+  }
+}

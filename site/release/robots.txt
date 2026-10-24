@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://questlog.ghostpaw.dev/sitemap.xml

@@ -4,7 +4,7 @@ An interactive browser-based SPA that lets you explore Questlog without
 installing anything. The entire library runs client-side against an in-memory
 SQLite database via sql.js (WebAssembly).
 
-**Live:** <https://ghostpawjs.github.io/questlog>
+**Live:** <https://questlog.ghostpaw.dev/docs/>
 
 ## What It Covers
 

@@ -784,11 +784,34 @@ function writeHtmlShell() {
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Questlog Demo</title>
+<meta name="description" content="Interactive demo of @ghostpaw/questlog: create quests with prerequisites, due dates and recurring events, then work through them. The library runs in your browser on an in-memory SQLite database (sql.js); nothing is sent anywhere." />
+<link rel="canonical" href="https://questlog.ghostpaw.dev/docs/" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Questlog · @ghostpaw/questlog interactive demo" />
+<meta property="og:description" content="Interactive demo of @ghostpaw/questlog: create quests with prerequisites, due dates and recurring events, then work through them. The library runs in your browser on an in-memory SQLite database (sql.js); nothing is sent anywhere." />
+<meta property="og:url" content="https://questlog.ghostpaw.dev/docs/" />
+<meta property="og:image" content="https://questlog.ghostpaw.dev/docs/share.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="A glowing paw pressing a hexagonal exclamation marker on black, beside the line: Your agent said it was done. Was it?" />
+<meta name="twitter:card" content="summary_large_image" />
+<!-- ghostpaw-docs-shell -->
+<style>.pre{max-width:42rem;margin:4rem auto;padding:0 1.25rem;font:400 1rem/1.6 system-ui,sans-serif;color:#dce7f3}.pre h1{font-size:1.6rem;line-height:1.25;margin:0 0 .75rem}.pre a{color:#62e6f2}.pre li{margin:.25rem 0}#app:not(:empty)~.pre{display:none}@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}</style>
 <link rel="icon" href="${FAVICON}" />
 <style>${CSS}</style>
 </head>
 <body>
 <div id="app"></div>
+<main class="pre">
+<h1>Questlog: the @ghostpaw/questlog interactive demo</h1>
+<p>Create quests with prerequisites, due dates and recurring events, then work through them. This page loads the library into your browser with an in-memory SQLite database. It needs JavaScript; the demo appears here once it has loaded.</p>
+<ul>
+<li><a href="https://questlog.ghostpaw.dev/">What @ghostpaw/questlog is, with a worked example</a></li>
+<li><a href="https://github.com/GhostPawJS/questlog#readme">README on GitHub</a></li>
+<li><a href="https://www.npmjs.com/package/@ghostpaw/questlog">@ghostpaw/questlog on npm</a></li>
+<li><a href="https://ghostpaw.dev/">All GhostPaw libraries</a></li>
+</ul>
+</main>
 <script type="module" src="./app.js"></script>
 </body>
 </html>`;

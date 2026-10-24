@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="{{.language}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{.title}}</title>
+<meta name="description" content="{{.description}}">
+<link rel="canonical" href="{{.url}}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{.url}}">
+<meta property="og:title" content="{{.title}}">
+<meta property="og:description" content="{{.description}}">
+<meta property="og:image" content="{{.socialImage.src}}">
+<meta property="og:image:alt" content="{{.socialImage.alt}}">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="assets/fonts/tektur-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/martian-mono-var.woff2" as="font" type="font/woff2" crossorigin>
+<meta name="theme-color" content="#04070b">
+<script>document.documentElement.classList.add("js")</script>
+{{style "assets/styles/main.css"}}
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="{{.urls.home}}">GhostPaw</a>
+  <nav aria-label="questlog elsewhere">
+    <a href="{{.urls.github}}">GitHub</a>
+    <a href="{{.urls.npm}}">npm</a>
+    <a href="{{.urls.demo}}">Live demo</a>
+  </nav>
+</header>
+<main>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <p class="kicker"><code>@ghostpaw/questlog</code> 0.6.2</p>
+      <h1 id="hero-title">Your agent said it was done. Was it?</h1>
+      <p class="lede">An agent that ticks its own box gets to grade its own homework, so questlog makes it write the homework down: no quest is done without an outcome, and work that waits on other work stays blocked until that work is done.</p>
+      <div class="install">
+        <p class="cmd-label" id="lib-label">As a library</p>
+        <div class="cmd"><input id="cmd-lib" readonly value="npm install @ghostpaw/questlog" aria-labelledby="lib-label" spellcheck="false"><button type="button" class="copy" data-copy="cmd-lib">Copy</button></div>
+        <p class="cmd-label" id="mcp-label">As a local MCP server</p>
+        <div class="cmd"><input id="cmd-mcp" readonly value="npx -y @ghostpaw/questlog mcp" aria-labelledby="mcp-label" spellcheck="false"><button type="button" class="copy" data-copy="cmd-mcp">Copy</button></div>
+      </div>
+      <p class="actions"><a class="button" href="#board">Try to finish a quest</a> <a href="{{.urls.github}}">Read the source on GitHub</a></p>
+      <p class="terms">Free and MIT licensed for Node.js 24 or newer, with zero runtime dependencies and the tables in a SQLite database you open.</p>
+    </div>
+    <figure class="hero-art frame">
+      <div class="scope"><picture><source media="(min-width: 52rem)" srcset="assets/images/hero-720.webp" width="720" height="540"><img src="assets/images/hero-480.webp" width="480" height="360" alt="A ghost paw drawn in cyan light pressing a glowing hexagonal exclamation mark, violet sparks around it." fetchpriority="high"></picture><span class="scan" aria-hidden="true"></span></div>
+      <p class="readout" aria-label="Zero runtime dependencies"><span class="big">0</span><span>runtime dependencies</span></p>
+    </figure>
+  </section>
+
+  <section id="board" class="board-sec" aria-labelledby="board-title">
+    <h2 id="board-title">Three quests from the README</h2>
+    <p class="intro">Try to finish one with the outcome left blank.</p>
+    <p class="intro">This is the Vendor Renewal example from the README, replayed in your browser from a real run: we made the same calls against questlog 0.6.2 on 2026-10-24 with a fixed clock, and every error and every list you see here is what came back, so press Start, leave the outcome empty, press Finish, try to start #3 the way an agent would, then finish #1 for real and watch #3, and jump a week to see the due date go overdue. The live demo runs the library itself.</p>
+    <div class="toolbar">
+      <p class="today" id="today">Today: Sat 24 Oct</p>
+      <button type="button" class="button ghost" id="jump" aria-pressed="false">Jump 7 days</button>
+      <button type="button" class="button ghost" id="reset">Reset</button>
+    </div>
+    <div class="board">
+      <div class="quest" id="q1" data-id="1">
+        <p class="q-head"><span class="marker">!</span> <span class="q-label">available</span> <span class="q-id">#1</span></p>
+        <h3>Collect redlines</h3>
+        <p class="objective">Obtain the latest legal markup.</p>
+        <p class="outcome" hidden></p>
+        <div class="q-actions">
+          <button type="button" class="act start">Start</button>
+          <div class="finish" hidden>
+            <label for="out-1">Outcome</label>
+            <div class="finish-row"><input id="out-1" autocomplete="off" placeholder="What got done?"><button type="button" class="act do-finish">Finish</button></div>
+            <p class="refusal" role="status"></p>
+          </div>
+        </div>
+      </div>
+      <div class="quest" id="q2" data-id="2">
+        <p class="q-head"><span class="marker">!</span> <span class="q-label">available</span> <span class="q-id">#2</span></p>
+        <h3>Review pricing delta</h3>
+        <p class="objective">Compare current vs. proposed cost.</p>
+        <p class="outcome" hidden></p>
+        <div class="q-actions">
+          <button type="button" class="act start">Start</button>
+          <div class="finish" hidden>
+            <label for="out-2">Outcome</label>
+            <div class="finish-row"><input id="out-2" autocomplete="off" placeholder="What got done?"><button type="button" class="act do-finish">Finish</button></div>
+            <p class="refusal" role="status"></p>
+          </div>
+        </div>
+      </div>
+      <div class="quest blocked" id="q3" data-id="3">
+        <p class="q-head"><span class="marker">?</span> <span class="q-label">incomplete</span> <span class="q-id">#3</span></p>
+        <h3>Obtain finance approval</h3>
+        <p class="objective">Sign-off on the new terms. Due Thu 29 Oct.</p>
+        <p class="q-stamps"><span class="qstamp block">blocked by #1</span><span class="qstamp due" hidden>overdue</span></p>
+        <p class="outcome" hidden></p>
+        <div class="q-actions">
+          <button type="button" class="act start" hidden>Start</button>
+          <button type="button" class="act ask">Start with run_quest</button>
+          <p class="refusal tool-refusal" role="status"></p>
+          <div class="finish" hidden>
+            <label for="out-3">Outcome</label>
+            <div class="finish-row"><input id="out-3" autocomplete="off" placeholder="What got done?"><button type="button" class="act do-finish">Finish</button></div>
+            <p class="refusal" role="status"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="calls">
+      <p class="calls-label">What your code sees</p>
+      <pre><code id="call-log">read.listAvailableQuests(db);
+// [2, 1]
+read.listBlockedQuests(db);
+// [3]
+read.listDueSoonQuests(db, 7 * DAY);
+// [3]</code></pre>
+    </div>
+    <p class="note">A done quest stays done, and a second <code>finishQuest</code> throws "Resolved quests cannot be resolved again."</p>
+    <p class="note">Since 0.6.0 blocked holds where your agent acts. The <code>run_quest</code> tool, which the MCP server and the CLI also call, refuses to start #3 with <code>invalid_state</code> and names the open blocker. With <code>force: true</code> it starts the quest anyway and returns the warning "Forced start with unmet prerequisites: Collect redlines."</p>
+    <p class="note">The library's own <code>startQuest</code> does not check unlocks, so your code can still start #3 directly. That is on purpose.</p>
+  </section>
+
+  <section class="todo" aria-labelledby="todo-title">
+    <div class="sec-head">
+    <h2 id="todo-title">Where your <code>TODO.md</code> headings go</h2>
+    <img class="graph" src="assets/images/art-640.webp" width="640" height="360" alt="Hexagon nodes joined by lines of light: two lit cyan, one locked in violet, the rest faint." loading="lazy">
+    </div>
+    <div class="todo-grid">
+      <pre class="plain"><code>## Todo
+- Collect redlines
+- Obtain finance approval (after redlines)
+
+## Doing
+- Review pricing delta
+
+## Done
+- Sent the renewal notice</code></pre>
+      <dl class="form">
+        <div><dt>Todo</dt><dd>Open quests. The ones nothing waits on carry "!" and show up in <code>listAvailableQuests</code>.</dd></div>
+        <div><dt>(after …)</dt><dd>An unlock. The quest sits in <code>listBlockedQuests</code> until its prerequisite finishes with success.</dd></div>
+        <div><dt>Doing</dt><dd><code>startQuest</code> sets a start time. The marker turns to "?".</dd></div>
+        <div><dt>Done</dt><dd><code>finishQuest</code> with an outcome string. <code>abandonQuest</code> records a failure, also with a reason.</dd></div>
+        <div><dt>The note in the margin</dt><dd>A rumor. <code>captureRumor</code> holds it until you know what the work is, then <code>settleRumor</code> turns it into a questline and quests.</dd></div>
+      </dl>
+    </div>
+    <p class="intro">None of these states is stored.</p>
+    <p class="intro">questlog works them out from the timestamps and the unlocks every time you read. A list cannot go stale, because there is no list.</p>
+  </section>
+
+  <section class="time" aria-labelledby="time-title">
+    <h2 id="time-title">Deadlines, appointments, repeats</h2>
+    <p class="intro">Same table, same quest, and the fields decide what it is.</p>
+    <dl class="form">
+      <div><dt>A deadline</dt><dd>A quest with <code>dueAt</code>. It moves from due soon to overdue without anyone touching it.</dd></div>
+      <div><dt>An appointment</dt><dd>A quest with <code>scheduledStartAt</code> and <code>scheduledEndAt</code>. Missed windows have their own list.</dd></div>
+      <div><dt>Not before</dt><dd><code>notBeforeAt</code> keeps a quest off the available list until that date.</dd></div>
+      <div><dt>Every Monday</dt><dd>A repeatable quest with a standard RRULE string spawns a fresh quest each time it comes due.</dd></div>
+    </dl>
+  </section>
+
+  <section class="worry" aria-labelledby="worry-title">
+    <h2 id="worry-title">If agent task trackers have burned you</h2>
+    <div class="worry-grid">
+      <p>Some agent issue trackers run to hundreds of thousands of lines, and people went back to a markdown file, which is fair enough.</p>
+      <ul>
+        <li>One package, one bundled file, no runtime dependencies. The numbers are below.</li>
+        <li>An outcome is text. It records what the agent claims; it does not run your tests.</li>
+        <li>No scheduler and no hosted service. Your code or your agent harness decides when to read.</li>
+        <li>Twelve tools with JSON Schemas, served over MCP stdio by <code>npx -y @ghostpaw/questlog mcp</code> or called from your own harness.</li>
+        <li>Node.js 24 or newer, because it uses the built-in <code>node:sqlite</code>.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="numbers" aria-labelledby="numbers-title">
+    <h2 id="numbers-title">What it costs to add</h2>
+    <dl class="ledger wide">
+      <div><dt>Runtime dependencies</dt><dd>0</dd></div>
+      <div><dt>Node.js</dt><dd>24 or newer (node:sqlite)</dd></div>
+      <div><dt>Size of dist/index.js, gzip</dt><dd>42.1 KB</dd></div>
+      <div><dt>Import time</dt><dd>about 4.6 ms</dd></div>
+      <div><dt>Tests</dt><dd>352 passing</dd></div>
+      <div><dt>Line coverage</dt><dd>96.0%</dd></div>
+      <div><dt>Agent tools</dt><dd>12</dd></div>
+    </dl>
+    <p class="note">Measured 2026-10-24 on the maintainer's machine with Node.js 24.14.0 against questlog 0.6.1: size of the published dist/index.js at gzip -9, median of 11 cold imports, tests and coverage from the v0.6.1 tag. 0.6.2 only changes the version string and homepage, so the numbers carry over.</p>
+  </section>
+
+  <section class="start" aria-labelledby="start-title">
+    <h2 id="start-title">Start from the README</h2>
+    <pre><code>import { DatabaseSync } from 'node:sqlite';
+import { initQuestlogTables, read, write } from '@ghostpaw/questlog';
+
+const db = new DatabaseSync(':memory:');
+initQuestlogTables(db);
+
+const rumor = write.captureRumor(db, {
+  title: 'Legal says the vendor terms changed',
+  details: 'Need to understand pricing delta and termination clause.',
+});
+
+write.settleRumor(db, rumor.id, {
+  settledAt: Date.now(),
+  questline: {
+    title: 'Vendor Renewal',
+    description: 'Commercial, legal, and approval work.',
+  },
+  quests: [
+    { title: 'Collect redlines', objective: 'Obtain the latest legal markup.' },
+    { title: 'Review pricing delta', objective: 'Compare current vs. proposed cost.' },
+  ],
+});
+
+const available = read.listAvailableQuests(db);
+const dueSoon = read.listDueSoonQuests(db, 7 * 24 * 60 * 60 * 1000);</code></pre>
+    <p>Agents get twelve tools, among them <code>review_questlog</code>, <code>capture_rumor</code>, <code>shape_work</code>, <code>run_quest</code> and <code>reward_work</code>, and each one returns success, no_op, needs_clarification or error with a hint for the next step.</p>
+    <p class="links"><a class="more" href="{{.urls.readme}}">Read the README</a><a href="{{.urls.demo}}">Open the live demo</a><a href="{{.urls.npm}}">questlog on npm</a></p>
+    <p class="links"><a href="{{.urls.home}}">All seven GhostPaw libraries</a><a href="{{.urls.agentMemory}}">codex, for agent memory</a></p>
+  </section>
+</main>
+<footer class="foot">
+  <p>questlog is maintained in the open by GhostPaw under the MIT licence.</p>
+  <p class="foot-links"><a href="{{.urls.github}}">Source</a><a href="{{.urls.impressum}}">Impressum</a><a href="{{.urls.privacy}}">Datenschutz</a></p>
+</footer>
+{{script "assets/scripts/main.js"}}
+</body>
+</html>

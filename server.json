@@ -8,7 +8,7 @@
     "url": "https://github.com/GhostPawJS/questlog.git",
     "source": "github"
   },
-  "websiteUrl": "https://ghostpaw.dev/agent-tasks/",
+  "websiteUrl": "https://questlog.ghostpaw.dev/",
   "packages": [
     {
       "registryType": "npm",
