@@ -5,6 +5,10 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Changed
+
+- The homepage and MCP Registry website URL now point to ghostpaw.dev.
+
 ## [0.6.1] - 2026-10-24
 
 ### Changed
