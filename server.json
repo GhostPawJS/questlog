@@ -3,7 +3,7 @@
   "name": "io.github.GhostPawJS/questlog",
   "description": "Local tasks, calendar commitments, and recurring work.",
   "title": "GhostPaw Questlog",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "repository": {
     "url": "https://github.com/GhostPawJS/questlog.git",
     "source": "github"
@@ -14,7 +14,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@ghostpaw/questlog",
-      "version": "0.6.0",
+      "version": "0.6.1",
       "transport": {
         "type": "stdio"
       },

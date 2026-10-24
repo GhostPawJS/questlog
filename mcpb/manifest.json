@@ -2,7 +2,7 @@
   "manifest_version": "0.3",
   "name": "ghostpaw-questlog",
   "display_name": "GhostPaw Questlog",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Local tasks, calendar commitments, and recurring work.",
   "long_description": "Local tasks, calendar commitments, and recurring work. Stores data in a local SQLite database.",
   "author": {
