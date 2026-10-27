@@ -5,6 +5,8 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+## [0.9.1] - 2026-10-27
+
 ### Changed
 
 - `show <id>` prints `tags : -` for a quest without tags, like other empty fields.
@@ -119,7 +121,8 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 - Semantic markers, structured tool facade, workflow skills, and usage documentation.
 - ESM and CommonJS bundles with TypeScript declarations and native Node test execution.
 
-[Unreleased]: https://github.com/GhostPawJS/questlog/compare/v0.9.0...HEAD
+[Unreleased]: https://github.com/GhostPawJS/questlog/compare/v0.9.1...HEAD
+[0.9.1]: https://github.com/GhostPawJS/questlog/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/GhostPawJS/questlog/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/GhostPawJS/questlog/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/GhostPawJS/questlog/compare/v0.6.2...v0.7.0
