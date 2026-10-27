@@ -156,7 +156,7 @@ irm https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.ps1 | iex
 
 ```text
 $ ghostpaw-questlog --version
-questlog 0.9.1 (binary, linux-x64)
+questlog 0.9.2 (binary, linux-x64)
 ```
 
 Standalone binaries are available from [GitHub Releases](https://github.com/GhostPawJS/questlog/releases).
