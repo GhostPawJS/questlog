@@ -32,7 +32,7 @@ const buildOptions = {
 
 const CSS = /* css */ `
 /* ── Fonts ─────────────────────────────────────────────────────────────── */
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&display=optional");
 
 /* ── Custom properties ─────────────────────────────────────────────────── */
 :root {
@@ -123,6 +123,7 @@ a:hover { text-decoration: underline; }
   gap: 20px;
 }
 
+.demo-sidebar, .demo-main { min-width: 0; }
 .demo-main {
   padding: 32px 28px;
   max-width: 1100px;
@@ -131,7 +132,7 @@ a:hover { text-decoration: underline; }
 
 @media (max-width: 768px) {
   .demo-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto 1fr;
   }
   .demo-sidebar {
@@ -257,7 +258,8 @@ a:hover { text-decoration: underline; }
 }
 .button.primary {
   background: var(--accent);
-  color: #fff;
+  color: #04121a;
+  font-weight: 600;
   border-color: var(--accent);
 }
 .button.primary:hover {
@@ -353,12 +355,13 @@ a:hover { text-decoration: underline; }
   grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
 }
 @media (max-width: 768px) {
-  .page-grid.two { grid-template-columns: 1fr; }
+  .page-grid.two { grid-template-columns: minmax(0, 1fr); }
 }
 
 .page-dashboard,
 .page-search {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 20px;
 }
 
@@ -599,8 +602,10 @@ textarea { resize: vertical; min-height: 80px; }
 }
 
 /* ── Tabs ───────────────────────────────────────────────────────────────── */
+.page-grid > * { min-width: 0; }
 .tab-bar {
   display: flex;
+  flex-wrap: wrap;
   background: var(--bg-input);
   padding: 4px;
   border-radius: var(--radius-sm);
@@ -801,7 +806,7 @@ function writeHtmlShell() {
 <meta property="og:image:alt" content="A glowing paw pressing a hexagonal exclamation marker on black, beside the line: Your agent said it was done. Was it?" />
 <meta name="twitter:card" content="summary_large_image" />
 <!-- ghostpaw-docs-shell -->
-<style>.pre{max-width:42rem;margin:4rem auto;padding:0 1.25rem;font:400 1rem/1.6 system-ui,sans-serif;color:#dce7f3}.pre h1{font-size:1.6rem;line-height:1.25;margin:0 0 .75rem}.pre a{color:#62e6f2}.pre li{margin:.25rem 0}#app:not(:empty)~.pre{display:none}@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}</style>
+<style>.pre{max-width:42rem;min-height:100vh;margin:4rem auto;padding:0 1.25rem;font:400 1rem/1.6 system-ui,sans-serif;color:#dce7f3}.pre h1{font-size:1.6rem;line-height:1.25;margin:0 0 .75rem}.pre a{color:#62e6f2}.pre li{margin:.25rem 0}#app:not(:empty)~.pre{display:none}@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}</style>
 <link rel="icon" href="${FAVICON}" />
 <style>${minifyCss(CSS)}</style>
 </head>

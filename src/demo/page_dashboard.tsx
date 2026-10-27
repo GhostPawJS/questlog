@@ -87,7 +87,7 @@ export function DashboardPage() {
 			<Panel title="Active Markers">
 				<div
 					class="marker-overview-grid"
-					style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;padding:20px 0;text-align:center"
+					style="display:grid;grid-template-columns:repeat(auto-fit,minmax(64px,1fr));gap:12px;padding:20px 0;text-align:center"
 				>
 					{markerDefs.map((def) => (
 						<div
