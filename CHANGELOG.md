@@ -5,6 +5,8 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-10-28
+
 ### Added
 
 - Opt-in signed outbound event webhooks with persistent deduplication, tag and event filters, batched delivery, retries, and delivery review.
@@ -139,7 +141,8 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 - Semantic markers, structured tool facade, workflow skills, and usage documentation.
 - ESM and CommonJS bundles with TypeScript declarations and native Node test execution.
 
-[Unreleased]: https://github.com/GhostPawJS/questlog/compare/v0.9.2...HEAD
+[Unreleased]: https://github.com/GhostPawJS/questlog/compare/v0.10.0...HEAD
+[0.10.0]: https://github.com/GhostPawJS/questlog/compare/v0.9.2...v0.10.0
 [0.9.2]: https://github.com/GhostPawJS/questlog/compare/v0.9.1...v0.9.2
 [0.9.1]: https://github.com/GhostPawJS/questlog/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/GhostPawJS/questlog/compare/v0.8.0...v0.9.0
