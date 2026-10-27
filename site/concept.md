@@ -96,8 +96,9 @@ Done needs an outcome, on a dark scope. The page centres on a small quest board 
 3. From TODO.md: the three headings mapped to derived states, plus rumors for work not yet shaped. V025 V026 V044
 4. Deadlines and repeats: dueAt, scheduled windows, RRULE repeatable quests. V009 V040
 5. Numbers: 0 runtime deps, Node 24+, 352 tests, 96.0% lines, 42.1 KB gzip, about 3.7 ms import, 12 tools. V028 V029
-6. Start: install, quick start, GitHub, README, live demo, back to GhostPaw home.
-7. Footer: Impressum, Datenschutz.
+6. Binaries: since 0.9.0 the CLI ships as one executable per platform with Node.js inside; install lines (install.sh, install.ps1, mise, ubi, eget, npx), targets and archive sizes from the v0.9.1 release assets, the `questlog` alias, SHA256SUMS and attestation check, unsigned note, and a real terminal session (add, list, search, done, show).
+7. Start: install, quick start, GitHub, README, live demo, back to GhostPaw home.
+8. Footer: Impressum, Datenschutz.
 
 ## Palette
 | Role | Color | Source |
@@ -127,6 +128,7 @@ Quests are panes: panel ground, 1px rule border, a 12px chamfer on the top right
 | --- | --- | --- | --- |
 | hero paw on marker | protagonist | a ghost paw drawn in cyan light filaments pressing a glowing hexagonal "!" marker, violet sparks, on pure black; no people, no logos V065 V062 | generated |
 | dependency graph | explanation | hex nodes joined by light lines: lit cyan nodes, a locked violet node, faint nodes beyond, on pure black; what unlocks look like V065 V038 | generated |
+| terminal session | evidence | real output of the 0.9.1 linux-x64 binary against a fresh database, recorded with vhs in the void/spectral palette; never retouched | recorded |
 | share card | share preview | the hero art with the headline in the display face at 1200×630 | generated art, rendered from HTML |
 
 ## Motion
@@ -144,6 +146,7 @@ Reduced motion: no sweep, shake or dissolve; text and tag states change in place
 - Never present voices as customers; describe what developers report in our words. V034 V036
 
 ## Changelog
+- 2026-10-27: questlog 0.9.1 ships standalone binaries and plain commands. New spine item 6, Binaries: install lines, targets and archive sizes from the v0.9.1 release assets, the questlog alias, SHA256SUMS and attestation check, unsigned note, and the terminal session screenshot (new Imagery row). Kicker and JSON-LD version 0.9.1. Other sections unchanged.
 - 2026-10-24: portal chrome pass. Shared top bar (GhostPaw/<lib>, Live demo or Docs, GitHub, npm), version badge, footer row of all seven libraries; sibling links row dropped from the start section; import time re-measured at low machine load; the ruled grid on the page ground was replaced by one radial glow (lfm 0.1.9 rejects ruled ground textures); share card relabelled GhostPaw/<lib> with the install line.
 - 2026-10-24: questlog 0.6.2 on npm (same dist apart from version and homepage). Refusal and forced-start warning re-run against 0.6.2; kicker, intro and JSON-LD version bumped; numbers stay from the v0.6.1 measurement and say so.
 - 2026-10-24: questlog 0.6.1. Real run repeated against 0.6.1 (same lists and errors); #3 gets a "Start with run_quest" button that replays the tool's invalid_state refusal; the blocked note now says the tool refuses unless force is true while startQuest stays permissive; MCP install line added; numbers remeasured (352 tests, 42.1 KB gzip, 4.6 ms import).
