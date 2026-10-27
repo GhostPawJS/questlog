@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { cliVersion } from '../cli_version.ts';
 import type { QuestlogDb } from '../database.ts';
+import { questlogSkills } from '../skills/skill_registry.ts';
 import type { ToolCliOptions } from '../surfaces/cli.ts';
 import { questlogVersion } from '../version.ts';
 import { questlogPlainCommands } from './questlog_plain_commands.ts';
@@ -32,6 +33,7 @@ export const questlogCliOptions: ToolCliOptions<QuestlogDb> = {
 	closeContext: (db) => db.close(),
 	commands: {
 		plain: questlogPlainCommands(),
+		guides: questlogSkills,
 		mcp: async (options) => {
 			const { serveQuestlogMcp } = await import('./serve_questlog_mcp.ts');
 			await serveQuestlogMcp(options.db === undefined ? {} : { dbPath: options.db });

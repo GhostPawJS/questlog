@@ -7,6 +7,10 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ### Changed
 
+- Embed workflow guides in the CLI with guide listing and help.
+- Expand skill parameter tables and include schema-checked call examples.
+- Validate nested and action-specific tool input before execution, with recovery shapes.
+
 - Release binary installation is the default in the README and generated skill, with explicit installer targets.
 - Human CLI version output includes the binary, npm, or library variant.
 - `add` accepts a positional title and rejects giving the title twice.

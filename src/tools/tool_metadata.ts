@@ -1,5 +1,9 @@
 import type { QuestlogDb } from '../database.ts';
-import type { ToolResult } from './tool_types.ts';
+import { registerSchemaActions } from '../surfaces/schema_actions.ts';
+import { minimalInput } from '../surfaces/schema_examples.ts';
+import { validateInput } from '../surfaces/validate_input.ts';
+import { actionRequirements } from './action_requirements.ts';
+import { type ToolResult, toolFailure } from './tool_types.ts';
 
 export type ToolInputDescriptions = Readonly<Record<string, string>>;
 
@@ -49,6 +53,21 @@ export type ToolDefinitionRegistry = readonly QuestlogToolDefinition<never, Tool
 export function defineQuestlogTool<TInput, TResult extends ToolResult<unknown>>(
 	definition: QuestlogToolDefinition<TInput, TResult>,
 ): QuestlogToolDefinition<TInput, TResult> {
+	const requirements = actionRequirements[definition.name];
+	if (requirements) registerSchemaActions(definition.inputSchema, requirements);
+	const handler = definition.handler;
+	definition.handler = (db, input) => {
+		const errors = validateInput(definition.inputSchema, input);
+		if (errors.length) {
+			const action = (input as Record<string, unknown> | null)?.action;
+			const example = minimalInput(definition.inputSchema, action);
+			const message = errors.join('; ');
+			return toolFailure('protocol', 'invalid_input', message, message, {
+				recovery: `${message}; pass ${JSON.stringify(example)}`,
+			}) as TResult;
+		}
+		return handler(db, input);
+	};
 	return definition;
 }
 

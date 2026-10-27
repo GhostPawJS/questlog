@@ -1,3 +1,4 @@
+import { requiredForAction } from './schema_actions.ts';
 import type { JsonSchema } from './surface_types.ts';
 
 export function validateInput(schema: JsonSchema, input: unknown, path = '$'): string[] {
@@ -26,14 +27,22 @@ export function validateInput(schema: JsonSchema, input: unknown, path = '$'): s
 	}
 	if (schema.enum && !schema.enum.some((value) => JSON.stringify(value) === JSON.stringify(input)))
 		errors.push(`${path}: expected one of ${JSON.stringify(schema.enum)}`);
-	if (
-		schema.oneOf &&
-		!schema.oneOf.some((branch) => validateInput(branch, input, path).length === 0)
-	)
-		errors.push(`${path}: must match at least one schema branch`);
+	const constant = 'const' in schema ? schema.const : undefined;
+	if (constant !== undefined && constant !== input)
+		errors.push(`${path}: expected ${JSON.stringify(constant)}`);
+	if (schema.oneOf) {
+		const branches = schema.oneOf.map((branch) => validateInput(branch, input, path));
+		if (!branches.some((errors) => errors.length === 0)) {
+			errors.push(
+				...(branches.sort((a, b) => a.length - b.length)[0] ?? [
+					`${path}: must match at least one schema branch`,
+				]),
+			);
+		}
+	}
 	if (typeof input === 'object' && input !== null && !Array.isArray(input)) {
 		const record = input as Record<string, unknown>;
-		for (const name of schema.required ?? [])
+		for (const name of [...(schema.required ?? []), ...requiredForAction(schema, record.action)])
 			if (!Object.hasOwn(record, name)) errors.push(`${path}.${name}: required`);
 		for (const [name, property] of Object.entries(schema.properties ?? {}))
 			if (Object.hasOwn(record, name))

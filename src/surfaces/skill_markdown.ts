@@ -1,4 +1,5 @@
-import type { SurfaceTool } from './surface_types.ts';
+import { minimalInput } from './schema_examples.ts';
+import type { JsonSchema, SurfaceTool } from './surface_types.ts';
 
 export interface SkillMarkdownSpec<TCtx> {
 	cheatSheet?: string;
@@ -68,10 +69,31 @@ export function renderSkillMarkdown<TCtx>(
 			'| Parameter | Type | Required | Values / description |',
 			'| --- | --- | --- | --- |',
 		);
-		for (const [name, property] of Object.entries(tool.inputSchema.properties ?? {}))
+		const rows = (schema: JsonSchema, prefix = '') => {
+			const properties = { ...schema.properties };
+			const required = new Set(schema.required);
+			for (const branch of schema.oneOf ?? []) {
+				for (const [key, value] of Object.entries(branch.properties ?? {}))
+					properties[key] ??= value;
+				for (const key of branch.required ?? []) required.add(key);
+			}
+			for (const [name, property] of Object.entries(properties)) {
+				if (prefix && Object.keys(properties).length > 8 && !required.has(name)) continue;
+				const path = `${prefix}${name}`;
+				lines.push(
+					`| ${path} | ${property.type ?? property.oneOf?.map((branch) => branch.type).join(' / ') ?? 'any'} | ${required.has(name) ? 'yes' : 'no'} | ${((property.enum ? `${property.enum.join(', ')}. ` : '') + (property.description ?? '')).replaceAll('|', '\\|').replaceAll('\n', ' ')} |`,
+				);
+				if (property.properties || property.oneOf) rows(property, `${path}.`);
+			}
+		};
+		rows(tool.inputSchema);
+		lines.push('', '```sh');
+		for (const action of tool.inputSchema.properties?.action?.enum?.slice(0, 3) ?? [undefined]) {
 			lines.push(
-				`| ${name} | ${property.type ?? property.oneOf?.map((branch) => branch.type).join(' / ') ?? 'any'} | ${tool.inputSchema.required?.includes(name) ? 'yes' : 'no'} | ${(property.enum ? `${property.enum.join(', ')}. ` : '') + (property.description ?? '').replaceAll('|', '\\|').replaceAll('\n', ' ')} |`,
+				`${spec.bin} call ${tool.name} '${JSON.stringify(minimalInput(tool.inputSchema, action))}'`,
 			);
+		}
+		lines.push('```');
 		lines.push('');
 	}
 	lines.push(
@@ -79,7 +101,7 @@ export function renderSkillMarkdown<TCtx>(
 		'',
 		...spec.workflows.map(
 			(workflow) =>
-				`- [${workflow.name}](${referencesBase}/${workflow.name}.md): ${workflow.description}`,
+				`- \`${spec.bin} skill ${workflow.name}\` ([${workflow.name}](${referencesBase}/${workflow.name}.md)): ${workflow.description}`,
 		),
 		'',
 		'## Principles',

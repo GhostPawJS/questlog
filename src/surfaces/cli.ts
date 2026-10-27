@@ -1,6 +1,7 @@
 import type { Readable, Writable } from 'node:stream';
 import { type CliSpec, CliUsageError, parseCliArgs, renderCliHelp } from './cli_args.ts';
 import { enrichPlainJson, suggestCommand } from './cli_output.ts';
+import { minimalInput } from './schema_examples.ts';
 import { isErrorResult, type JsonSchema, type SurfaceTool } from './surface_types.ts';
 import { validateInput } from './validate_input.ts';
 
@@ -23,6 +24,7 @@ export interface ToolCliOptions<TCtx> {
 		plain?: readonly PlainCliCommand<TCtx>[];
 		mcp?: (opts: { db?: string }) => unknown | Promise<unknown>;
 		skill?: () => string | Promise<string>;
+		guides?: readonly { name: string; description: string; content: string }[];
 	};
 	stdin?: Readable & { isTTY?: boolean };
 	stdout?: Writable;
@@ -81,7 +83,23 @@ export async function runToolCli<TCtx>(
 	}
 	if (command === 'skill') {
 		if (!options.commands?.skill) return fail('skill command unavailable');
-		stdout.write(await options.commands.skill());
+		if (args.length > 1) return fail(`Usage: ${options.bin} skill [--list | <guide> | --help]`);
+		const guide = args[0];
+		if (guide === '--help' || guide === '-h') {
+			stdout.write(
+				`Usage:\n  ${options.bin} skill\n  ${options.bin} skill --list\n  ${options.bin} skill <guide>\n`,
+			);
+		} else if (guide === '--list') {
+			stdout.write(
+				`${(options.commands.guides ?? [])
+					.map((entry) => `${entry.name}  ${entry.description.replace(/\s+/g, ' ')}`)
+					.join('\n')}\n`,
+			);
+		} else if (guide) {
+			const entry = options.commands.guides?.find((entry) => entry.name === guide);
+			if (!entry) return fail(`unknown guide ${guide}; run ${options.bin} skill --list`);
+			stdout.write(entry.content);
+		} else stdout.write(await options.commands.skill());
 		return 0;
 	}
 	if (command === 'mcp') {
@@ -213,7 +231,11 @@ export async function runToolCli<TCtx>(
 		return fail(`Invalid input: ${cause instanceof Error ? cause.message : String(cause)}`, 1);
 	}
 	const errors = validateInput(tool.inputSchema, input);
-	if (errors.length) return fail(errors.join('\n'), 1);
+	if (errors.length)
+		return fail(
+			`${errors.join('\n')}; pass ${JSON.stringify(minimalInput(tool.inputSchema, (input as Record<string, unknown> | null)?.action))}`,
+			1,
+		);
 	let context: TCtx;
 	try {
 		context = await options.openContext(ctxOptions);

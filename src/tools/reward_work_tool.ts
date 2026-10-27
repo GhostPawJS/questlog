@@ -202,7 +202,7 @@ export const rewardWorkTool = defineQuestlogTool<RewardWorkToolInput, RewardWork
 					name: stringSchema('Reward name.'),
 					now: integerSchema('Optional update timestamp for the update action.'),
 				},
-				[],
+				['kind', 'name'],
 			),
 			rewards: arraySchema(
 				objectSchema(

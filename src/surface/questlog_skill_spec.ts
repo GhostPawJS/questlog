@@ -39,10 +39,10 @@ export const questlogSkillSpec = {
 		'- Use one database per agent or project.',
 	].join('\n'),
 	description:
-		'Manage local tasks, calendar commitments, and recurring work. Use when planning, executing, reviewing, or organizing work.',
+		'Use the release binary ghostpaw-questlog to manage local tasks, calendar commitments, and recurring work. Use when planning, executing, reviewing, or organizing work.',
 	license: 'MIT',
 	compatibility:
-		'Release binary needs no runtime. npx requires Node.js 24 or newer. MCP stdio or ghostpaw-questlog CLI.',
+		'Release binary ghostpaw-questlog (no runtime needed); MCP stdio via ghostpaw-questlog mcp.',
 	bin: 'ghostpaw-questlog',
 	packageName: '@ghostpaw/questlog',
 	server: 'ghostpaw-questlog',

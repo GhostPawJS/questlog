@@ -10,7 +10,7 @@ export const questlogSurfaceTools: readonly SurfaceTool<QuestlogDb>[] = questlog
 		whenNotToUse: tool.whenNotToUse ?? '',
 		readOnly: tool.readOnly,
 		sideEffects: tool.sideEffects,
-		inputSchema: { ...tool.inputSchema, type: 'object' },
+		inputSchema: tool.inputSchema as SurfaceTool<QuestlogDb>['inputSchema'],
 		handler: tool.handler as SurfaceTool<QuestlogDb>['handler'],
 	}),
 );

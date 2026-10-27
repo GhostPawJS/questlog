@@ -370,7 +370,7 @@ export const shapeWorkTool = defineQuestlogTool<ShapeWorkToolInput, ShapeWorkToo
 					title: stringSchema('Questline title.'),
 					description: stringSchema('Optional questline description.'),
 				},
-				[],
+				['title'],
 			),
 			rumorId: integerSchema('Rumor to settle, dismiss, or reopen.'),
 			dismissedAt: integerSchema('Optional dismissal timestamp.'),
