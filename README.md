@@ -140,6 +140,12 @@ curl -fsSL https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.sh
 irm https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.ps1 | iex
 ```
 
+A session with the 0.9.1 linux-x64 binary against a fresh database:
+
+![questlog 0.9.1: --version, three add calls, list, search, done with an outcome, and show](https://raw.githubusercontent.com/GhostPawJS/questlog/main/docs/assets/cli.png)
+
+The same session as an [animated GIF](https://raw.githubusercontent.com/GhostPawJS/questlog/main/docs/assets/cli.gif).
+
 Other release installers:
 
 ```sh
