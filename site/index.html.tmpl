@@ -214,6 +214,12 @@ const available = read.listAvailableQuests(db);
 const dueSoon = read.listDueSoonQuests(db, 7 * 24 * 60 * 60 * 1000);</code></pre>
     <p>Agents get twelve tools, among them <code>review_questlog</code>, <code>capture_rumor</code>, <code>shape_work</code>, <code>run_quest</code> and <code>reward_work</code>, and each one returns success, no_op, needs_clarification or error with a hint for the next step.</p>
     <p class="links"><a class="more" href="{{.urls.readme}}">Read the README</a><a href="{{.urls.demo}}">Open the live demo</a><a href="{{.urls.npm}}">questlog on npm</a></p>
+    <nav class="docs-map" aria-labelledby="docs-map-title">
+      <h3 id="docs-map-title">{{.data.docs.heading}}</h3>
+      <ul>
+        {{range .data.docs.pages}}<li><a href="{{index $.urls .key}}">{{.label}}</a><span>{{.note}}</span></li>{{end}}
+      </ul>
+    </nav>
   </section>
 </main>
 <footer class="foot">

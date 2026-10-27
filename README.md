@@ -126,6 +126,16 @@ const dueSoon = read.listDueSoonQuests(db, 7 * 24 * 60 * 60 * 1000);
 const results = read.searchQuestlog(db, 'vendor');
 ```
 
+## Docs
+
+The live demo runs the library in your browser against an in-memory SQLite database. Each view below opens a different part of it:
+
+- [Dashboard](https://questlog.ghostpaw.dev/docs/): open, available, overdue and pending work
+- [Intake](https://questlog.ghostpaw.dev/docs/#/intake): capture rumors and triage them into quests
+- [Quests](https://questlog.ghostpaw.dev/docs/#/quests): start, block and finish quests with an outcome
+- [Planning](https://questlog.ghostpaw.dev/docs/#/planning): questlines and scheduling
+- [Search](https://questlog.ghostpaw.dev/docs/#/search): full-text search across the log
+
 ## The Model
 
 Seven concepts, strict separation of concerns:

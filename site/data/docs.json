@@ -1,0 +1,30 @@
+{
+  "heading": "Explore the demo",
+  "pages": [
+    {
+      "key": "demo",
+      "label": "Dashboard",
+      "note": "open, available, overdue and pending work"
+    },
+    {
+      "key": "docsIntake",
+      "label": "Intake",
+      "note": "capture rumors and triage them into quests"
+    },
+    {
+      "key": "docsQuests",
+      "label": "Quests",
+      "note": "start, block and finish quests with an outcome"
+    },
+    {
+      "key": "docsPlanning",
+      "label": "Planning",
+      "note": "questlines and scheduling"
+    },
+    {
+      "key": "docsSearch",
+      "label": "Search",
+      "note": "full-text search across the log"
+    }
+  ]
+}
