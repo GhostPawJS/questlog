@@ -155,6 +155,9 @@ test('plain commands operate on real quests in text and JSON modes', async () =>
 		assert.equal(JSON.parse(attached.out).data.quest.questlineId, questlineId);
 		assert.equal((await invoke(['add', '--title', 'Invalid', '--due', 'bad'])).code, 2);
 		assert.equal((await invoke(['show', '99999'])).code, 1);
+		const untagged = await invoke(['add', '--title', 'No tags here', '--json']);
+		const untaggedId = JSON.parse(untagged.out).data.primary.id;
+		assert.match((await invoke(['show', String(untaggedId)])).out, /^tags\s*: -$/m);
 		assert.equal(
 			(
 				await invoke([

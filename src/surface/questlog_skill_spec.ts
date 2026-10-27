@@ -7,8 +7,10 @@ import { questlogSurfaceTools } from './questlog_surface_tools.ts';
 export const questlogSkillSpec = {
 	name: 'questlog',
 	cheatSheet: [
+		'No install? Use `npx -y @ghostpaw/questlog <command>`.',
 		'`questlog` and `ghostpaw-questlog` are the same binary.',
 		'',
+		'- `questlog search <words>` before `add` to avoid duplicates.',
 		'- `questlog add --title "..." --tag a,b --due tomorrow`',
 		`- \`questlog list [--view <view>]\`: ${reviewQuestlogTool.inputSchema.properties?.view?.enum?.join(', ')}.`,
 		'- `questlog done <id> --outcome "..."`',

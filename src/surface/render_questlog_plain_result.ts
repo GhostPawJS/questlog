@@ -50,7 +50,7 @@ export function renderQuestlogPlainResult(
 			['title', detail.title],
 			['objective', detail.objective],
 			['state', detail.state],
-			['tags', detail.tagNames.map((tag) => `#${tag}`).join(' ')],
+			['tags', detail.tagNames.length ? detail.tagNames.map((tag) => `#${tag}`).join(' ') : '-'],
 			['due', detail.effectiveDueAt == null ? '-' : formatPlainDate(detail.effectiveDueAt, true)],
 			['created', formatPlainDate(detail.createdAt, true)],
 		];

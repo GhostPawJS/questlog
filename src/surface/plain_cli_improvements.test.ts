@@ -48,7 +48,7 @@ test('version guard rejects old Node before importing CLI modules', () => {
 	);
 	assert.equal(
 		error,
-		'questlog needs Node 24+ (found 20.19.0). Install Node 24 or put it first on PATH.\n',
+		'questlog needs Node 24+ (found 20.19.0). Install Node 24+ (e.g. via nvm, mise or your package manager) or put it first on PATH.\n',
 	);
 	assert.equal(checkNodeVersion('24.0.0', { write: () => assert.fail() }), true);
 	const entry = readFileSync('src/cli.ts', 'utf8');
@@ -114,6 +114,16 @@ test('skill cheat sheet wraps an otherwise unchanged appendix', () => {
 		`${original.slice(0, start)}Quick commands\n\n## Appendix: MCP and tool calls\n\n${original.slice(start).replace(/^## /gm, '### ')}`,
 	);
 	assert.equal(renderSkillMarkdown(spec), original);
+});
+
+test('skill cheat sheet opens with the npx fallback and says to search before add', () => {
+	const lines = questlogSkillSpec.cheatSheet.split('\n');
+	assert.equal(lines[0], 'No install? Use `npx -y @ghostpaw/questlog <command>`.');
+	assert.ok(lines.includes('- `questlog search <words>` before `add` to avoid duplicates.'));
+	assert.ok(
+		lines.indexOf('- `questlog search <words>` before `add` to avoid duplicates.') <
+			lines.findIndex((line) => line.startsWith('- `questlog add')),
+	);
 });
 
 test('installer aliases preserve unrelated commands and package exposes both names', () => {

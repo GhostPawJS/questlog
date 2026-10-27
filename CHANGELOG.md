@@ -5,6 +5,12 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Changed
+
+- `show <id>` prints `tags : -` for a quest without tags, like other empty fields.
+- The skill cheat sheet starts with the `npx -y @ghostpaw/questlog <command>` fallback for machines without install.sh, and says to run `search` before `add` to avoid duplicates.
+- The Node version error names common ways to install Node 24+.
+
 ## [0.9.0] - 2026-10-27
 
 ### Added

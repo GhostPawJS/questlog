@@ -7,8 +7,10 @@ compatibility: "Node.js 24 or newer. MCP stdio or ghostpaw-questlog CLI."
 
 # questlog
 
+No install? Use `npx -y @ghostpaw/questlog <command>`.
 `questlog` and `ghostpaw-questlog` are the same binary.
 
+- `questlog search <words>` before `add` to avoid duplicates.
 - `questlog add --title "..." --tag a,b --due tomorrow`
 - `questlog list [--view <view>]`: questlines, quests.active, quests.available, quests.blocked, quests.deferred, quests.due_soon, quests.in_progress, quests.missed_scheduled, quests.open, quests.overdue, quests.resolved, quests.scheduled_for_day, quests.scheduled_now, repeatables.due_anchors, rumors.
 - `questlog done <id> --outcome "..."`
