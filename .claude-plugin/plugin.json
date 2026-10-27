@@ -1,6 +1,6 @@
 {
   "name": "ghostpaw-questlog",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Local tasks, calendar commitments, and recurring work.",
   "author": {
     "name": "Anonyfox",
@@ -42,7 +42,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "@ghostpaw/questlog@0.9.1",
+        "@ghostpaw/questlog@0.9.2",
         "mcp"
       ]
     }
