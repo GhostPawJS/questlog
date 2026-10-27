@@ -4,6 +4,7 @@ import { getRepeatableQuestOrThrow } from '../repeatable_quests/get_repeatable_q
 import type { RepeatableQuest } from '../repeatable_quests/types.ts';
 import { getRumorDetail } from '../rumors/get_rumor_detail.ts';
 import type { RumorDetail } from '../rumors/types.ts';
+import { questResolutionFields } from './quest_resolution_fields.ts';
 import { translateToolError } from './tool_errors.ts';
 import { defineQuestlogTool, enumSchema, integerSchema, objectSchema } from './tool_metadata.ts';
 import { inspectQuestlogItemToolName } from './tool_names.ts';
@@ -34,6 +35,8 @@ export interface InspectQuestlogItemToolData {
 }
 
 interface QuestCompactDetail {
+	outcome?: string;
+	resolvedAt?: number;
 	id: number;
 	title: string;
 	objective: string;
@@ -87,60 +90,62 @@ export type QuestInspectItem =
 
 export type InspectQuestlogItemToolResult = ToolResult<InspectQuestlogItemToolData>;
 
+function compactFields<T, K extends keyof T>(detail: T, keys: K[]): Pick<T, K> {
+	const compact = {} as Pick<T, K>;
+	for (const key of keys) compact[key] = detail[key];
+	return compact;
+}
+
 function toQuestCompactDetail(detail: ReturnType<typeof getQuestDetail>): QuestCompactDetail {
 	return {
-		id: detail.id,
-		title: detail.title,
-		objective: detail.objective,
-		state: detail.state,
-		markerId: detail.markerId,
-		available: detail.available,
-		effectiveDueAt: detail.effectiveDueAt,
-		tagNames: detail.tagNames,
-		questlineId: detail.questlineId,
-		sourceRumorId: detail.sourceRumorId,
-		spawnedFromRepeatableId: detail.spawnedFromRepeatableId,
+		...questResolutionFields(detail),
+		...compactFields(detail, [
+			'id',
+			'title',
+			'objective',
+			'state',
+			'markerId',
+			'available',
+			'effectiveDueAt',
+			'tagNames',
+			'questlineId',
+			'sourceRumorId',
+			'spawnedFromRepeatableId',
+		]),
 	};
 }
 
 function toQuestlineCompactDetail(
 	detail: ReturnType<typeof getQuestlineDetail>,
 ): QuestlineCompactDetail {
-	return {
-		id: detail.id,
-		title: detail.title,
-		description: detail.description,
-		dueAt: detail.dueAt,
-		archivedAt: detail.archivedAt,
-		totalQuests: detail.totalQuests,
-		availableQuests: detail.availableQuests,
-		overdueQuests: detail.overdueQuests,
-		sourceRumorId: detail.sourceRumorId,
-	};
+	return compactFields(detail, [
+		'id',
+		'title',
+		'description',
+		'dueAt',
+		'archivedAt',
+		'totalQuests',
+		'availableQuests',
+		'overdueQuests',
+		'sourceRumorId',
+	]);
 }
 
 function toRepeatableQuestCompactDetail(detail: RepeatableQuest): RepeatableQuestCompactDetail {
-	return {
-		id: detail.id,
-		title: detail.title,
-		objective: detail.objective,
-		rrule: detail.rrule,
-		anchorAt: detail.anchorAt,
-		questlineId: detail.questlineId,
-		archivedAt: detail.archivedAt,
-		deletedAt: detail.deletedAt,
-	};
+	return compactFields(detail, [
+		'id',
+		'title',
+		'objective',
+		'rrule',
+		'anchorAt',
+		'questlineId',
+		'archivedAt',
+		'deletedAt',
+	]);
 }
 
 function toRumorCompactDetail(detail: RumorDetail): RumorCompactDetail {
-	return {
-		id: detail.id,
-		title: detail.title,
-		details: detail.details,
-		state: detail.state,
-		markerId: detail.markerId,
-		outputs: detail.outputs,
-	};
+	return compactFields(detail, ['id', 'title', 'details', 'state', 'markerId', 'outputs']);
 }
 
 export function inspectQuestlogItemToolHandler(

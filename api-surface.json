@@ -2362,9 +2362,17 @@
 				"type": "string",
 				"optional": false
 			},
+			"outcome": {
+				"type": "string | undefined",
+				"optional": true
+			},
 			"questlineId": {
 				"type": "number | null",
 				"optional": false
+			},
+			"resolvedAt": {
+				"type": "number | undefined",
+				"optional": true
 			},
 			"sourceRumorId": {
 				"type": "number | null",
@@ -2387,7 +2395,7 @@
 				"optional": false
 			}
 		},
-		"definition": "interface QuestCompactDetail { id: number; title: string; objective: string; state: ReturnType<typeof getQuestDetail>['state']; markerId: ReturnType<typeof getQuestDetail>['markerId']; available: boolean; effectiveDueAt: number | null; tagNames: string[]; questlineId: number | null; sourceRumorId: number | null; spawnedFromRepeatableId: number | null; }"
+		"definition": "interface QuestCompactDetail { outcome?: string; resolvedAt?: number; id: number; title: string; objective: string; state: ReturnType<typeof getQuestDetail>['state']; markerId: ReturnType<typeof getQuestDetail>['markerId']; available: boolean; effectiveDueAt: number | null; tagNames: string[]; questlineId: number | null; sourceRumorId: number | null; spawnedFromRepeatableId: number | null; }"
 	},
 	".:public.getQuestlogToolByName.types.InspectQuestlogItemToolResult.types.InspectQuestlogItemToolData.types.QuestInspectItem.types.QuestlineCompactDetail": {
 		"kind": "type",
@@ -8350,6 +8358,14 @@
 				"type": "MarkerId | null | undefined",
 				"optional": true
 			},
+			"outcome": {
+				"type": "string | undefined",
+				"optional": true
+			},
+			"resolvedAt": {
+				"type": "number | undefined",
+				"optional": true
+			},
 			"snippet": {
 				"type": "string | undefined",
 				"optional": true
@@ -8367,7 +8383,7 @@
 				"optional": true
 			}
 		},
-		"definition": "interface ToolListItem extends ToolEntityRef { subtitle?: string | undefined; snippet?: string | undefined; dueAt?: number | null | undefined; available?: boolean | undefined; }",
+		"definition": "interface ToolListItem extends ToolEntityRef { outcome?: string; resolvedAt?: number; subtitle?: string | undefined; snippet?: string | undefined; dueAt?: number | null | undefined; available?: boolean | undefined; }",
 		"references": {
 			"ToolEntityRef": ".:public.ToolEntityRef"
 		}
@@ -10853,6 +10869,14 @@
 			},
 			"markerId": {
 				"type": "MarkerId | null | undefined",
+				"optional": true
+			},
+			"outcome": {
+				"type": "string | undefined",
+				"optional": true
+			},
+			"resolvedAt": {
+				"type": "number | undefined",
 				"optional": true
 			},
 			"snippet": {

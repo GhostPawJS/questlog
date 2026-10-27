@@ -65,22 +65,26 @@ initialize-based revisions 2025-11-25, 2025-06-18, 2025-03-26 and 2024-11-05.
 
 ## CLI
 
-Install globally for the `ghostpaw-questlog` binary: `npm i -g @ghostpaw/questlog`.
+Install globally for `questlog` (`ghostpaw-questlog` is the same binary): `npm i -g @ghostpaw/questlog`.
 
 ```bash
-ghostpaw-questlog add --title "Review release notes" --tag release --due 2030-01-02
-ghostpaw-questlog list --limit 10
-ghostpaw-questlog search release notes --limit 5
-ghostpaw-questlog show 1
-ghostpaw-questlog done 1 --outcome "Reviewed changes"
-ghostpaw-questlog list --view quests.resolved --json
+questlog add --title "Review release notes" --tag release --due 2030-01-02
+questlog list --limit 10
+questlog search release notes --limit 5
+questlog show 1
+questlog done 1 --outcome "Reviewed changes"
+questlog list --view quests.resolved --json
 ```
 
-`add` accepts repeated `--tag` flags, `--objective` (defaults to the title),
-`--questline <id>`, and `--due` as an ISO date or milliseconds since epoch.
+`add` accepts comma-separated tags (`--tag a,b`) and repeated `--tag` flags, `--objective` (defaults to the title),
+`--questline <id>`, and `--due` as YYYY-MM-DD, DD.MM.YYYY, `today`, `tomorrow`,
+`+3d`, an ISO date-time with timezone, or milliseconds since epoch. Date-only
+values use local end of day.
 `list` defaults to available quests; `list --help` lists all supported views.
 Its `--limit` caps text output; JSON preserves the full review tool result.
-`search --limit` caps matches in both formats. `show` inspects a quest id.
+`search --limit` caps matches in both formats. `show` prints full quest detail.
+Lists show local due dates, overdue markers, and recorded outcomes. Plain JSON
+adds ISO UTC siblings for numeric timestamp fields ending in `At`.
 `done` stores `--outcome` with the finished quest; without it the command asks for one and exits 3.
 
 Plain commands print short text by default. Use `--json` for the full tool result
@@ -91,12 +95,17 @@ or a tool error, 2 for usage errors, and 3 when clarification is needed.
 The `call` command and the per-tool form still reach every tool and parameter:
 
 ```bash
-ghostpaw-questlog tools
-ghostpaw-questlog call capture_rumor '{"title":"Review release notes"}'
-ghostpaw-questlog search_questlog --query "release notes"
+questlog tools
+questlog call capture_rumor '{"title":"Review release notes"}'
+questlog search_questlog --query "release notes"
 ```
 
-`ghostpaw-questlog mcp` starts the stdio server.
+`questlog mcp` starts the stdio server.
+
+The default database is `~/.ghostpaw/questlog.db`. Override it with `--db <path>`
+or `GHOSTPAW_QUESTLOG_DB`; top-level help shows the selected path. New database
+files are reported on stderr. The npm entry requires Node 24+ and exits 2 with
+an installation hint on older Node versions, including for help and version.
 
 ## Agent Skill
 

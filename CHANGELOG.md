@@ -5,6 +5,22 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Added
+
+- `questlog` bin alias next to `ghostpaw-questlog`; install.sh and install.ps1 create it unless another `questlog` command is already in the install directory.
+- `show <id>` prints every quest field on its own line (objective, state, tags, due, created, started, finished, outcome) and `show --json` returns full detail.
+- Plain-command JSON adds an ISO 8601 `<field>Iso` next to each epoch-ms `<field>At`. `call` and MCP output are unchanged.
+- `list` prints `due 28 Oct` and `!overdue` for open quests past their due date.
+- `--due` accepts YYYY-MM-DD, DD.MM.YYYY, `today`, `tomorrow` and `+3d` (local end of day) as well as ISO date-times; `--tag a,b` splits on commas.
+- `--help` prints the resolved database path and the `--db` / `GHOSTPAW_QUESTLOG_DB` overrides; a new database file is reported as `created <path>` on stderr.
+- The bundled skill starts with a cheat sheet of the plain commands, exit codes and database location; MCP and `call` usage moved to an appendix.
+- Unknown commands suggest the closest match (`Unknown command: lsit. Did you mean list?`, exit 2).
+
+### Fixed
+
+- The npm CLI exits 2 with `questlog needs Node 24+ (found X)` on Node below 24, before loading `node:sqlite`. Before, Node 20 printed help and then failed on the first command with ERR_UNKNOWN_BUILTIN_MODULE.
+- Compact quest detail includes `outcome` and `resolvedAt` once a quest is resolved, so `done --outcome` text shows in `show`, `list --view quests.resolved` and their JSON.
+
 ## [0.8.0] - 2026-10-27
 
 ### Added

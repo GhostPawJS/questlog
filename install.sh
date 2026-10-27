@@ -80,6 +80,11 @@ tar -xzf "$TMP/$ASSET" -C "$TMP" "$BIN"
 mkdir -p "$DIR"
 mv "$TMP/$BIN" "$DIR/$BIN"
 chmod 755 "$DIR/$BIN"
+if { [ ! -e "$DIR/questlog" ] && [ ! -L "$DIR/questlog" ]; } || { [ -L "$DIR/questlog" ] && [ "$(readlink "$DIR/questlog")" = "$BIN" ]; }; then
+	ln -sf "$BIN" "$DIR/questlog"
+else
+	say "Skipping $DIR/questlog: an existing command is already there"
+fi
 say "Installed $DIR/$BIN $("$DIR/$BIN" --version)"
 case ":$PATH:" in
 *":$DIR:"*) ;;

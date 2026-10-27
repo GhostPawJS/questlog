@@ -7,9 +7,23 @@ compatibility: "Node.js 24 or newer. MCP stdio or ghostpaw-questlog CLI."
 
 # questlog
 
+`questlog` and `ghostpaw-questlog` are the same binary.
+
+- `questlog add --title "..." --tag a,b --due tomorrow`
+- `questlog list [--view <view>]`: questlines, quests.active, quests.available, quests.blocked, quests.deferred, quests.due_soon, quests.in_progress, quests.missed_scheduled, quests.open, quests.overdue, quests.resolved, quests.scheduled_for_day, quests.scheduled_now, repeatables.due_anchors, rumors.
+- `questlog done <id> --outcome "..."`
+- `questlog search <words>`
+- `questlog show <id>`
+- Use `--json` on any plain command.
+- Exit codes: 0 ok / 1 error / 2 usage / 3 needs input.
+- Database: `~/.ghostpaw/questlog.db`; override with `--db` or `GHOSTPAW_QUESTLOG_DB`.
+- Use one database per agent or project.
+
+## Appendix: MCP and tool calls
+
 Questlog manages local tasks, calendar commitments, and recurring work. Search before creating work, inspect before changing it, and keep uncertain work as rumors. Use unlock prerequisites to sequence work. run_quest refuses blocked starts unless force is true. Review commitments and resolve work with an honest outcome.
 
-## Calling tools
+### Calling tools
 
 MCP: connect to ghostpaw-questlog, then call a tool by name with its JSON arguments.
 
@@ -17,7 +31,7 @@ CLI: `ghostpaw-questlog call <tool> '<JSON object>'` or `ghostpaw-questlog <tool
 
 Inspect schemas with `ghostpaw-questlog describe <tool>`. Use `--db <path>` to select a database.
 
-## search_questlog
+### search_questlog
 
 Search quests and rumors by text when you need to find an existing item before inspecting or changing it.
 
@@ -34,7 +48,7 @@ Read-only.
 | kinds | array | no | Optional entity kinds to search. |
 | mode | string | no | browse, identify_one. Whether to browse results normally or ask for clarification when several matches are found. |
 
-## review_questlog
+### review_questlog
 
 Review one operational questlog surface such as available quests, open rumors, blocked work, or due repeatable anchors.
 
@@ -50,7 +64,7 @@ Read-only.
 | filters | object | no | Optional filters for supported review surfaces. |
 | now | integer | no | Optional evaluation timestamp for time-sensitive views. |
 
-## inspect_questlog_item
+### inspect_questlog_item
 
 Inspect one specific questlog item in depth and return its richer structured detail and important related refs.
 
@@ -66,7 +80,7 @@ Read-only.
 | detailLevel | string | no | compact, full. How much detail to return. |
 | now | integer | no | Optional evaluation timestamp for time-sensitive detail. |
 
-## capture_rumor
+### capture_rumor
 
 Capture uncertain incoming work as a rumor so it can be triaged later without prematurely turning it into committed execution.
 
@@ -82,7 +96,7 @@ Writes: writes_state.
 | details | string | no | Optional supporting context that explains why the rumor might matter. |
 | now | integer | no | Optional creation timestamp for the rumor. |
 
-## shape_work
+### shape_work
 
 Create a quest (with timing, tags, and objective in one call), create a questline, settle a rumor into concrete work, or manage quest-questline membership. Use create_quest for clear commitments — include tags and timing directly to avoid follow-up calls.
 
@@ -107,7 +121,7 @@ Writes: writes_state.
 | title | string | no | New title for the update_rumor action. |
 | details | string | no | New or enriched context text for the update_rumor action. |
 
-## plan_quest
+### plan_quest
 
 Refine a quest by revising its objective before actual start or by changing its temporal planning fields.
 
@@ -130,7 +144,7 @@ Writes: writes_state.
 | estimateSeconds | integer | no | Optional active-effort estimate in seconds. |
 | now | integer | no | Optional update timestamp. |
 
-## run_quest
+### run_quest
 
 Run quest lifecycle actions such as starting, logging effort, finishing, abandoning, or abandoning and spawning follow-up quests atomically.
 
@@ -152,7 +166,7 @@ Writes: writes_state.
 | resolvedAt | integer | no | Optional resolved timestamp for finish or abandon actions. |
 | followups | array | no | Follow-up quests to create atomically. Required for abandon_and_spawn_followups. |
 
-## organize_work
+### organize_work
 
 Organize grouping and dependency structure by updating questlines or changing hard unlock prerequisites between concrete quests.
 
@@ -176,7 +190,7 @@ Writes: writes_state.
 | fromQuestIds | array | no | Full prerequisite quest id set. |
 | now | integer | no | Optional timestamp. |
 
-## manage_repeatable
+### manage_repeatable
 
 Manage recurring work definitions by creating, updating, previewing, spawning, or archiving repeatable quests.
 
@@ -205,7 +219,7 @@ Writes: writes_state.
 | archivedAt | integer | no | Optional archive timestamp. |
 | now | integer | no | Evaluation or update timestamp. |
 
-## tag_work
+### tag_work
 
 Classify work by adding, removing, or replacing tags on quests and by replacing the future tag template set on repeatable quests.
 
@@ -222,7 +236,7 @@ Writes: writes_state.
 | tagNames | array | yes | Tag names to add, remove, or replace. |
 | now | integer | no | Optional timestamp for the tag mutation. |
 
-## reward_work
+### reward_work
 
 Manage rewards by adding, updating, removing, or claiming quest rewards, or by replacing future reward templates on repeatable quests.
 
@@ -241,7 +255,7 @@ Writes: writes_state.
 | claimedAt | integer | no | Optional claim timestamp. |
 | now | integer | no | Optional timestamp for removal or template replacement. |
 
-## retire_work
+### retire_work
 
 Hide an item from normal active operation without rewriting history by soft-deleting a rumor, quest, questline, or repeatable quest.
 
@@ -257,7 +271,7 @@ Writes: writes_state.
 | target | object | yes | The target to hide. |
 | deletedAt | integer | no | Optional timestamp to record when the item became hidden. |
 
-## Workflow guides
+### Workflow guides
 
 - [archive-delete-and-prune](skills/questlog/references/archive-delete-and-prune.md): Choose the right retirement action for each kind of work so history stays honest and hiding does not get confused with archival or terminal execution truth.
 - [choose-work-shape](skills/questlog/references/choose-work-shape.md): Choose the right structure for new work by separating uncertainty, one-shot execution, multi-step arcs, and recurring patterns.
@@ -285,7 +299,7 @@ Writes: writes_state.
 - [settle-rumor-into-structure](skills/questlog/references/settle-rumor-into-structure.md): Turn a ready rumor into committed quest or questline structure without losing provenance or pretending vague intake is settled.
 - [tag-and-filter-portfolios](skills/questlog/references/tag-and-filter-portfolios.md): Use tags for cross-cutting classification and portfolio filtering without confusing tags for status, timing, or dependency modeling.
 
-## Principles
+### Principles
 
 - Store the least committed truth first.
 - Read before you prescribe.

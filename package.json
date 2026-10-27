@@ -135,7 +135,8 @@
 		"typescript": "^5.9.3"
 	},
 	"bin": {
-		"ghostpaw-questlog": "./dist/cli.js"
+		"ghostpaw-questlog": "./dist/cli.js",
+		"questlog": "./dist/cli.js"
 	},
 	"mcpName": "io.github.GhostPawJS/questlog"
 }

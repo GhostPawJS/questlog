@@ -1,6 +1,7 @@
 import type { SurfaceTool } from './surface_types.ts';
 
 export interface SkillMarkdownSpec<TCtx> {
+	cheatSheet?: string;
 	name: string;
 	description: string;
 	license?: string;
@@ -86,5 +87,9 @@ export function renderSkillMarkdown<TCtx>(
 		...spec.principles.map((principle) => `- ${principle}`),
 		'',
 	);
-	return lines.join('\n');
+	const output = lines.join('\n');
+	if (!spec.cheatSheet) return output;
+	const title = `# ${spec.name}\n\n`;
+	const start = output.indexOf(title) + title.length;
+	return `${output.slice(0, start)}${spec.cheatSheet}\n\n## Appendix: MCP and tool calls\n\n${output.slice(start).replace(/^## /gm, '### ')}`;
 }

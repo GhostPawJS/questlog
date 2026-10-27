@@ -15,7 +15,22 @@ export default defineConfig([
 		removeNodeProtocol: false,
 	},
 	{
-		entry: { cli: 'src/cli.ts', 'mcp-server': 'src/mcp_server_bin.ts' },
+		entry: { cli: 'src/cli.ts' },
+		format: ['esm'],
+		dts: false,
+		target: 'node24',
+		splitting: true,
+		sourcemap: false,
+		treeshake: true,
+		external: ['node:sqlite'],
+		removeNodeProtocol: false,
+		banner: { js: '#!/usr/bin/env node' },
+		onSuccess: async () => {
+			chmodSync('dist/cli.js', 0o755);
+		},
+	},
+	{
+		entry: { 'mcp-server': 'src/mcp_server_bin.ts' },
 		format: ['esm'],
 		dts: false,
 		target: 'node24',
@@ -26,7 +41,6 @@ export default defineConfig([
 		removeNodeProtocol: false,
 		banner: { js: '#!/usr/bin/env node' },
 		onSuccess: async () => {
-			chmodSync('dist/cli.js', 0o755);
 			chmodSync('dist/mcp-server.js', 0o755);
 		},
 	},

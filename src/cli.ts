@@ -1,4 +1,7 @@
-import { questlogCliOptions } from './surface/questlog_cli_options.ts';
-import { runToolCli } from './surfaces/cli.ts';
+import { checkNodeVersion } from './check_node_version.ts';
 
-process.exitCode = await runToolCli(process.argv.slice(2), questlogCliOptions);
+if (!checkNodeVersion(process.versions.node, process.stderr)) {
+	process.exitCode = 2;
+} else {
+	await import('./cli_main.ts');
+}

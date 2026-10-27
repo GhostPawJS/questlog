@@ -52,6 +52,8 @@ export interface ToolEntityRef {
 }
 
 export interface ToolListItem extends ToolEntityRef {
+	outcome?: string;
+	resolvedAt?: number;
 	subtitle?: string | undefined;
 	snippet?: string | undefined;
 	dueAt?: number | null | undefined;

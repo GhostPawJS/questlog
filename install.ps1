@@ -32,7 +32,15 @@ try {
 	Write-Host 'SHA256 ok'
 	Expand-Archive (Join-Path $Tmp $Asset) -DestinationPath $Tmp -Force
 	New-Item -ItemType Directory -Path $Dir -Force | Out-Null
+	$AliasPath = Join-Path $Dir 'questlog.exe'
+	$BinaryPath = Join-Path $Dir "$Bin.exe"
+	$UpdateAlias = -not (Test-Path $AliasPath) -or ((Test-Path $BinaryPath) -and (Get-FileHash $AliasPath).Hash -eq (Get-FileHash $BinaryPath).Hash)
 	Copy-Item (Join-Path $Tmp "$Bin.exe") (Join-Path $Dir "$Bin.exe") -Force
+	if ($UpdateAlias) {
+		Copy-Item $BinaryPath $AliasPath -Force
+	} else {
+		Write-Host "Skipping ${AliasPath}: an existing command is already there"
+	}
 } finally {
 	Remove-Item $Tmp -Recurse -Force -ErrorAction SilentlyContinue
 }

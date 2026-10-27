@@ -1,5 +1,6 @@
 import type { Readable, Writable } from 'node:stream';
 import { type CliSpec, CliUsageError, parseCliArgs, renderCliHelp } from './cli_args.ts';
+import { enrichPlainJson, suggestCommand } from './cli_output.ts';
 import { isErrorResult, type JsonSchema, type SurfaceTool } from './surface_types.ts';
 import { validateInput } from './validate_input.ts';
 
@@ -13,6 +14,7 @@ export interface ToolCliOptions<TCtx> {
 	bin: string;
 	version: string;
 	description: string;
+	describeDb?: (opts: { db?: string }) => string;
 	tools: readonly SurfaceTool<TCtx>[];
 	openContext(opts: { db?: string }): TCtx | Promise<TCtx>;
 	closeContext?: (ctx: TCtx) => void | Promise<void>;
@@ -56,7 +58,7 @@ export async function runToolCli<TCtx>(
 	const normalize = (name: string) => name.replace(/[-_]/g, '').toLowerCase();
 	if (['help', '--help', '-h'].includes(command)) {
 		stdout.write(
-			`${options.bin} ${options.version}\n${options.description}\n\nUsage: ${options.bin} [--db path] <command>\nCommands: ${options.commands?.plain?.map((entry) => entry.spec.command).join(', ') ?? ''}${options.commands?.plain?.length ? ', ' : ''}tools [--json], describe <tool>, call <tool> [JSON|-], <tool> --parameter value, mcp, skill\nOptions: --help, --version, --compact\n\n${options.tools.map((tool) => `${tool.name}  ${tool.description}`).join('\n')}\n`,
+			`${options.bin} ${options.version}\n${options.description}\n\nUsage: ${options.bin} [--db path] <command>\nCommands: ${options.commands?.plain?.map((entry) => entry.spec.command).join(', ') ?? ''}${options.commands?.plain?.length ? ', ' : ''}tools [--json], describe <tool>, call <tool> [JSON|-], <tool> --parameter value, mcp, skill\nOptions: --help, --version, --compact, --db <path>\n${options.describeDb ? `${options.describeDb(ctxOptions)}\n` : ''}\n${options.tools.map((tool) => `${tool.name}  ${tool.description}`).join('\n')}\n`,
 		);
 		return 0;
 	}
@@ -115,7 +117,20 @@ export async function runToolCli<TCtx>(
 			? args.shift()
 			: command;
 	const tool = options.tools.find((tool) => normalize(tool.name) === normalize(name ?? ''));
-	if (!tool) return fail(`Unknown tool: ${name ?? ''}`);
+	if (!tool) {
+		if (command === 'call' || command === 'describe') return fail(`Unknown tool: ${name ?? ''}`);
+		const suggestion = suggestCommand(command, [
+			...(options.commands?.plain?.map((entry) => entry.spec.command) ?? []),
+			'help',
+			'tools',
+			'describe',
+			'call',
+			'mcp',
+			'skill',
+			...options.tools.map((entry) => entry.name),
+		]);
+		return fail(`Unknown command: ${command}.${suggestion ? ` Did you mean ${suggestion}?` : ''}`);
+	}
 	if (command === 'describe') {
 		stdout.write(
 			`${tool.name}\n${tool.description}\nUse when: ${tool.whenToUse ?? ''}\nNot for: ${tool.whenNotToUse ?? ''}\nRead only: ${tool.readOnly ?? false}\n\nParameter | Type | Required | Description\n${Object.entries(
@@ -193,6 +208,7 @@ export async function runToolCli<TCtx>(
 			input = values;
 		}
 	} catch (cause) {
+		if (cause instanceof CliUsageError) return fail(cause.message, 2);
 		return fail(`Invalid input: ${cause instanceof Error ? cause.message : String(cause)}`, 1);
 	}
 	const errors = validateInput(tool.inputSchema, input);
@@ -208,7 +224,7 @@ export async function runToolCli<TCtx>(
 		stdout.write(
 			plain && !plainValues.json
 				? plain.render(result, context, plainValues)
-				: `${JSON.stringify(result, null, compact ? undefined : 2)}\n`,
+				: `${JSON.stringify(plain ? enrichPlainJson(result) : result, null, compact ? undefined : 2)}\n`,
 		);
 		if (
 			typeof result === 'object' &&

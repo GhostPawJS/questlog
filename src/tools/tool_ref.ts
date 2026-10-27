@@ -6,6 +6,7 @@ import type { QuestReward } from '../rewards/types.ts';
 import { deriveRumorState } from '../rumors/derive_rumor_state.ts';
 import type { Rumor, RumorDetail } from '../rumors/types.ts';
 import type { QuestlogSearchResult } from '../search_result.ts';
+import { questResolutionFields } from './quest_resolution_fields.ts';
 import type { ToolEntityRef, ToolListItem } from './tool_types.ts';
 
 export function toQuestRef(quest: Quest | QuestDetail): ToolEntityRef {
@@ -14,19 +15,13 @@ export function toQuestRef(quest: Quest | QuestDetail): ToolEntityRef {
 		id: quest.id,
 		title: quest.title,
 		markerId: 'markerId' in quest ? quest.markerId : null,
-		state:
-			'state' in quest
-				? quest.state
-				: deriveQuestState({
-						startedAt: quest.startedAt,
-						resolvedAt: quest.resolvedAt,
-						success: quest.success,
-					}),
+		state: 'state' in quest ? quest.state : deriveQuestState(quest),
 	};
 }
 
 export function toQuestListItem(quest: QuestDetail): ToolListItem {
 	return {
+		...questResolutionFields(quest),
 		...toQuestRef(quest),
 		subtitle: quest.objective,
 		dueAt: quest.effectiveDueAt,

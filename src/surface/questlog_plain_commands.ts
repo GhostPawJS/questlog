@@ -1,7 +1,8 @@
 import type { QuestlogDb } from '../database.ts';
 import type { PlainCliCommand } from '../surfaces/cli.ts';
-import { type CliArgument, CliUsageError } from '../surfaces/cli_args.ts';
+import type { CliArgument } from '../surfaces/cli_args.ts';
 import { reviewQuestlogTool } from '../tools/review_questlog_tool.ts';
+import { parsePlainDue } from './plain_dates.ts';
 import { renderQuestlogPlainResult } from './render_questlog_plain_result.ts';
 
 export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] {
@@ -26,7 +27,11 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 					{ name: 'title', type: 'string', required: true },
 					{ name: 'tag', type: 'array' },
 					{ name: 'objective', type: 'string' },
-					{ name: 'due', type: 'string', description: 'ISO date or milliseconds since epoch.' },
+					{
+						name: 'due',
+						type: 'string',
+						description: 'Local date, today, tomorrow, +3d, ISO date-time or epoch milliseconds.',
+					},
 					{ name: 'questline', type: 'integer' },
 				],
 			},
@@ -36,13 +41,16 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 					title: v.title,
 					objective: v.objective ?? v.title,
 				};
-				if (v.tag !== undefined) quest.tags = v.tag;
+				if (v.tag !== undefined)
+					quest.tags = (v.tag as string[]).flatMap((tag) =>
+						tag
+							.split(',')
+							.map((part) => part.trim())
+							.filter(Boolean),
+					);
 				if (v.questline !== undefined) quest.questlineId = v.questline;
 				if (v.due !== undefined) {
-					const raw = String(v.due);
-					const due = /^-?\d+$/.test(raw) ? Number(raw) : Date.parse(raw);
-					if (!Number.isSafeInteger(due)) throw new CliUsageError('Invalid due date');
-					quest.dueAt = due;
+					quest.dueAt = parsePlainDue(String(v.due));
 				}
 				return { action: 'create_quest', quest };
 			},
@@ -97,7 +105,7 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 		{
 			spec: { command: 'show', description: 'Inspect a quest by id.', positionals: [id] },
 			tool: 'inspect_questlog_item',
-			input: (v) => ({ target: { kind: 'quest', id: v.id } }),
+			input: (v) => ({ target: { kind: 'quest', id: v.id }, detailLevel: 'full' }),
 			render: renderQuestlogPlainResult,
 		},
 	];

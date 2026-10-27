@@ -63,7 +63,7 @@ test('plain commands operate on real quests in text and JSON modes', async () =>
 			if (json) {
 				const detail = JSON.parse(added.out).data.quest;
 				assert.equal(detail.objective, 'Release notes');
-				assert.equal(detail.dueAt, Date.parse('2030-01-02'));
+				assert.equal(detail.dueAt, new Date(2030, 0, 2, 23, 59, 59, 999).getTime());
 				assert.deepEqual(detail.tagNames, ['docs', 'release']);
 			} else assert.match(added.out, /Created quest/);
 			for (const args of [
@@ -77,7 +77,8 @@ test('plain commands operate on real quests in text and JSON modes', async () =>
 				else {
 					assert.match(result.out, /Release notes/);
 					assert.match(result.out, /#release/);
-					assert.equal(result.out.trim().split('\n').length, 1);
+					if (args[0] === 'show') assert.match(result.out, /objective\s*: Release notes/);
+					else assert.equal(result.out.trim().split('\n').length, 1);
 				}
 			}
 			const missing = await invoke(['done', String(id), ...flags]);
@@ -91,6 +92,30 @@ test('plain commands operate on real quests in text and JSON modes', async () =>
 			assert.equal(done.code, 0, done.err);
 			if (json) assert.equal(JSON.parse(done.out).data.quest.outcome, 'Reviewed');
 			else assert.match(done.out, new RegExp(`id ${id}`));
+			const shown = await invoke(['show', String(id), '--json']);
+			const detail = JSON.parse(shown.out).data.item.detail;
+			assert.equal(detail.outcome, 'Reviewed');
+			assert.equal(detail.resolvedAtIso, new Date(detail.resolvedAt).toISOString());
+			assert.match(
+				(await invoke(['show', String(id)])).out,
+				/finished\s*:[\s\S]*outcome\s*: Reviewed/,
+			);
+			const resolved = await invoke(['list', '--view', 'quests.resolved', '--json']);
+			assert.ok(
+				JSON.parse(resolved.out).data.items.some(
+					(item: { outcome?: string }) => item.outcome === 'Reviewed',
+				),
+			);
+			assert.match((await invoke(['list', '--view', 'quests.resolved'])).out, /-> Reviewed/);
+			const compact = await invoke([
+				'call',
+				'inspect_questlog_item',
+				JSON.stringify({ target: { kind: 'quest', id } }),
+			]);
+			const compactDetail = JSON.parse(compact.out).data.item.detail;
+			assert.equal(compactDetail.outcome, 'Reviewed');
+			assert.equal(compactDetail.resolvedAt, detail.resolvedAt);
+			assert.equal('resolvedAtIso' in compactDetail, false);
 		}
 		for (const command of ['add', 'list', 'done', 'search', 'show']) {
 			const count = paths.length;
@@ -108,6 +133,11 @@ test('plain commands operate on real quests in text and JSON modes', async () =>
 				1,
 			);
 		}
+		assert.equal((await invoke(['lsit'])).err, 'Unknown command: lsit. Did you mean list?\n');
+		assert.match((await invoke(['call', 'unknown', '{}'])).err, /Unknown tool: unknown/);
+		const overdue = await invoke(['add', '--title', 'Past deadline', '--due', '2000-01-01']);
+		assert.equal(overdue.code, 0);
+		assert.match((await invoke(['list'])).out, /Past deadline !overdue due 1 Jan 2000/);
 		const questline = await invoke([
 			'call',
 			'shape_work',
@@ -123,7 +153,7 @@ test('plain commands operate on real quests in text and JSON modes', async () =>
 			'--json',
 		]);
 		assert.equal(JSON.parse(attached.out).data.quest.questlineId, questlineId);
-		assert.equal((await invoke(['add', '--title', 'Invalid', '--due', 'bad'])).code, 1);
+		assert.equal((await invoke(['add', '--title', 'Invalid', '--due', 'bad'])).code, 2);
 		assert.equal((await invoke(['show', '99999'])).code, 1);
 		assert.equal(
 			(
