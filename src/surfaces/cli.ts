@@ -22,6 +22,13 @@ export interface ToolCliOptions<TCtx> {
 	closeContext?: (ctx: TCtx) => void | Promise<void>;
 	commands?: {
 		plain?: readonly PlainCliCommand<TCtx>[];
+		names?: readonly string[];
+		run?: (
+			command: string,
+			args: string[],
+			contextOptions: { db?: string },
+			io: { stdin: Readable; stdout: Writable; stderr: Writable },
+		) => Promise<number | undefined>;
 		mcp?: (opts: { db?: string }) => unknown | Promise<unknown>;
 		skill?: () => string | Promise<string>;
 		guides?: readonly { name: string; description: string; content: string }[];
@@ -61,7 +68,14 @@ export async function runToolCli<TCtx>(
 	const normalize = (name: string) => name.replace(/[-_]/g, '').toLowerCase();
 	if (['help', '--help', '-h'].includes(command)) {
 		stdout.write(
-			`${options.bin} ${options.version}\n${options.description}\n\nUsage: ${options.bin} [--db path] <command>\nCommands: ${options.commands?.plain?.map((entry) => entry.spec.command).join(', ') ?? ''}${options.commands?.plain?.length ? ', ' : ''}tools [--json], describe <tool>, call <tool> [JSON|-], <tool> --parameter value, mcp, skill\nOptions: --help, --version, --compact, --db <path>\n${options.describeDb ? `${options.describeDb(ctxOptions)}\n` : ''}\n${options.tools.map((tool) => `${tool.name}  ${tool.description}`).join('\n')}\n`,
+			`${options.bin} ${options.version}\n${options.description}\n\nUsage: ${options.bin} [--db path] <command>\nCommands: ${[
+				...(options.commands?.plain?.map((entry) => entry.spec.command) ?? []),
+				...(options.commands?.names ?? []),
+			]
+				.map((name) => `${name}, `)
+				.join(
+					'',
+				)}tools [--json], describe <tool>, call <tool> [JSON|-], <tool> --parameter value, mcp, skill\nOptions: --help, --version, --compact, --db <path>\n${options.describeDb ? `${options.describeDb(ctxOptions)}\n` : ''}\n${options.tools.map((tool) => `${tool.name}  ${tool.description}`).join('\n')}\n`,
 		);
 		return 0;
 	}
@@ -107,6 +121,12 @@ export async function runToolCli<TCtx>(
 		await options.commands.mcp(ctxOptions);
 		return 0;
 	}
+	const custom = await options.commands?.run?.(command, args, ctxOptions, {
+		stdin,
+		stdout,
+		stderr,
+	});
+	if (custom !== undefined) return custom;
 	const plain = options.commands?.plain?.find((entry) => entry.spec.command === command);
 	let plainValues: Record<string, unknown> = {};
 	if (plain) {
@@ -140,6 +160,7 @@ export async function runToolCli<TCtx>(
 		if (command === 'call' || command === 'describe') return fail(`Unknown tool: ${name ?? ''}`);
 		const suggestion = suggestCommand(command, [
 			...(options.commands?.plain?.map((entry) => entry.spec.command) ?? []),
+			...(options.commands?.names ?? []),
 			'help',
 			'tools',
 			'describe',

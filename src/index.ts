@@ -1,4 +1,5 @@
 export type { QuestlogDb } from './database.ts';
+export * as hooks from './hooks/index.ts';
 export { initQuestlogTables } from './init_questlog_tables.ts';
 export type { MarkerDefinition, MarkerId } from './markers/index.ts';
 export * as markers from './markers/index.ts';

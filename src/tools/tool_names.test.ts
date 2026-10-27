@@ -7,7 +7,7 @@ describe('tool_names', () => {
 	it('exports unique canonical tool names that match the registry set', () => {
 		const names = Object.values(toolNames);
 
-		strictEqual(names.length, 12);
+		strictEqual(names.length, 13);
 		strictEqual(new Set(names).size, names.length);
 		for (const name of names) {
 			strictEqual(/^[a-z]+(?:_[a-z]+)*$/.test(name), true);

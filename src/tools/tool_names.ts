@@ -10,3 +10,5 @@ export const manageRepeatableToolName = 'manage_repeatable';
 export const tagWorkToolName = 'tag_work';
 export const rewardWorkToolName = 'reward_work';
 export const retireWorkToolName = 'retire_work';
+
+export const manageHooksToolName = 'manage_hooks';

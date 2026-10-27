@@ -69,6 +69,10 @@
   },
   "tools": [
     {
+      "name": "manage_hooks",
+      "description": "List or remove outbound webhook targets, run a tick, or inspect pending and failed deliveries."
+    },
+    {
       "name": "search_questlog",
       "description": "Search quests and rumors by text when you need to find an existing item before inspecting or changing it."
     },

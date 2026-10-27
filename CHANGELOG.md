@@ -5,6 +5,12 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Added
+
+- Opt-in signed outbound event webhooks with persistent deduplication, tag and event filters, batched delivery, retries, and delivery review.
+- `hook` management, one-shot `tick`, signal-aware `watch`, and a webhook verification guide.
+- Async webhook library namespace and `manage_hooks` tool support across CLI and MCP.
+
 ## [0.9.2] - 2026-10-27
 
 ### Changed

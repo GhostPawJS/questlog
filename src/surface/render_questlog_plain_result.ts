@@ -1,4 +1,5 @@
 import type { QuestlogDb } from '../database.ts';
+import { listDeliveries } from '../hooks/list_deliveries.ts';
 import { getQuestDetail } from '../quests/get_quest_detail.ts';
 import type { ToolEntityRef, ToolResult } from '../tools/tool_types.ts';
 import { formatPlainDate } from './plain_dates.ts';
@@ -10,6 +11,7 @@ export function renderQuestlogPlainResult(
 ): string {
 	const r = result as ToolResult<{
 		items?: ToolEntityRef[];
+		deliveries?: ReturnType<typeof listDeliveries>;
 		item?: { detail: ToolEntityRef };
 		primary?: ToolEntityRef;
 	}>;
@@ -36,6 +38,7 @@ export function renderQuestlogPlainResult(
 		return r.outcome === 'needs_clarification'
 			? `${r.clarification.question}\nMissing: ${r.clarification.missing.map((name) => `--${name}`).join(', ')}\n`
 			: `${r.summary}\n${r.error.message}\n`;
+	if (r.data.deliveries && !r.data.item) return `${JSON.stringify(r.data.deliveries, null, 2)}\n`;
 	if (r.data.items) {
 		const items =
 			values.limit === undefined
@@ -62,6 +65,11 @@ export function renderQuestlogPlainResult(
 			]);
 		if (detail.outcome != null) fields.push(['outcome', detail.outcome]);
 		if (detail.questlineId != null) fields.push(['questline', detail.questlineId]);
+		for (const delivery of listDeliveries(db, { questId: detail.id }))
+			fields.push([
+				'delivery',
+				`${delivery.id} target ${delivery.targetId} ${delivery.status} attempts ${delivery.attempts}`,
+			]);
 		const width = Math.max(...fields.map(([label]) => label.length));
 		return `${fields.map(([label, value]) => `${label.padEnd(width)}: ${String(value).replace(/[\r\n]+/g, ' ')}`).join('\n')}\n`;
 	}

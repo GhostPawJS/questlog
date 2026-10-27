@@ -15,7 +15,7 @@ describe('tool registry', () => {
 		const names = questlogTools.map((tool) => tool.name);
 		const uniqueNames = new Set(names);
 
-		strictEqual(questlogTools.length, 12);
+		strictEqual(questlogTools.length, 13);
 		strictEqual(uniqueNames.size, questlogTools.length);
 
 		for (const tool of questlogTools) {
@@ -47,6 +47,7 @@ describe('tool registry', () => {
 		deepStrictEqual(listQuestlogToolDefinitions(), [...questlogTools]);
 
 		deepStrictEqual(names, [
+			'manage_hooks',
 			'search_questlog',
 			'review_questlog',
 			'inspect_questlog_item',

@@ -1,5 +1,6 @@
 // Fields required by each action in addition to the tool's common fields.
 export const actionRequirements: Record<string, Record<string, readonly string[]>> = {
+	manage_hooks: { remove: ['id'] },
 	shape_work: {
 		create_quest: ['quest'],
 		create_questline: ['questline'],

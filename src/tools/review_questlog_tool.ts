@@ -1,3 +1,5 @@
+import { listDeliveries } from '../hooks/list_deliveries.ts';
+import type { HookDelivery } from '../hooks/types.ts';
 import { listQuestlines } from '../questlines/list_questlines.ts';
 import {
 	listActiveQuests,
@@ -38,6 +40,7 @@ import type { ToolListItem, ToolResult } from './tool_types.ts';
 import { toolFailure, toolNeedsClarification, toolSuccess, toolWarning } from './tool_types.ts';
 
 export type ReviewQuestlogToolView =
+	| 'deliveries'
 	| 'questlines'
 	| 'quests.active'
 	| 'quests.available'
@@ -68,6 +71,7 @@ export interface ReviewQuestlogToolInput {
 export interface ReviewQuestlogToolData {
 	view: ReviewQuestlogToolView;
 	items: ToolListItem[];
+	deliveries?: HookDelivery[];
 	count: number;
 	appliedFilters: ReviewQuestlogToolInput['filters'] | undefined;
 	evaluatedAt: number;
@@ -110,7 +114,10 @@ function validateReviewInput(input: ReviewQuestlogToolInput): ReviewQuestlogTool
 		);
 	}
 
-	if ((input.view === 'rumors' || input.view === 'questlines') && hasQuestFilters(input.filters)) {
+	if (
+		(input.view === 'rumors' || input.view === 'questlines' || input.view === 'deliveries') &&
+		hasQuestFilters(input.filters)
+	) {
 		return toolFailure(
 			'protocol',
 			'invalid_input',
@@ -196,6 +203,15 @@ export function reviewQuestlogToolHandler(
 		return invalid;
 	}
 
+	if (input.view === 'deliveries')
+		return toolSuccess('Pending and failed deliveries.', {
+			view: input.view,
+			items: [],
+			deliveries: listDeliveries(db),
+			count: listDeliveries(db).length,
+			appliedFilters: input.filters,
+			evaluatedAt: input.now ?? Date.now(),
+		});
 	const now = input.now ?? Date.now();
 	let items: ToolListItem[] = [];
 
@@ -271,6 +287,7 @@ export const reviewQuestlogTool = defineQuestlogTool<
 	inputSchema: objectSchema(
 		{
 			view: enumSchema('Which operational review surface to return.', [
+				'deliveries',
 				'questlines',
 				'quests.active',
 				'quests.available',

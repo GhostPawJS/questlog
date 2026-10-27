@@ -51,7 +51,7 @@ describe('skill registry', () => {
 		const names = questlogSkills.map((skill) => skill.name);
 		const uniqueNames = new Set(names);
 
-		strictEqual(questlogSkills.length, 25);
+		strictEqual(questlogSkills.length, 26);
 		strictEqual(uniqueNames.size, questlogSkills.length);
 		strictEqual(listQuestlogSkills().length, questlogSkills.length);
 

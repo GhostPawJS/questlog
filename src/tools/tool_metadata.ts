@@ -33,7 +33,10 @@ export interface JsonSchema {
 
 export type ToolSideEffects = 'none' | 'writes_state';
 
-export interface QuestlogToolDefinition<TInput, TResult extends ToolResult<unknown>> {
+export interface QuestlogToolDefinition<
+	TInput,
+	TResult extends ToolResult<unknown> | Promise<ToolResult<unknown>>,
+> {
 	name: string;
 	description: string;
 	whenToUse: string;
@@ -48,11 +51,15 @@ export interface QuestlogToolDefinition<TInput, TResult extends ToolResult<unkno
 	handler: (db: QuestlogDb, input: TInput) => TResult;
 }
 
-export type ToolDefinitionRegistry = readonly QuestlogToolDefinition<never, ToolResult<unknown>>[];
+export type ToolDefinitionRegistry = readonly QuestlogToolDefinition<
+	never,
+	ToolResult<unknown> | Promise<ToolResult<unknown>>
+>[];
 
-export function defineQuestlogTool<TInput, TResult extends ToolResult<unknown>>(
-	definition: QuestlogToolDefinition<TInput, TResult>,
-): QuestlogToolDefinition<TInput, TResult> {
+export function defineQuestlogTool<
+	TInput,
+	TResult extends ToolResult<unknown> | Promise<ToolResult<unknown>>,
+>(definition: QuestlogToolDefinition<TInput, TResult>): QuestlogToolDefinition<TInput, TResult> {
 	const requirements = actionRequirements[definition.name];
 	if (requirements) registerSchemaActions(definition.inputSchema, requirements);
 	const handler = definition.handler;

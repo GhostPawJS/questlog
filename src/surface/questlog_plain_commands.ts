@@ -22,6 +22,35 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 	const commands: PlainCliCommand<QuestlogDb>[] = [
 		{
 			spec: {
+				command: 'tick',
+				description: 'Detect events and deliver outbound webhooks once.',
+				flags: [{ name: 'dry-run', type: 'boolean' }],
+			},
+			tool: 'manage_hooks',
+			input: (v) => ({ action: 'tick', dry_run: v.dryRun ?? false }),
+			render: (r, _db, values) => {
+				const result = r as {
+					ok: boolean;
+					summary: string;
+					data?: import('../hooks/types.ts').TickResult;
+				};
+				if (!result.ok || !result.data) return `${result.summary}\n`;
+				const d = result.data;
+				return `${d.events.length} events found; ${d.sent} deliveries sent, ${d.queued} queued, ${d.retrying} retrying, ${d.failed} failed.\n${values.dryRun ? `${JSON.stringify({ events: d.events, batches: d.batches }, null, 2)}\n` : ''}`;
+			},
+		},
+		{
+			spec: {
+				command: 'review',
+				description: 'Review an operational view.',
+				positionals: [{ name: 'view', type: 'string', required: true, enum: views }],
+			},
+			tool: 'review_questlog',
+			input: (v) => ({ view: v.view }),
+			render: renderQuestlogPlainResult,
+		},
+		{
+			spec: {
 				command: 'add',
 				description:
 					'Create a quest: add "My title" or add --title "My title". Objective defaults to the title.',

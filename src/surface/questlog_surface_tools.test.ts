@@ -4,6 +4,7 @@ import { validateInput } from '../surfaces/validate_input.ts';
 import { questlogSurfaceTools } from './questlog_surface_tools.ts';
 
 const inputs: Record<string, Record<string, unknown>> = {
+	manage_hooks: { action: 'list' },
 	search_questlog: {
 		query: 'planning',
 	},

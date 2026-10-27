@@ -3,6 +3,7 @@ export {
 	inspectQuestlogItemTool,
 	inspectQuestlogItemToolHandler,
 } from './inspect_questlog_item_tool.ts';
+export { manageHooksTool } from './manage_hooks_tool.ts';
 export { manageRepeatableTool, manageRepeatableToolHandler } from './manage_repeatable_tool.ts';
 export { organizeWorkTool, organizeWorkToolHandler } from './organize_work_tool.ts';
 export { planQuestTool, planQuestToolHandler } from './plan_quest_tool.ts';
@@ -39,6 +40,7 @@ export {
 export {
 	captureRumorToolName,
 	inspectQuestlogItemToolName,
+	manageHooksToolName,
 	manageRepeatableToolName,
 	organizeWorkToolName,
 	planQuestToolName,

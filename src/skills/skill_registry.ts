@@ -24,8 +24,10 @@ import { sequenceWithUnlocksSkill } from './sequence-with-unlocks.ts';
 import { settleRumorIntoStructureSkill } from './settle-rumor-into-structure.ts';
 import type { QuestlogSkillRegistry } from './skill_types.ts';
 import { tagAndFilterPortfoliosSkill } from './tag-and-filter-portfolios.ts';
+import { webhooksSkill } from './webhooks.ts';
 
 export const questlogSkills = [
+	webhooksSkill,
 	archiveDeleteAndPruneSkill,
 	chooseWorkShapeSkill,
 	clarifyAmbiguousRequestsSkill,

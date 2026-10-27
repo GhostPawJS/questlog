@@ -1,5 +1,6 @@
 import { captureRumorTool } from './capture_rumor_tool.ts';
 import { inspectQuestlogItemTool } from './inspect_questlog_item_tool.ts';
+import { manageHooksTool } from './manage_hooks_tool.ts';
 import { manageRepeatableTool } from './manage_repeatable_tool.ts';
 import { organizeWorkTool } from './organize_work_tool.ts';
 import { planQuestTool } from './plan_quest_tool.ts';
@@ -13,6 +14,7 @@ import { tagWorkTool } from './tag_work_tool.ts';
 import type { ToolDefinitionRegistry } from './tool_metadata.ts';
 
 export const questlogTools = [
+	manageHooksTool,
 	searchQuestlogTool,
 	reviewQuestlogTool,
 	inspectQuestlogItemTool,

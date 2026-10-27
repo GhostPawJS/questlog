@@ -1,4 +1,54 @@
 {
+	".:exports.hooks": {
+		"kind": "object"
+	},
+	".:exports.hooks.addHook": {
+		"kind": "function"
+	},
+	".:exports.hooks.hookEventTypes": {
+		"kind": "object"
+	},
+	".:exports.hooks.hookEventTypes.0": {
+		"kind": "string",
+		"value": "quest.due"
+	},
+	".:exports.hooks.hookEventTypes.1": {
+		"kind": "string",
+		"value": "quest.overdue"
+	},
+	".:exports.hooks.hookEventTypes.2": {
+		"kind": "string",
+		"value": "quest.unblocked"
+	},
+	".:exports.hooks.hookEventTypes.3": {
+		"kind": "string",
+		"value": "repeatable.spawned"
+	},
+	".:exports.hooks.hookEventTypes.4": {
+		"kind": "string",
+		"value": "rumor.captured"
+	},
+	".:exports.hooks.hookLabel": {
+		"kind": "function"
+	},
+	".:exports.hooks.listDeliveries": {
+		"kind": "function"
+	},
+	".:exports.hooks.listHooks": {
+		"kind": "function"
+	},
+	".:exports.hooks.removeHook": {
+		"kind": "function"
+	},
+	".:exports.hooks.testHook": {
+		"kind": "function"
+	},
+	".:exports.hooks.tickQuestlog": {
+		"kind": "function"
+	},
+	".:exports.hooks.watchQuestlog": {
+		"kind": "function"
+	},
 	".:exports.initQuestlogTables": {
 		"kind": "function"
 	},
@@ -401,6 +451,9 @@
 	".:exports.skills.questlogSkills.24": {
 		"kind": "object"
 	},
+	".:exports.skills.questlogSkills.25": {
+		"kind": "object"
+	},
 	".:exports.skills.questlogSkills.3": {
 		"kind": "object"
 	},
@@ -735,6 +788,55 @@
 	".:exports.tools.literalSchema": {
 		"kind": "function"
 	},
+	".:exports.tools.manageHooksTool": {
+		"kind": "object"
+	},
+	".:exports.tools.manageHooksTool.description": {
+		"kind": "string",
+		"value": "List or remove outbound webhook targets, run a tick, or inspect pending and failed deliveries."
+	},
+	".:exports.tools.manageHooksTool.handler": {
+		"kind": "function"
+	},
+	".:exports.tools.manageHooksTool.inputDescriptions": {
+		"kind": "object"
+	},
+	".:exports.tools.manageHooksTool.inputSchema": {
+		"kind": "object"
+	},
+	".:exports.tools.manageHooksTool.name": {
+		"kind": "string",
+		"value": "manage_hooks"
+	},
+	".:exports.tools.manageHooksTool.outputDescription": {
+		"kind": "string",
+		"value": "Returns redacted targets, delivery metadata, or a tick summary. Never returns signing secrets."
+	},
+	".:exports.tools.manageHooksTool.readOnly": {
+		"kind": "boolean"
+	},
+	".:exports.tools.manageHooksTool.sideEffects": {
+		"kind": "string",
+		"value": "writes_state"
+	},
+	".:exports.tools.manageHooksTool.supportsClarification": {
+		"kind": "boolean"
+	},
+	".:exports.tools.manageHooksTool.targetKinds": {
+		"kind": "object"
+	},
+	".:exports.tools.manageHooksTool.whenNotToUse": {
+		"kind": "string",
+		"value": "Use quest tools to change work itself."
+	},
+	".:exports.tools.manageHooksTool.whenToUse": {
+		"kind": "string",
+		"value": "Use to operate configured outbound webhooks. Add and test targets with the CLI."
+	},
+	".:exports.tools.manageHooksToolName": {
+		"kind": "string",
+		"value": "manage_hooks"
+	},
 	".:exports.tools.manageRepeatableTool": {
 		"kind": "object"
 	},
@@ -1065,6 +1167,9 @@
 	".:exports.tools.questlogToolMappings.57": {
 		"kind": "object"
 	},
+	".:exports.tools.questlogToolMappings.58": {
+		"kind": "object"
+	},
 	".:exports.tools.questlogToolMappings.6": {
 		"kind": "object"
 	},
@@ -1090,6 +1195,9 @@
 		"kind": "object"
 	},
 	".:exports.tools.questlogTools.11": {
+		"kind": "object"
+	},
+	".:exports.tools.questlogTools.12": {
 		"kind": "object"
 	},
 	".:exports.tools.questlogTools.2": {
@@ -2034,7 +2142,7 @@
 	},
 	".:public.defineQuestlogTool": {
 		"kind": "value",
-		"type": "<TInput, TResult extends ToolResult<unknown>>(definition: QuestlogToolDefinition<TInput, TResult>) => QuestlogToolDefinition<TInput, TResult>",
+		"type": "<TInput, TResult extends ToolResult<unknown> | Promise<ToolResult<unknown>>>(definition: QuestlogToolDefinition<TInput, TResult>) => QuestlogToolDefinition<TInput, TResult>",
 		"references": {
 			"QuestlogToolDefinition": ".:public.QuestlogToolDefinition",
 			"TInput": ".:public.defineQuestlogTool.types.TInput",
@@ -2209,7 +2317,7 @@
 	},
 	".:public.getQuestlogToolByName": {
 		"kind": "value",
-		"type": "(name: string) => QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult> | null",
+		"type": "(name: string) => QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; }, Promise<ToolResult<unknown>>> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult> | null",
 		"references": {
 			"CaptureRumorInput": ".:public.CaptureRumorInput",
 			"CaptureRumorToolResult": ".:public.captureRumorTool.types.CaptureRumorToolResult",
@@ -2235,7 +2343,8 @@
 			"ShapeWorkToolInput": ".:public.getQuestlogToolByName.types.ShapeWorkToolInput",
 			"ShapeWorkToolResult": ".:public.getQuestlogToolByName.types.ShapeWorkToolResult",
 			"TagWorkToolInput": ".:public.getQuestlogToolByName.types.TagWorkToolInput",
-			"TagWorkToolResult": ".:public.getQuestlogToolByName.types.TagWorkToolResult"
+			"TagWorkToolResult": ".:public.getQuestlogToolByName.types.TagWorkToolResult",
+			"ToolResult": ".:public.ToolResult"
 		}
 	},
 	".:public.getQuestlogToolByName.types.InspectQuestlogItemToolInput": {
@@ -2296,6 +2405,10 @@
 		"kind": "type",
 		"type": "InspectQuestlogItemToolData",
 		"members": {
+			"deliveries": {
+				"type": "HookDelivery[] | undefined",
+				"optional": true
+			},
 			"detailLevel": {
 				"type": "\"compact\" | \"full\"",
 				"optional": false
@@ -2309,11 +2422,307 @@
 				"optional": false
 			}
 		},
-		"definition": "interface InspectQuestlogItemToolData { item: QuestInspectItem; related: ToolEntityRef[]; detailLevel: 'compact' | 'full'; }",
+		"definition": "interface InspectQuestlogItemToolData { item: QuestInspectItem; deliveries?: HookDelivery[]; related: ToolEntityRef[]; detailLevel: 'compact' | 'full'; }",
 		"references": {
+			"HookDelivery": ".:public.getQuestlogToolByName.types.InspectQuestlogItemToolResult.types.InspectQuestlogItemToolData.types.HookDelivery",
 			"QuestInspectItem": ".:public.getQuestlogToolByName.types.InspectQuestlogItemToolResult.types.InspectQuestlogItemToolData.types.QuestInspectItem",
 			"ToolEntityRef": ".:public.ToolEntityRef"
 		}
+	},
+	".:public.getQuestlogToolByName.types.InspectQuestlogItemToolResult.types.InspectQuestlogItemToolData.types.HookDelivery": {
+		"kind": "type",
+		"type": "HookDelivery",
+		"members": {
+			"attempts": {
+				"type": "number",
+				"optional": false
+			},
+			"errorClass": {
+				"type": "string | null",
+				"optional": false
+			},
+			"events": {
+				"type": "HookEvent[]",
+				"optional": false
+			},
+			"httpStatus": {
+				"type": "number | null",
+				"optional": false
+			},
+			"id": {
+				"type": "string",
+				"optional": false
+			},
+			"lastAttemptAt": {
+				"type": "number | null",
+				"optional": false
+			},
+			"nextAttemptAt": {
+				"type": "number",
+				"optional": false
+			},
+			"status": {
+				"type": "\"pending\" | \"delivered\" | \"failed\"",
+				"optional": false
+			},
+			"targetId": {
+				"type": "number",
+				"optional": false
+			}
+		},
+		"definition": "interface HookDelivery { id: string; targetId: number; events: HookEvent[]; status: 'pending' | 'delivered' | 'failed'; attempts: number; lastAttemptAt: number | null; httpStatus: number | null; errorClass: string | null; nextAttemptAt: number; }",
+		"references": {
+			"HookEvent": ".:public.getQuestlogToolByName.types.InspectQuestlogItemToolResult.types.InspectQuestlogItemToolData.types.HookDelivery.types.HookEvent"
+		}
+	},
+	".:public.getQuestlogToolByName.types.InspectQuestlogItemToolResult.types.InspectQuestlogItemToolData.types.HookDelivery.types.HookEvent": {
+		"kind": "type",
+		"type": "HookEvent",
+		"members": {
+			"id": {
+				"type": "string",
+				"optional": false
+			},
+			"occurredAt": {
+				"type": "string",
+				"optional": false
+			},
+			"questId": {
+				"type": "number | undefined",
+				"optional": true
+			},
+			"repeatableId": {
+				"type": "number | undefined",
+				"optional": true
+			},
+			"rumorId": {
+				"type": "number | undefined",
+				"optional": true
+			},
+			"type": {
+				"type": "\"quest.due\" | \"quest.overdue\" | \"quest.unblocked\" | \"repeatable.spawned\" | \"rumor.captured\" | \"hook.test\"",
+				"optional": false
+			}
+		},
+		"definition": "interface HookEvent { id: string; type: HookEventType | 'hook.test'; questId?: number; rumorId?: number; repeatableId?: number; occurredAt: string; }",
+		"references": {
+			"HookEventType": ".:public.getQuestlogToolByName.types.InspectQuestlogItemToolResult.types.InspectQuestlogItemToolData.types.HookDelivery.types.HookEvent.types.HookEventType"
+		}
+	},
+	".:public.getQuestlogToolByName.types.InspectQuestlogItemToolResult.types.InspectQuestlogItemToolData.types.HookDelivery.types.HookEvent.types.HookEventType": {
+		"kind": "type",
+		"type": "\"quest.due\" | \"quest.overdue\" | \"quest.unblocked\" | \"repeatable.spawned\" | \"rumor.captured\"",
+		"members": {
+			"__@iterator@814": {
+				"type": "() => StringIterator<string>",
+				"optional": false
+			},
+			"anchor": {
+				"type": "(name: string) => string",
+				"optional": false
+			},
+			"at": {
+				"type": "(index: number) => string | undefined",
+				"optional": false
+			},
+			"big": {
+				"type": "() => string",
+				"optional": false
+			},
+			"blink": {
+				"type": "() => string",
+				"optional": false
+			},
+			"bold": {
+				"type": "() => string",
+				"optional": false
+			},
+			"charAt": {
+				"type": "(pos: number) => string",
+				"optional": false
+			},
+			"charCodeAt": {
+				"type": "(index: number) => number",
+				"optional": false
+			},
+			"codePointAt": {
+				"type": "(pos: number) => number | undefined",
+				"optional": false
+			},
+			"concat": {
+				"type": "(...strings: string[]) => string",
+				"optional": false
+			},
+			"endsWith": {
+				"type": "(searchString: string, endPosition?: number) => boolean",
+				"optional": false
+			},
+			"fixed": {
+				"type": "() => string",
+				"optional": false
+			},
+			"fontcolor": {
+				"type": "(color: string) => string",
+				"optional": false
+			},
+			"fontsize": {
+				"type": "{ (size: number): string; (size: string): string; }",
+				"optional": false
+			},
+			"includes": {
+				"type": "(searchString: string, position?: number) => boolean",
+				"optional": false
+			},
+			"indexOf": {
+				"type": "(searchString: string, position?: number) => number",
+				"optional": false
+			},
+			"isWellFormed": {
+				"type": "() => boolean",
+				"optional": false
+			},
+			"italics": {
+				"type": "() => string",
+				"optional": false
+			},
+			"lastIndexOf": {
+				"type": "(searchString: string, position?: number) => number",
+				"optional": false
+			},
+			"length": {
+				"type": "number",
+				"optional": false
+			},
+			"link": {
+				"type": "(url: string) => string",
+				"optional": false
+			},
+			"localeCompare": {
+				"type": "{ (that: string): number; (that: string, locales?: string | string[], options?: Intl.CollatorOptions): number; (that: string, locales?: Intl.LocalesArgument, options?: Intl.CollatorOptions): number; }",
+				"optional": false
+			},
+			"match": {
+				"type": "{ (regexp: string | RegExp): RegExpMatchArray | null; (matcher: { [Symbol.match](string: string): RegExpMatchArray | null; }): RegExpMatchArray | null; }",
+				"optional": false
+			},
+			"matchAll": {
+				"type": "(regexp: RegExp) => RegExpStringIterator<RegExpExecArray>",
+				"optional": false
+			},
+			"normalize": {
+				"type": "{ (form: \"NFC\" | \"NFD\" | \"NFKC\" | \"NFKD\"): string; (form?: string): string; }",
+				"optional": false
+			},
+			"padEnd": {
+				"type": "(maxLength: number, fillString?: string) => string",
+				"optional": false
+			},
+			"padStart": {
+				"type": "(maxLength: number, fillString?: string) => string",
+				"optional": false
+			},
+			"repeat": {
+				"type": "(count: number) => string",
+				"optional": false
+			},
+			"replace": {
+				"type": "{ (searchValue: string | RegExp, replaceValue: string): string; (searchValue: string | RegExp, replacer: (substring: string, ...args: any[]) => string): string; (searchValue: { [Symbol.replace](string: string, replaceValue: string): string; }, replaceValue: string): string; (searchValue: { [Symbol.replace](string: string, replacer: (substring: string, ...args: any[]) => string): string; }, replacer: (substring: string, ...args: any[]) => string): string; }",
+				"optional": false
+			},
+			"replaceAll": {
+				"type": "{ (searchValue: string | RegExp, replaceValue: string): string; (searchValue: string | RegExp, replacer: (substring: string, ...args: any[]) => string): string; }",
+				"optional": false
+			},
+			"search": {
+				"type": "{ (regexp: string | RegExp): number; (searcher: { [Symbol.search](string: string): number; }): number; }",
+				"optional": false
+			},
+			"slice": {
+				"type": "(start?: number, end?: number) => string",
+				"optional": false
+			},
+			"small": {
+				"type": "() => string",
+				"optional": false
+			},
+			"split": {
+				"type": "{ (separator: string | RegExp, limit?: number): string[]; (splitter: { [Symbol.split](string: string, limit?: number): string[]; }, limit?: number): string[]; }",
+				"optional": false
+			},
+			"startsWith": {
+				"type": "(searchString: string, position?: number) => boolean",
+				"optional": false
+			},
+			"strike": {
+				"type": "() => string",
+				"optional": false
+			},
+			"sub": {
+				"type": "() => string",
+				"optional": false
+			},
+			"substr": {
+				"type": "(from: number, length?: number) => string",
+				"optional": false
+			},
+			"substring": {
+				"type": "(start: number, end?: number) => string",
+				"optional": false
+			},
+			"sup": {
+				"type": "() => string",
+				"optional": false
+			},
+			"toLocaleLowerCase": {
+				"type": "{ (locales?: string | string[]): string; (locales?: Intl.LocalesArgument): string; }",
+				"optional": false
+			},
+			"toLocaleUpperCase": {
+				"type": "{ (locales?: string | string[]): string; (locales?: Intl.LocalesArgument): string; }",
+				"optional": false
+			},
+			"toLowerCase": {
+				"type": "() => string",
+				"optional": false
+			},
+			"toString": {
+				"type": "() => string",
+				"optional": false
+			},
+			"toUpperCase": {
+				"type": "() => string",
+				"optional": false
+			},
+			"toWellFormed": {
+				"type": "() => string",
+				"optional": false
+			},
+			"trim": {
+				"type": "() => string",
+				"optional": false
+			},
+			"trimEnd": {
+				"type": "() => string",
+				"optional": false
+			},
+			"trimLeft": {
+				"type": "() => string",
+				"optional": false
+			},
+			"trimRight": {
+				"type": "() => string",
+				"optional": false
+			},
+			"trimStart": {
+				"type": "() => string",
+				"optional": false
+			},
+			"valueOf": {
+				"type": "() => string",
+				"optional": false
+			}
+		},
+		"definition": "type HookEventType = (typeof hookEventTypes)[number];"
 	},
 	".:public.getQuestlogToolByName.types.InspectQuestlogItemToolResult.types.InspectQuestlogItemToolData.types.QuestInspectItem": {
 		"kind": "type",
@@ -2847,7 +3256,7 @@
 		"kind": "type",
 		"type": "ReviewQuestlogToolView",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -3056,7 +3465,7 @@
 				"optional": false
 			}
 		},
-		"definition": "type ReviewQuestlogToolView = 'questlines' | 'quests.active' | 'quests.available' | 'quests.blocked' | 'quests.deferred' | 'quests.due_soon' | 'quests.in_progress' | 'quests.missed_scheduled' | 'quests.open' | 'quests.overdue' | 'quests.resolved' | 'quests.scheduled_for_day' | 'quests.scheduled_now' | 'repeatables.due_anchors' | 'rumors';"
+		"definition": "type ReviewQuestlogToolView = 'deliveries' | 'questlines' | 'quests.active' | 'quests.available' | 'quests.blocked' | 'quests.deferred' | 'quests.due_soon' | 'quests.in_progress' | 'quests.missed_scheduled' | 'quests.open' | 'quests.overdue' | 'quests.resolved' | 'quests.scheduled_for_day' | 'quests.scheduled_now' | 'repeatables.due_anchors' | 'rumors';"
 	},
 	".:public.getQuestlogToolByName.types.ReviewQuestlogToolResult": {
 		"kind": "type",
@@ -3105,6 +3514,10 @@
 				"type": "number",
 				"optional": false
 			},
+			"deliveries": {
+				"type": "HookDelivery[] | undefined",
+				"optional": true
+			},
 			"evaluatedAt": {
 				"type": "number",
 				"optional": false
@@ -3118,8 +3531,9 @@
 				"optional": false
 			}
 		},
-		"definition": "interface ReviewQuestlogToolData { view: ReviewQuestlogToolView; items: ToolListItem[]; count: number; appliedFilters: ReviewQuestlogToolInput['filters'] | undefined; evaluatedAt: number; }",
+		"definition": "interface ReviewQuestlogToolData { view: ReviewQuestlogToolView; items: ToolListItem[]; deliveries?: HookDelivery[]; count: number; appliedFilters: ReviewQuestlogToolInput['filters'] | undefined; evaluatedAt: number; }",
 		"references": {
+			"HookDelivery": ".:public.getQuestlogToolByName.types.InspectQuestlogItemToolResult.types.InspectQuestlogItemToolData.types.HookDelivery",
 			"ReviewQuestlogToolInput": ".:public.getQuestlogToolByName.types.ReviewQuestlogToolInput",
 			"ReviewQuestlogToolView": ".:public.getQuestlogToolByName.types.ReviewQuestlogToolInput.types.ReviewQuestlogToolView",
 			"ToolListItem": ".:public.ToolListItem"
@@ -3575,6 +3989,568 @@
 		"kind": "value",
 		"type": "{ name: string; description: string; content: string; }"
 	},
+	".:public.hooks": {
+		"kind": "namespace"
+	},
+	".:public.hooks.addHook": {
+		"kind": "value",
+		"type": "(db: QuestlogDb, input: { url: string; tag?: string; events?: HookEventType[]; minGap?: number; secret?: string; now?: number; }) => { id: number; secret: string; }"
+	},
+	".:public.hooks.HookDelivery": {
+		"kind": "type",
+		"type": "HookDelivery",
+		"members": {
+			"attempts": {
+				"type": "number",
+				"optional": false
+			},
+			"errorClass": {
+				"type": "string | null",
+				"optional": false
+			},
+			"events": {
+				"type": "HookEvent[]",
+				"optional": false
+			},
+			"httpStatus": {
+				"type": "number | null",
+				"optional": false
+			},
+			"id": {
+				"type": "string",
+				"optional": false
+			},
+			"lastAttemptAt": {
+				"type": "number | null",
+				"optional": false
+			},
+			"nextAttemptAt": {
+				"type": "number",
+				"optional": false
+			},
+			"status": {
+				"type": "\"pending\" | \"delivered\" | \"failed\"",
+				"optional": false
+			},
+			"targetId": {
+				"type": "number",
+				"optional": false
+			}
+		},
+		"definition": "type index$3_HookDelivery = HookDelivery;",
+		"references": {
+			"HookDelivery": ".:public.getQuestlogToolByName.types.InspectQuestlogItemToolResult.types.InspectQuestlogItemToolData.types.HookDelivery"
+		}
+	},
+	".:public.hooks.HookEvent": {
+		"kind": "type",
+		"type": "HookEvent",
+		"members": {
+			"id": {
+				"type": "string",
+				"optional": false
+			},
+			"occurredAt": {
+				"type": "string",
+				"optional": false
+			},
+			"questId": {
+				"type": "number | undefined",
+				"optional": true
+			},
+			"repeatableId": {
+				"type": "number | undefined",
+				"optional": true
+			},
+			"rumorId": {
+				"type": "number | undefined",
+				"optional": true
+			},
+			"type": {
+				"type": "\"quest.due\" | \"quest.overdue\" | \"quest.unblocked\" | \"repeatable.spawned\" | \"rumor.captured\" | \"hook.test\"",
+				"optional": false
+			}
+		},
+		"definition": "type index$3_HookEvent = HookEvent;",
+		"references": {
+			"HookEvent": ".:public.getQuestlogToolByName.types.InspectQuestlogItemToolResult.types.InspectQuestlogItemToolData.types.HookDelivery.types.HookEvent"
+		}
+	},
+	".:public.hooks.HookEventType": {
+		"kind": "type",
+		"type": "\"quest.due\" | \"quest.overdue\" | \"quest.unblocked\" | \"repeatable.spawned\" | \"rumor.captured\"",
+		"members": {
+			"__@iterator@814": {
+				"type": "() => StringIterator<string>",
+				"optional": false
+			},
+			"anchor": {
+				"type": "(name: string) => string",
+				"optional": false
+			},
+			"at": {
+				"type": "(index: number) => string | undefined",
+				"optional": false
+			},
+			"big": {
+				"type": "() => string",
+				"optional": false
+			},
+			"blink": {
+				"type": "() => string",
+				"optional": false
+			},
+			"bold": {
+				"type": "() => string",
+				"optional": false
+			},
+			"charAt": {
+				"type": "(pos: number) => string",
+				"optional": false
+			},
+			"charCodeAt": {
+				"type": "(index: number) => number",
+				"optional": false
+			},
+			"codePointAt": {
+				"type": "(pos: number) => number | undefined",
+				"optional": false
+			},
+			"concat": {
+				"type": "(...strings: string[]) => string",
+				"optional": false
+			},
+			"endsWith": {
+				"type": "(searchString: string, endPosition?: number) => boolean",
+				"optional": false
+			},
+			"fixed": {
+				"type": "() => string",
+				"optional": false
+			},
+			"fontcolor": {
+				"type": "(color: string) => string",
+				"optional": false
+			},
+			"fontsize": {
+				"type": "{ (size: number): string; (size: string): string; }",
+				"optional": false
+			},
+			"includes": {
+				"type": "(searchString: string, position?: number) => boolean",
+				"optional": false
+			},
+			"indexOf": {
+				"type": "(searchString: string, position?: number) => number",
+				"optional": false
+			},
+			"isWellFormed": {
+				"type": "() => boolean",
+				"optional": false
+			},
+			"italics": {
+				"type": "() => string",
+				"optional": false
+			},
+			"lastIndexOf": {
+				"type": "(searchString: string, position?: number) => number",
+				"optional": false
+			},
+			"length": {
+				"type": "number",
+				"optional": false
+			},
+			"link": {
+				"type": "(url: string) => string",
+				"optional": false
+			},
+			"localeCompare": {
+				"type": "{ (that: string): number; (that: string, locales?: string | string[], options?: Intl.CollatorOptions): number; (that: string, locales?: Intl.LocalesArgument, options?: Intl.CollatorOptions): number; }",
+				"optional": false
+			},
+			"match": {
+				"type": "{ (regexp: string | RegExp): RegExpMatchArray | null; (matcher: { [Symbol.match](string: string): RegExpMatchArray | null; }): RegExpMatchArray | null; }",
+				"optional": false
+			},
+			"matchAll": {
+				"type": "(regexp: RegExp) => RegExpStringIterator<RegExpExecArray>",
+				"optional": false
+			},
+			"normalize": {
+				"type": "{ (form: \"NFC\" | \"NFD\" | \"NFKC\" | \"NFKD\"): string; (form?: string): string; }",
+				"optional": false
+			},
+			"padEnd": {
+				"type": "(maxLength: number, fillString?: string) => string",
+				"optional": false
+			},
+			"padStart": {
+				"type": "(maxLength: number, fillString?: string) => string",
+				"optional": false
+			},
+			"repeat": {
+				"type": "(count: number) => string",
+				"optional": false
+			},
+			"replace": {
+				"type": "{ (searchValue: string | RegExp, replaceValue: string): string; (searchValue: string | RegExp, replacer: (substring: string, ...args: any[]) => string): string; (searchValue: { [Symbol.replace](string: string, replaceValue: string): string; }, replaceValue: string): string; (searchValue: { [Symbol.replace](string: string, replacer: (substring: string, ...args: any[]) => string): string; }, replacer: (substring: string, ...args: any[]) => string): string; }",
+				"optional": false
+			},
+			"replaceAll": {
+				"type": "{ (searchValue: string | RegExp, replaceValue: string): string; (searchValue: string | RegExp, replacer: (substring: string, ...args: any[]) => string): string; }",
+				"optional": false
+			},
+			"search": {
+				"type": "{ (regexp: string | RegExp): number; (searcher: { [Symbol.search](string: string): number; }): number; }",
+				"optional": false
+			},
+			"slice": {
+				"type": "(start?: number, end?: number) => string",
+				"optional": false
+			},
+			"small": {
+				"type": "() => string",
+				"optional": false
+			},
+			"split": {
+				"type": "{ (separator: string | RegExp, limit?: number): string[]; (splitter: { [Symbol.split](string: string, limit?: number): string[]; }, limit?: number): string[]; }",
+				"optional": false
+			},
+			"startsWith": {
+				"type": "(searchString: string, position?: number) => boolean",
+				"optional": false
+			},
+			"strike": {
+				"type": "() => string",
+				"optional": false
+			},
+			"sub": {
+				"type": "() => string",
+				"optional": false
+			},
+			"substr": {
+				"type": "(from: number, length?: number) => string",
+				"optional": false
+			},
+			"substring": {
+				"type": "(start: number, end?: number) => string",
+				"optional": false
+			},
+			"sup": {
+				"type": "() => string",
+				"optional": false
+			},
+			"toLocaleLowerCase": {
+				"type": "{ (locales?: string | string[]): string; (locales?: Intl.LocalesArgument): string; }",
+				"optional": false
+			},
+			"toLocaleUpperCase": {
+				"type": "{ (locales?: string | string[]): string; (locales?: Intl.LocalesArgument): string; }",
+				"optional": false
+			},
+			"toLowerCase": {
+				"type": "() => string",
+				"optional": false
+			},
+			"toString": {
+				"type": "() => string",
+				"optional": false
+			},
+			"toUpperCase": {
+				"type": "() => string",
+				"optional": false
+			},
+			"toWellFormed": {
+				"type": "() => string",
+				"optional": false
+			},
+			"trim": {
+				"type": "() => string",
+				"optional": false
+			},
+			"trimEnd": {
+				"type": "() => string",
+				"optional": false
+			},
+			"trimLeft": {
+				"type": "() => string",
+				"optional": false
+			},
+			"trimRight": {
+				"type": "() => string",
+				"optional": false
+			},
+			"trimStart": {
+				"type": "() => string",
+				"optional": false
+			},
+			"valueOf": {
+				"type": "() => string",
+				"optional": false
+			}
+		},
+		"definition": "type index$3_HookEventType = HookEventType;",
+		"references": {
+			"HookEventType": ".:public.getQuestlogToolByName.types.InspectQuestlogItemToolResult.types.InspectQuestlogItemToolData.types.HookDelivery.types.HookEvent.types.HookEventType"
+		}
+	},
+	".:public.hooks.hookEventTypes": {
+		"kind": "value",
+		"type": "readonly [\"quest.due\", \"quest.overdue\", \"quest.unblocked\", \"repeatable.spawned\", \"rumor.captured\"]"
+	},
+	".:public.hooks.hookLabel": {
+		"kind": "value",
+		"type": "(db: QuestlogDb, name?: string) => string"
+	},
+	".:public.hooks.HookTarget": {
+		"kind": "type",
+		"type": "HookTarget",
+		"members": {
+			"createdAt": {
+				"type": "number",
+				"optional": false
+			},
+			"events": {
+				"type": "(\"quest.due\" | \"quest.overdue\" | \"quest.unblocked\" | \"repeatable.spawned\" | \"rumor.captured\")[]",
+				"optional": false
+			},
+			"failed": {
+				"type": "number",
+				"optional": false
+			},
+			"id": {
+				"type": "number",
+				"optional": false
+			},
+			"lastWake": {
+				"type": "number | null",
+				"optional": false
+			},
+			"minGap": {
+				"type": "number",
+				"optional": false
+			},
+			"pending": {
+				"type": "number",
+				"optional": false
+			},
+			"scope": {
+				"type": "\"tag\" | \"database\"",
+				"optional": false
+			},
+			"tag": {
+				"type": "string | null",
+				"optional": false
+			},
+			"url": {
+				"type": "string",
+				"optional": false
+			}
+		},
+		"definition": "type index$3_HookTarget = HookTarget;",
+		"references": {
+			"HookTarget": ".:public.hooks.HookTarget.types.HookTarget"
+		}
+	},
+	".:public.hooks.HookTarget.types.HookTarget": {
+		"kind": "type",
+		"type": "HookTarget",
+		"members": {
+			"createdAt": {
+				"type": "number",
+				"optional": false
+			},
+			"events": {
+				"type": "(\"quest.due\" | \"quest.overdue\" | \"quest.unblocked\" | \"repeatable.spawned\" | \"rumor.captured\")[]",
+				"optional": false
+			},
+			"failed": {
+				"type": "number",
+				"optional": false
+			},
+			"id": {
+				"type": "number",
+				"optional": false
+			},
+			"lastWake": {
+				"type": "number | null",
+				"optional": false
+			},
+			"minGap": {
+				"type": "number",
+				"optional": false
+			},
+			"pending": {
+				"type": "number",
+				"optional": false
+			},
+			"scope": {
+				"type": "\"tag\" | \"database\"",
+				"optional": false
+			},
+			"tag": {
+				"type": "string | null",
+				"optional": false
+			},
+			"url": {
+				"type": "string",
+				"optional": false
+			}
+		},
+		"definition": "interface HookTarget { id: number; url: string; tag: string | null; scope: 'database' | 'tag'; events: HookEventType[]; minGap: number; createdAt: number; lastWake: number | null; pending: number; failed: number; }",
+		"references": {
+			"HookEventType": ".:public.getQuestlogToolByName.types.InspectQuestlogItemToolResult.types.InspectQuestlogItemToolData.types.HookDelivery.types.HookEvent.types.HookEventType"
+		}
+	},
+	".:public.hooks.listDeliveries": {
+		"kind": "value",
+		"type": "(db: QuestlogDb, options?: { questId?: number; includeDelivered?: boolean; }) => HookDelivery[]"
+	},
+	".:public.hooks.listHooks": {
+		"kind": "value",
+		"type": "(db: QuestlogDb) => HookTarget[]"
+	},
+	".:public.hooks.removeHook": {
+		"kind": "value",
+		"type": "(db: QuestlogDb, id: number) => void"
+	},
+	".:public.hooks.testHook": {
+		"kind": "value",
+		"type": "(db: QuestlogDb, id: number, options?: TickOptions) => Promise<{ id: string; delivered: boolean; }>"
+	},
+	".:public.hooks.TickOptions": {
+		"kind": "type",
+		"type": "TickOptions",
+		"members": {
+			"clock": {
+				"type": "(() => number) | undefined",
+				"optional": true
+			},
+			"dryRun": {
+				"type": "boolean | undefined",
+				"optional": true
+			},
+			"fetch": {
+				"type": "{ (input: RequestInfo | URL, init?: RequestInit): Promise<Response>; (input: string | URL | Request, init?: RequestInit): Promise<Response>; } | undefined",
+				"optional": true
+			},
+			"now": {
+				"type": "number | undefined",
+				"optional": true
+			},
+			"timeoutMs": {
+				"type": "number | undefined",
+				"optional": true
+			}
+		},
+		"definition": "type index$3_TickOptions = TickOptions;",
+		"references": {
+			"TickOptions": ".:public.hooks.TickOptions.types.TickOptions"
+		}
+	},
+	".:public.hooks.TickOptions.types.TickOptions": {
+		"kind": "type",
+		"type": "TickOptions",
+		"members": {
+			"clock": {
+				"type": "(() => number) | undefined",
+				"optional": true
+			},
+			"dryRun": {
+				"type": "boolean | undefined",
+				"optional": true
+			},
+			"fetch": {
+				"type": "{ (input: RequestInfo | URL, init?: RequestInit): Promise<Response>; (input: string | URL | Request, init?: RequestInit): Promise<Response>; } | undefined",
+				"optional": true
+			},
+			"now": {
+				"type": "number | undefined",
+				"optional": true
+			},
+			"timeoutMs": {
+				"type": "number | undefined",
+				"optional": true
+			}
+		},
+		"definition": "interface TickOptions { now?: number; clock?: () => number; fetch?: typeof globalThis.fetch; dryRun?: boolean; timeoutMs?: number; }"
+	},
+	".:public.hooks.tickQuestlog": {
+		"kind": "value",
+		"type": "(db: QuestlogDb, options?: TickOptions) => Promise<TickResult>"
+	},
+	".:public.hooks.TickResult": {
+		"kind": "type",
+		"type": "TickResult",
+		"members": {
+			"batches": {
+				"type": "{ targetId: number; events: HookEvent[]; }[]",
+				"optional": false
+			},
+			"events": {
+				"type": "HookEvent[]",
+				"optional": false
+			},
+			"failed": {
+				"type": "number",
+				"optional": false
+			},
+			"queued": {
+				"type": "number",
+				"optional": false
+			},
+			"retrying": {
+				"type": "number",
+				"optional": false
+			},
+			"sent": {
+				"type": "number",
+				"optional": false
+			}
+		},
+		"definition": "type index$3_TickResult = TickResult;",
+		"references": {
+			"TickResult": ".:public.hooks.TickResult.types.TickResult"
+		}
+	},
+	".:public.hooks.TickResult.types.TickResult": {
+		"kind": "type",
+		"type": "TickResult",
+		"members": {
+			"batches": {
+				"type": "{ targetId: number; events: HookEvent[]; }[]",
+				"optional": false
+			},
+			"events": {
+				"type": "HookEvent[]",
+				"optional": false
+			},
+			"failed": {
+				"type": "number",
+				"optional": false
+			},
+			"queued": {
+				"type": "number",
+				"optional": false
+			},
+			"retrying": {
+				"type": "number",
+				"optional": false
+			},
+			"sent": {
+				"type": "number",
+				"optional": false
+			}
+		},
+		"definition": "interface TickResult { events: HookEvent[]; batches: { targetId: number; events: HookEvent[]; }[]; sent: number; queued: number; retrying: number; failed: number; }",
+		"references": {
+			"HookEvent": ".:public.getQuestlogToolByName.types.InspectQuestlogItemToolResult.types.InspectQuestlogItemToolData.types.HookDelivery.types.HookEvent"
+		}
+	},
+	".:public.hooks.watchQuestlog": {
+		"kind": "value",
+		"type": "(db: QuestlogDb, options: TickOptions & { interval?: number; signal: AbortSignal; onTick?: (result: TickResult) => void; }) => Promise<void>"
+	},
 	".:public.initQuestlogTables": {
 		"kind": "value",
 		"type": "(db: QuestlogDb) => void",
@@ -3668,7 +4644,7 @@
 		"kind": "type",
 		"type": "JsonSchemaType",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -3982,7 +4958,7 @@
 	},
 	".:public.listQuestlogToolDefinitions": {
 		"kind": "value",
-		"type": "() => (QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult>)[]",
+		"type": "() => (QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; }, Promise<ToolResult<unknown>>> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult>)[]",
 		"references": {
 			"CaptureRumorInput": ".:public.CaptureRumorInput",
 			"CaptureRumorToolResult": ".:public.captureRumorTool.types.CaptureRumorToolResult",
@@ -4008,7 +4984,8 @@
 			"ShapeWorkToolInput": ".:public.getQuestlogToolByName.types.ShapeWorkToolInput",
 			"ShapeWorkToolResult": ".:public.getQuestlogToolByName.types.ShapeWorkToolResult",
 			"TagWorkToolInput": ".:public.getQuestlogToolByName.types.TagWorkToolInput",
-			"TagWorkToolResult": ".:public.getQuestlogToolByName.types.TagWorkToolResult"
+			"TagWorkToolResult": ".:public.getQuestlogToolByName.types.TagWorkToolResult",
+			"ToolResult": ".:public.ToolResult"
 		}
 	},
 	".:public.listResolvedQuests": {
@@ -4068,6 +5045,18 @@
 	".:public.manageApprovalsAndPromisesSkill": {
 		"kind": "value",
 		"type": "{ name: string; description: string; content: string; }"
+	},
+	".:public.manageHooksTool": {
+		"kind": "value",
+		"type": "QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; }, Promise<ToolResult<unknown>>>",
+		"references": {
+			"QuestlogToolDefinition": ".:public.QuestlogToolDefinition",
+			"ToolResult": ".:public.ToolResult"
+		}
+	},
+	".:public.manageHooksToolName": {
+		"kind": "value",
+		"type": "\"manage_hooks\""
 	},
 	".:public.manageRepeatableTool": {
 		"kind": "value",
@@ -4136,7 +5125,7 @@
 		"kind": "type",
 		"type": "MarkerId",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -4404,7 +5393,7 @@
 		"kind": "type",
 		"type": "MarkerId",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -5241,11 +6230,11 @@
 		"kind": "type",
 		"type": "QuestlogSkillRegistry",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => ArrayIterator<QuestlogSkill>",
 				"optional": false
 			},
-			"__@unscopables@800": {
+			"__@unscopables@834": {
 				"type": "{ readonly [x: number]: boolean | undefined; readonly length?: boolean | undefined; toString?: boolean | undefined; toLocaleString?: boolean | undefined; concat?: boolean | undefined; join?: boolean | undefined; slice?: boolean | undefined; indexOf?: boolean | undefined; lastIndexOf?: boolean | undefined; every?: boolean | undefined; some?: boolean | undefined; forEach?: boolean | undefined; map?: boolean | undefined; filter?: boolean | undefined; reduce?: boolean | undefined; reduceRight?: boolean | undefined; find?: boolean | undefined; findIndex?: boolean | undefined; entries?: boolean | undefined; keys?: boolean | undefined; values?: boolean | undefined; includes?: boolean | undefined; flatMap?: boolean | undefined; flat?: boolean | undefined; at?: boolean | undefined; findLast?: boolean | undefined; findLastIndex?: boolean | undefined; toReversed?: boolean | undefined; toSorted?: boolean | undefined; toSpliced?: boolean | undefined; with?: boolean | undefined; [Symbol.iterator]?: boolean | undefined; readonly [Symbol.unscopables]?: boolean | undefined; }",
 				"optional": false
 			},
@@ -5477,7 +6466,7 @@
 				"optional": false
 			}
 		},
-		"definition": "interface QuestlogToolDefinition<TInput, TResult extends ToolResult<unknown>> { name: string; description: string; whenToUse: string; whenNotToUse?: string | undefined; sideEffects: ToolSideEffects; readOnly: boolean; supportsClarification: boolean; targetKinds: readonly string[]; inputDescriptions: ToolInputDescriptions; outputDescription: ToolOutputDescription; inputSchema: JsonSchema; handler: (db: QuestlogDb, input: TInput) => TResult; }",
+		"definition": "interface QuestlogToolDefinition<TInput, TResult extends ToolResult<unknown> | Promise<ToolResult<unknown>>> { name: string; description: string; whenToUse: string; whenNotToUse?: string | undefined; sideEffects: ToolSideEffects; readOnly: boolean; supportsClarification: boolean; targetKinds: readonly string[]; inputDescriptions: ToolInputDescriptions; outputDescription: ToolOutputDescription; inputSchema: JsonSchema; handler: (db: QuestlogDb, input: TInput) => TResult; }",
 		"references": {
 			"JsonSchema": ".:public.JsonSchema",
 			"QuestlogDb": ".:public.QuestlogDb",
@@ -5532,7 +6521,7 @@
 	},
 	".:public.questlogTools": {
 		"kind": "value",
-		"type": "(QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult>)[]",
+		"type": "(QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; }, Promise<ToolResult<unknown>>>)[]",
 		"references": {
 			"CaptureRumorInput": ".:public.CaptureRumorInput",
 			"CaptureRumorToolResult": ".:public.captureRumorTool.types.CaptureRumorToolResult",
@@ -5558,7 +6547,8 @@
 			"ShapeWorkToolInput": ".:public.getQuestlogToolByName.types.ShapeWorkToolInput",
 			"ShapeWorkToolResult": ".:public.getQuestlogToolByName.types.ShapeWorkToolResult",
 			"TagWorkToolInput": ".:public.getQuestlogToolByName.types.TagWorkToolInput",
-			"TagWorkToolResult": ".:public.getQuestlogToolByName.types.TagWorkToolResult"
+			"TagWorkToolResult": ".:public.getQuestlogToolByName.types.TagWorkToolResult",
+			"ToolResult": ".:public.ToolResult"
 		}
 	},
 	".:public.QuestReward": {
@@ -5635,7 +6625,7 @@
 		"kind": "type",
 		"type": "QuestState",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -6350,7 +7340,7 @@
 		"kind": "type",
 		"type": "RumorState",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -6805,11 +7795,11 @@
 		"kind": "type",
 		"type": "QuestlogSkillRegistry",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => ArrayIterator<QuestlogSkill>",
 				"optional": false
 			},
-			"__@unscopables@800": {
+			"__@unscopables@834": {
 				"type": "{ readonly [x: number]: boolean | undefined; readonly length?: boolean | undefined; toString?: boolean | undefined; toLocaleString?: boolean | undefined; concat?: boolean | undefined; join?: boolean | undefined; slice?: boolean | undefined; indexOf?: boolean | undefined; lastIndexOf?: boolean | undefined; every?: boolean | undefined; some?: boolean | undefined; forEach?: boolean | undefined; map?: boolean | undefined; filter?: boolean | undefined; reduce?: boolean | undefined; reduceRight?: boolean | undefined; find?: boolean | undefined; findIndex?: boolean | undefined; entries?: boolean | undefined; keys?: boolean | undefined; values?: boolean | undefined; includes?: boolean | undefined; flatMap?: boolean | undefined; flat?: boolean | undefined; at?: boolean | undefined; findLast?: boolean | undefined; findLastIndex?: boolean | undefined; toReversed?: boolean | undefined; toSorted?: boolean | undefined; toSpliced?: boolean | undefined; with?: boolean | undefined; [Symbol.iterator]?: boolean | undefined; readonly [Symbol.unscopables]?: boolean | undefined; }",
 				"optional": false
 			},
@@ -7161,7 +8151,7 @@
 		"kind": "type",
 		"type": "ToolClarificationCode",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -7376,48 +8366,48 @@
 		"kind": "type",
 		"type": "ToolDefinitionRegistry",
 		"members": {
-			"__@iterator@780": {
-				"type": "() => ArrayIterator<QuestlogToolDefinition<never, ToolResult<unknown>>>",
+			"__@iterator@814": {
+				"type": "() => ArrayIterator<QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>>",
 				"optional": false
 			},
-			"__@unscopables@800": {
+			"__@unscopables@834": {
 				"type": "{ readonly [x: number]: boolean | undefined; readonly length?: boolean | undefined; toString?: boolean | undefined; toLocaleString?: boolean | undefined; concat?: boolean | undefined; join?: boolean | undefined; slice?: boolean | undefined; indexOf?: boolean | undefined; lastIndexOf?: boolean | undefined; every?: boolean | undefined; some?: boolean | undefined; forEach?: boolean | undefined; map?: boolean | undefined; filter?: boolean | undefined; reduce?: boolean | undefined; reduceRight?: boolean | undefined; find?: boolean | undefined; findIndex?: boolean | undefined; entries?: boolean | undefined; keys?: boolean | undefined; values?: boolean | undefined; includes?: boolean | undefined; flatMap?: boolean | undefined; flat?: boolean | undefined; at?: boolean | undefined; findLast?: boolean | undefined; findLastIndex?: boolean | undefined; toReversed?: boolean | undefined; toSorted?: boolean | undefined; toSpliced?: boolean | undefined; with?: boolean | undefined; [Symbol.iterator]?: boolean | undefined; readonly [Symbol.unscopables]?: boolean | undefined; }",
 				"optional": false
 			},
 			"at": {
-				"type": "(index: number) => QuestlogToolDefinition<never, ToolResult<unknown>> | undefined",
+				"type": "(index: number) => QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>> | undefined",
 				"optional": false
 			},
 			"concat": {
-				"type": "{ (...items: ConcatArray<QuestlogToolDefinition<never, ToolResult<unknown>>>[]): QuestlogToolDefinition<never, ToolResult<unknown>>[]; (...items: (QuestlogToolDefinition<never, ToolResult<unknown>> | ConcatArray<QuestlogToolDefinition<never, ToolResult<unknown>>>)[]): QuestlogToolDefinition<never, ToolResult<unknown>>[]; }",
+				"type": "{ (...items: ConcatArray<QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>>[]): QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]; (...items: (QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>> | ConcatArray<QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>>)[]): QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]; }",
 				"optional": false
 			},
 			"entries": {
-				"type": "() => ArrayIterator<[number, QuestlogToolDefinition<never, ToolResult<unknown>>]>",
+				"type": "() => ArrayIterator<[number, QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>]>",
 				"optional": false
 			},
 			"every": {
-				"type": "{ <S extends QuestlogToolDefinition<never, ToolResult<unknown>>>(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => value is S, thisArg?: any): this is readonly S[]; (predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => unknown, thisArg?: any): boolean; }",
+				"type": "{ <S extends QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>>(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => value is S, thisArg?: any): this is readonly S[]; (predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => unknown, thisArg?: any): boolean; }",
 				"optional": false
 			},
 			"filter": {
-				"type": "{ <S extends QuestlogToolDefinition<never, ToolResult<unknown>>>(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => value is S, thisArg?: any): S[]; (predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => unknown, thisArg?: any): QuestlogToolDefinition<never, ToolResult<unknown>>[]; }",
+				"type": "{ <S extends QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>>(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => value is S, thisArg?: any): S[]; (predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => unknown, thisArg?: any): QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]; }",
 				"optional": false
 			},
 			"find": {
-				"type": "{ <S extends QuestlogToolDefinition<never, ToolResult<unknown>>>(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, obj: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => value is S, thisArg?: any): S | undefined; (predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, obj: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => unknown, thisArg?: any): QuestlogToolDefinition<never, ToolResult<unknown>> | undefined; }",
+				"type": "{ <S extends QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>>(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, obj: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => value is S, thisArg?: any): S | undefined; (predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, obj: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => unknown, thisArg?: any): QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>> | undefined; }",
 				"optional": false
 			},
 			"findIndex": {
-				"type": "(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, obj: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => unknown, thisArg?: any) => number",
+				"type": "(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, obj: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => unknown, thisArg?: any) => number",
 				"optional": false
 			},
 			"findLast": {
-				"type": "{ <S extends QuestlogToolDefinition<never, ToolResult<unknown>>>(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => value is S, thisArg?: any): S | undefined; (predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => unknown, thisArg?: any): QuestlogToolDefinition<never, ToolResult<unknown>> | undefined; }",
+				"type": "{ <S extends QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>>(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => value is S, thisArg?: any): S | undefined; (predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => unknown, thisArg?: any): QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>> | undefined; }",
 				"optional": false
 			},
 			"findLastIndex": {
-				"type": "(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => unknown, thisArg?: any) => number",
+				"type": "(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => unknown, thisArg?: any) => number",
 				"optional": false
 			},
 			"flat": {
@@ -7425,19 +8415,19 @@
 				"optional": false
 			},
 			"flatMap": {
-				"type": "<U, This = undefined>(callback: (this: This, value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, array: QuestlogToolDefinition<never, ToolResult<unknown>>[]) => U | readonly U[], thisArg?: This | undefined) => U[]",
+				"type": "<U, This = undefined>(callback: (this: This, value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, array: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => U | readonly U[], thisArg?: This | undefined) => U[]",
 				"optional": false
 			},
 			"forEach": {
-				"type": "(callbackfn: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => void, thisArg?: any) => void",
+				"type": "(callbackfn: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => void, thisArg?: any) => void",
 				"optional": false
 			},
 			"includes": {
-				"type": "(searchElement: QuestlogToolDefinition<never, ToolResult<unknown>>, fromIndex?: number) => boolean",
+				"type": "(searchElement: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, fromIndex?: number) => boolean",
 				"optional": false
 			},
 			"indexOf": {
-				"type": "(searchElement: QuestlogToolDefinition<never, ToolResult<unknown>>, fromIndex?: number) => number",
+				"type": "(searchElement: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, fromIndex?: number) => number",
 				"optional": false
 			},
 			"join": {
@@ -7449,7 +8439,7 @@
 				"optional": false
 			},
 			"lastIndexOf": {
-				"type": "(searchElement: QuestlogToolDefinition<never, ToolResult<unknown>>, fromIndex?: number) => number",
+				"type": "(searchElement: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, fromIndex?: number) => number",
 				"optional": false
 			},
 			"length": {
@@ -7457,23 +8447,23 @@
 				"optional": false
 			},
 			"map": {
-				"type": "<U>(callbackfn: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => U, thisArg?: any) => U[]",
+				"type": "<U>(callbackfn: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => U, thisArg?: any) => U[]",
 				"optional": false
 			},
 			"reduce": {
-				"type": "{ (callbackfn: (previousValue: QuestlogToolDefinition<never, ToolResult<unknown>>, currentValue: QuestlogToolDefinition<never, ToolResult<unknown>>, currentIndex: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => QuestlogToolDefinition<never, ToolResult<unknown>>): QuestlogToolDefinition<never, ToolResult<unknown>>; (callbackfn: (previousValue: QuestlogToolDefinition<never, ToolResult<unknown>>, currentValue: QuestlogToolDefinition<never, ToolResult<unknown>>, currentIndex: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => QuestlogToolDefinition<never, ToolResult<unknown>>, initialValue: QuestlogToolDefinition<never, ToolResult<unknown>>): QuestlogToolDefinition<never, ToolResult<unknown>>; <U>(callbackfn: (previousValue: U, currentValue: QuestlogToolDefinition<never, ToolResult<unknown>>, currentIndex: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => U, initialValue: U): U; }",
+				"type": "{ (callbackfn: (previousValue: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, currentValue: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, currentIndex: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>): QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>; (callbackfn: (previousValue: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, currentValue: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, currentIndex: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, initialValue: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>): QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>; <U>(callbackfn: (previousValue: U, currentValue: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, currentIndex: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => U, initialValue: U): U; }",
 				"optional": false
 			},
 			"reduceRight": {
-				"type": "{ (callbackfn: (previousValue: QuestlogToolDefinition<never, ToolResult<unknown>>, currentValue: QuestlogToolDefinition<never, ToolResult<unknown>>, currentIndex: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => QuestlogToolDefinition<never, ToolResult<unknown>>): QuestlogToolDefinition<never, ToolResult<unknown>>; (callbackfn: (previousValue: QuestlogToolDefinition<never, ToolResult<unknown>>, currentValue: QuestlogToolDefinition<never, ToolResult<unknown>>, currentIndex: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => QuestlogToolDefinition<never, ToolResult<unknown>>, initialValue: QuestlogToolDefinition<never, ToolResult<unknown>>): QuestlogToolDefinition<never, ToolResult<unknown>>; <U>(callbackfn: (previousValue: U, currentValue: QuestlogToolDefinition<never, ToolResult<unknown>>, currentIndex: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => U, initialValue: U): U; }",
+				"type": "{ (callbackfn: (previousValue: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, currentValue: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, currentIndex: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>): QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>; (callbackfn: (previousValue: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, currentValue: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, currentIndex: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, initialValue: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>): QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>; <U>(callbackfn: (previousValue: U, currentValue: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, currentIndex: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => U, initialValue: U): U; }",
 				"optional": false
 			},
 			"slice": {
-				"type": "(start?: number, end?: number) => QuestlogToolDefinition<never, ToolResult<unknown>>[]",
+				"type": "(start?: number, end?: number) => QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]",
 				"optional": false
 			},
 			"some": {
-				"type": "(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => unknown, thisArg?: any) => boolean",
+				"type": "(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => unknown, thisArg?: any) => boolean",
 				"optional": false
 			},
 			"toLocaleString": {
@@ -7481,15 +8471,15 @@
 				"optional": false
 			},
 			"toReversed": {
-				"type": "() => QuestlogToolDefinition<never, ToolResult<unknown>>[]",
+				"type": "() => QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]",
 				"optional": false
 			},
 			"toSorted": {
-				"type": "(compareFn?: ((a: QuestlogToolDefinition<never, ToolResult<unknown>>, b: QuestlogToolDefinition<never, ToolResult<unknown>>) => number) | undefined) => QuestlogToolDefinition<never, ToolResult<unknown>>[]",
+				"type": "(compareFn?: ((a: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, b: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>) => number) | undefined) => QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]",
 				"optional": false
 			},
 			"toSpliced": {
-				"type": "{ (start: number, deleteCount: number, ...items: QuestlogToolDefinition<never, ToolResult<unknown>>[]): QuestlogToolDefinition<never, ToolResult<unknown>>[]; (start: number, deleteCount?: number): QuestlogToolDefinition<never, ToolResult<unknown>>[]; }",
+				"type": "{ (start: number, deleteCount: number, ...items: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]): QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]; (start: number, deleteCount?: number): QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]; }",
 				"optional": false
 			},
 			"toString": {
@@ -7497,15 +8487,15 @@
 				"optional": false
 			},
 			"values": {
-				"type": "() => ArrayIterator<QuestlogToolDefinition<never, ToolResult<unknown>>>",
+				"type": "() => ArrayIterator<QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>>",
 				"optional": false
 			},
 			"with": {
-				"type": "(index: number, value: QuestlogToolDefinition<never, ToolResult<unknown>>) => QuestlogToolDefinition<never, ToolResult<unknown>>[]",
+				"type": "(index: number, value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>) => QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]",
 				"optional": false
 			}
 		},
-		"definition": "type ToolDefinitionRegistry = readonly QuestlogToolDefinition<never, ToolResult<unknown>>[];",
+		"definition": "type ToolDefinitionRegistry = readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[];",
 		"references": {
 			"QuestlogToolDefinition": ".:public.QuestlogToolDefinition",
 			"ToolResult": ".:public.ToolResult"
@@ -7515,7 +8505,7 @@
 		"kind": "type",
 		"type": "ToolEntityKind",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -7761,7 +8751,7 @@
 		"kind": "type",
 		"type": "ToolErrorCode",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -7976,7 +8966,7 @@
 		"kind": "type",
 		"type": "ToolErrorKind",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -8492,7 +9482,7 @@
 		"kind": "type",
 		"type": "ToolNextStepHintKind",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -8720,7 +9710,7 @@
 		"kind": "type",
 		"type": "ToolOutcomeKind",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -8935,7 +9925,7 @@
 		"kind": "type",
 		"type": "string",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -9212,7 +10202,7 @@
 	},
 	".:public.tools.defineQuestlogTool": {
 		"kind": "value",
-		"type": "<TInput, TResult extends ToolResult<unknown>>(definition: QuestlogToolDefinition<TInput, TResult>) => QuestlogToolDefinition<TInput, TResult>"
+		"type": "<TInput, TResult extends ToolResult<unknown> | Promise<ToolResult<unknown>>>(definition: QuestlogToolDefinition<TInput, TResult>) => QuestlogToolDefinition<TInput, TResult>"
 	},
 	".:public.tools.enumSchema": {
 		"kind": "value",
@@ -9220,7 +10210,7 @@
 	},
 	".:public.tools.getQuestlogToolByName": {
 		"kind": "value",
-		"type": "(name: string) => QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult> | null"
+		"type": "(name: string) => QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; }, Promise<ToolResult<unknown>>> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult> | null"
 	},
 	".:public.tools.inspectQuestlogItemTool": {
 		"kind": "value",
@@ -9292,7 +10282,7 @@
 		"kind": "type",
 		"type": "JsonSchemaType",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -9508,11 +10498,19 @@
 	},
 	".:public.tools.listQuestlogToolDefinitions": {
 		"kind": "value",
-		"type": "() => (QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult>)[]"
+		"type": "() => (QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; }, Promise<ToolResult<unknown>>> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult>)[]"
 	},
 	".:public.tools.literalSchema": {
 		"kind": "value",
 		"type": "(value: boolean | number | string | null, description?: string) => JsonSchema"
+	},
+	".:public.tools.manageHooksTool": {
+		"kind": "value",
+		"type": "QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; }, Promise<ToolResult<unknown>>>"
+	},
+	".:public.tools.manageHooksToolName": {
+		"kind": "value",
+		"type": "\"manage_hooks\""
 	},
 	".:public.tools.manageRepeatableTool": {
 		"kind": "value",
@@ -9615,7 +10613,7 @@
 				"optional": false
 			}
 		},
-		"definition": "type index_QuestlogToolDefinition<TInput, TResult extends ToolResult<unknown>> = QuestlogToolDefinition<TInput, TResult>;",
+		"definition": "type index_QuestlogToolDefinition<TInput, TResult extends ToolResult<unknown> | Promise<ToolResult<unknown>>> = QuestlogToolDefinition<TInput, TResult>;",
 		"references": {
 			"QuestlogToolDefinition": ".:public.QuestlogToolDefinition",
 			"TInput": ".:public.tools.QuestlogToolDefinition.types.TInput",
@@ -9666,7 +10664,7 @@
 	},
 	".:public.tools.questlogTools": {
 		"kind": "value",
-		"type": "(QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult>)[]"
+		"type": "(QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; }, Promise<ToolResult<unknown>>>)[]"
 	},
 	".:public.tools.retireWorkTool": {
 		"kind": "value",
@@ -9760,7 +10758,7 @@
 		"kind": "type",
 		"type": "ToolClarificationCode",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -9978,48 +10976,48 @@
 		"kind": "type",
 		"type": "ToolDefinitionRegistry",
 		"members": {
-			"__@iterator@780": {
-				"type": "() => ArrayIterator<QuestlogToolDefinition<never, ToolResult<unknown>>>",
+			"__@iterator@814": {
+				"type": "() => ArrayIterator<QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>>",
 				"optional": false
 			},
-			"__@unscopables@800": {
+			"__@unscopables@834": {
 				"type": "{ readonly [x: number]: boolean | undefined; readonly length?: boolean | undefined; toString?: boolean | undefined; toLocaleString?: boolean | undefined; concat?: boolean | undefined; join?: boolean | undefined; slice?: boolean | undefined; indexOf?: boolean | undefined; lastIndexOf?: boolean | undefined; every?: boolean | undefined; some?: boolean | undefined; forEach?: boolean | undefined; map?: boolean | undefined; filter?: boolean | undefined; reduce?: boolean | undefined; reduceRight?: boolean | undefined; find?: boolean | undefined; findIndex?: boolean | undefined; entries?: boolean | undefined; keys?: boolean | undefined; values?: boolean | undefined; includes?: boolean | undefined; flatMap?: boolean | undefined; flat?: boolean | undefined; at?: boolean | undefined; findLast?: boolean | undefined; findLastIndex?: boolean | undefined; toReversed?: boolean | undefined; toSorted?: boolean | undefined; toSpliced?: boolean | undefined; with?: boolean | undefined; [Symbol.iterator]?: boolean | undefined; readonly [Symbol.unscopables]?: boolean | undefined; }",
 				"optional": false
 			},
 			"at": {
-				"type": "(index: number) => QuestlogToolDefinition<never, ToolResult<unknown>> | undefined",
+				"type": "(index: number) => QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>> | undefined",
 				"optional": false
 			},
 			"concat": {
-				"type": "{ (...items: ConcatArray<QuestlogToolDefinition<never, ToolResult<unknown>>>[]): QuestlogToolDefinition<never, ToolResult<unknown>>[]; (...items: (QuestlogToolDefinition<never, ToolResult<unknown>> | ConcatArray<QuestlogToolDefinition<never, ToolResult<unknown>>>)[]): QuestlogToolDefinition<never, ToolResult<unknown>>[]; }",
+				"type": "{ (...items: ConcatArray<QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>>[]): QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]; (...items: (QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>> | ConcatArray<QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>>)[]): QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]; }",
 				"optional": false
 			},
 			"entries": {
-				"type": "() => ArrayIterator<[number, QuestlogToolDefinition<never, ToolResult<unknown>>]>",
+				"type": "() => ArrayIterator<[number, QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>]>",
 				"optional": false
 			},
 			"every": {
-				"type": "{ <S extends QuestlogToolDefinition<never, ToolResult<unknown>>>(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => value is S, thisArg?: any): this is readonly S[]; (predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => unknown, thisArg?: any): boolean; }",
+				"type": "{ <S extends QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>>(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => value is S, thisArg?: any): this is readonly S[]; (predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => unknown, thisArg?: any): boolean; }",
 				"optional": false
 			},
 			"filter": {
-				"type": "{ <S extends QuestlogToolDefinition<never, ToolResult<unknown>>>(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => value is S, thisArg?: any): S[]; (predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => unknown, thisArg?: any): QuestlogToolDefinition<never, ToolResult<unknown>>[]; }",
+				"type": "{ <S extends QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>>(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => value is S, thisArg?: any): S[]; (predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => unknown, thisArg?: any): QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]; }",
 				"optional": false
 			},
 			"find": {
-				"type": "{ <S extends QuestlogToolDefinition<never, ToolResult<unknown>>>(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, obj: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => value is S, thisArg?: any): S | undefined; (predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, obj: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => unknown, thisArg?: any): QuestlogToolDefinition<never, ToolResult<unknown>> | undefined; }",
+				"type": "{ <S extends QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>>(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, obj: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => value is S, thisArg?: any): S | undefined; (predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, obj: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => unknown, thisArg?: any): QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>> | undefined; }",
 				"optional": false
 			},
 			"findIndex": {
-				"type": "(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, obj: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => unknown, thisArg?: any) => number",
+				"type": "(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, obj: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => unknown, thisArg?: any) => number",
 				"optional": false
 			},
 			"findLast": {
-				"type": "{ <S extends QuestlogToolDefinition<never, ToolResult<unknown>>>(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => value is S, thisArg?: any): S | undefined; (predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => unknown, thisArg?: any): QuestlogToolDefinition<never, ToolResult<unknown>> | undefined; }",
+				"type": "{ <S extends QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>>(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => value is S, thisArg?: any): S | undefined; (predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => unknown, thisArg?: any): QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>> | undefined; }",
 				"optional": false
 			},
 			"findLastIndex": {
-				"type": "(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => unknown, thisArg?: any) => number",
+				"type": "(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => unknown, thisArg?: any) => number",
 				"optional": false
 			},
 			"flat": {
@@ -10027,19 +11025,19 @@
 				"optional": false
 			},
 			"flatMap": {
-				"type": "<U, This = undefined>(callback: (this: This, value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, array: QuestlogToolDefinition<never, ToolResult<unknown>>[]) => U | readonly U[], thisArg?: This | undefined) => U[]",
+				"type": "<U, This = undefined>(callback: (this: This, value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, array: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => U | readonly U[], thisArg?: This | undefined) => U[]",
 				"optional": false
 			},
 			"forEach": {
-				"type": "(callbackfn: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => void, thisArg?: any) => void",
+				"type": "(callbackfn: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => void, thisArg?: any) => void",
 				"optional": false
 			},
 			"includes": {
-				"type": "(searchElement: QuestlogToolDefinition<never, ToolResult<unknown>>, fromIndex?: number) => boolean",
+				"type": "(searchElement: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, fromIndex?: number) => boolean",
 				"optional": false
 			},
 			"indexOf": {
-				"type": "(searchElement: QuestlogToolDefinition<never, ToolResult<unknown>>, fromIndex?: number) => number",
+				"type": "(searchElement: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, fromIndex?: number) => number",
 				"optional": false
 			},
 			"join": {
@@ -10051,7 +11049,7 @@
 				"optional": false
 			},
 			"lastIndexOf": {
-				"type": "(searchElement: QuestlogToolDefinition<never, ToolResult<unknown>>, fromIndex?: number) => number",
+				"type": "(searchElement: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, fromIndex?: number) => number",
 				"optional": false
 			},
 			"length": {
@@ -10059,23 +11057,23 @@
 				"optional": false
 			},
 			"map": {
-				"type": "<U>(callbackfn: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => U, thisArg?: any) => U[]",
+				"type": "<U>(callbackfn: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => U, thisArg?: any) => U[]",
 				"optional": false
 			},
 			"reduce": {
-				"type": "{ (callbackfn: (previousValue: QuestlogToolDefinition<never, ToolResult<unknown>>, currentValue: QuestlogToolDefinition<never, ToolResult<unknown>>, currentIndex: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => QuestlogToolDefinition<never, ToolResult<unknown>>): QuestlogToolDefinition<never, ToolResult<unknown>>; (callbackfn: (previousValue: QuestlogToolDefinition<never, ToolResult<unknown>>, currentValue: QuestlogToolDefinition<never, ToolResult<unknown>>, currentIndex: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => QuestlogToolDefinition<never, ToolResult<unknown>>, initialValue: QuestlogToolDefinition<never, ToolResult<unknown>>): QuestlogToolDefinition<never, ToolResult<unknown>>; <U>(callbackfn: (previousValue: U, currentValue: QuestlogToolDefinition<never, ToolResult<unknown>>, currentIndex: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => U, initialValue: U): U; }",
+				"type": "{ (callbackfn: (previousValue: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, currentValue: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, currentIndex: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>): QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>; (callbackfn: (previousValue: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, currentValue: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, currentIndex: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, initialValue: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>): QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>; <U>(callbackfn: (previousValue: U, currentValue: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, currentIndex: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => U, initialValue: U): U; }",
 				"optional": false
 			},
 			"reduceRight": {
-				"type": "{ (callbackfn: (previousValue: QuestlogToolDefinition<never, ToolResult<unknown>>, currentValue: QuestlogToolDefinition<never, ToolResult<unknown>>, currentIndex: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => QuestlogToolDefinition<never, ToolResult<unknown>>): QuestlogToolDefinition<never, ToolResult<unknown>>; (callbackfn: (previousValue: QuestlogToolDefinition<never, ToolResult<unknown>>, currentValue: QuestlogToolDefinition<never, ToolResult<unknown>>, currentIndex: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => QuestlogToolDefinition<never, ToolResult<unknown>>, initialValue: QuestlogToolDefinition<never, ToolResult<unknown>>): QuestlogToolDefinition<never, ToolResult<unknown>>; <U>(callbackfn: (previousValue: U, currentValue: QuestlogToolDefinition<never, ToolResult<unknown>>, currentIndex: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => U, initialValue: U): U; }",
+				"type": "{ (callbackfn: (previousValue: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, currentValue: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, currentIndex: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>): QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>; (callbackfn: (previousValue: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, currentValue: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, currentIndex: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, initialValue: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>): QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>; <U>(callbackfn: (previousValue: U, currentValue: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, currentIndex: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => U, initialValue: U): U; }",
 				"optional": false
 			},
 			"slice": {
-				"type": "(start?: number, end?: number) => QuestlogToolDefinition<never, ToolResult<unknown>>[]",
+				"type": "(start?: number, end?: number) => QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]",
 				"optional": false
 			},
 			"some": {
-				"type": "(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown>>[]) => unknown, thisArg?: any) => boolean",
+				"type": "(predicate: (value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, index: number, array: readonly QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]) => unknown, thisArg?: any) => boolean",
 				"optional": false
 			},
 			"toLocaleString": {
@@ -10083,15 +11081,15 @@
 				"optional": false
 			},
 			"toReversed": {
-				"type": "() => QuestlogToolDefinition<never, ToolResult<unknown>>[]",
+				"type": "() => QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]",
 				"optional": false
 			},
 			"toSorted": {
-				"type": "(compareFn?: ((a: QuestlogToolDefinition<never, ToolResult<unknown>>, b: QuestlogToolDefinition<never, ToolResult<unknown>>) => number) | undefined) => QuestlogToolDefinition<never, ToolResult<unknown>>[]",
+				"type": "(compareFn?: ((a: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>, b: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>) => number) | undefined) => QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]",
 				"optional": false
 			},
 			"toSpliced": {
-				"type": "{ (start: number, deleteCount: number, ...items: QuestlogToolDefinition<never, ToolResult<unknown>>[]): QuestlogToolDefinition<never, ToolResult<unknown>>[]; (start: number, deleteCount?: number): QuestlogToolDefinition<never, ToolResult<unknown>>[]; }",
+				"type": "{ (start: number, deleteCount: number, ...items: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]): QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]; (start: number, deleteCount?: number): QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]; }",
 				"optional": false
 			},
 			"toString": {
@@ -10099,11 +11097,11 @@
 				"optional": false
 			},
 			"values": {
-				"type": "() => ArrayIterator<QuestlogToolDefinition<never, ToolResult<unknown>>>",
+				"type": "() => ArrayIterator<QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>>",
 				"optional": false
 			},
 			"with": {
-				"type": "(index: number, value: QuestlogToolDefinition<never, ToolResult<unknown>>) => QuestlogToolDefinition<never, ToolResult<unknown>>[]",
+				"type": "(index: number, value: QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>) => QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>[]",
 				"optional": false
 			}
 		},
@@ -10116,7 +11114,7 @@
 		"kind": "type",
 		"type": "ToolEntityKind",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -10364,7 +11362,7 @@
 		"kind": "type",
 		"type": "ToolErrorCode",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -10582,7 +11580,7 @@
 		"kind": "type",
 		"type": "ToolErrorKind",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -10973,7 +11971,7 @@
 		"kind": "type",
 		"type": "ToolNextStepHintKind",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -11195,7 +12193,7 @@
 		"kind": "type",
 		"type": "ToolOutcomeKind",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -11413,7 +12411,7 @@
 		"kind": "type",
 		"type": "string",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -11670,7 +12668,7 @@
 		"kind": "type",
 		"type": "ToolSideEffects",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -11957,7 +12955,7 @@
 		"kind": "type",
 		"type": "ToolWarningCode",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -12175,7 +13173,7 @@
 		"kind": "type",
 		"type": "ToolSideEffects",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -12472,7 +13470,7 @@
 		"kind": "type",
 		"type": "ToolWarningCode",
 		"members": {
-			"__@iterator@780": {
+			"__@iterator@814": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},

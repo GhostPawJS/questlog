@@ -29,7 +29,7 @@ Run tools as `ghostpaw-questlog ...`; use `~/.local/bin/ghostpaw-questlog` if it
 
 - `questlog search <words>` before `add` to avoid duplicates.
 - `ghostpaw-questlog add "..." --tag a,b --due tomorrow`
-- `questlog list [--view <view>]`: questlines, quests.active, quests.available, quests.blocked, quests.deferred, quests.due_soon, quests.in_progress, quests.missed_scheduled, quests.open, quests.overdue, quests.resolved, quests.scheduled_for_day, quests.scheduled_now, repeatables.due_anchors, rumors.
+- `questlog list [--view <view>]`: deliveries, questlines, quests.active, quests.available, quests.blocked, quests.deferred, quests.due_soon, quests.in_progress, quests.missed_scheduled, quests.open, quests.overdue, quests.resolved, quests.scheduled_for_day, quests.scheduled_now, repeatables.due_anchors, rumors.
 - `questlog done <id> --outcome "..."`
 - `questlog search <words>`
 - `questlog show <id>`
@@ -37,6 +37,7 @@ Run tools as `ghostpaw-questlog ...`; use `~/.local/bin/ghostpaw-questlog` if it
 - Exit codes: 0 ok / 1 error / 2 usage / 3 needs input.
 - Database: `~/.ghostpaw/questlog.db`; override with `--db` or `GHOSTPAW_QUESTLOG_DB`.
 - Use one database per agent or project.
+- Webhooks: `questlog hook add <url>`, `questlog tick --dry-run`, `questlog watch`. Read `questlog skill webhooks` for events, signing, verification, and cron setup.
 
 ## Appendix: MCP and tool calls
 
@@ -49,6 +50,28 @@ MCP: connect to ghostpaw-questlog, then call a tool by name with its JSON argume
 CLI: `ghostpaw-questlog call <tool> '<JSON object>'` or `ghostpaw-questlog <tool> --parameter value`.
 
 Inspect schemas with `ghostpaw-questlog describe <tool>`. Use `--db <path>` to select a database.
+
+### manage_hooks
+
+List or remove outbound webhook targets, run a tick, or inspect pending and failed deliveries.
+
+Use when: Use to operate configured outbound webhooks. Add and test targets with the CLI.
+
+Not for: Use quest tools to change work itself.
+
+Writes: writes_state.
+
+| Parameter | Type | Required | Values / description |
+| --- | --- | --- | --- |
+| action | string | yes | list, remove, tick, deliveries. Operation. |
+| id | integer | no | Target id. |
+| dry_run | boolean | no | Preview only. |
+
+```sh
+ghostpaw-questlog call manage_hooks '{"action":"list"}'
+ghostpaw-questlog call manage_hooks '{"action":"remove","id":1}'
+ghostpaw-questlog call manage_hooks '{"action":"tick"}'
+```
 
 ### search_questlog
 
@@ -83,7 +106,7 @@ Read-only.
 
 | Parameter | Type | Required | Values / description |
 | --- | --- | --- | --- |
-| view | string | yes | questlines, quests.active, quests.available, quests.blocked, quests.deferred, quests.due_soon, quests.in_progress, quests.missed_scheduled, quests.open, quests.overdue, quests.resolved, quests.scheduled_for_day, quests.scheduled_now, repeatables.due_anchors, rumors. Which operational review surface to return. |
+| view | string | yes | deliveries, questlines, quests.active, quests.available, quests.blocked, quests.deferred, quests.due_soon, quests.in_progress, quests.missed_scheduled, quests.open, quests.overdue, quests.resolved, quests.scheduled_for_day, quests.scheduled_now, repeatables.due_anchors, rumors. Which operational review surface to return. |
 | filters | object | no | Optional filters for supported review surfaces. |
 | filters.questlineId | integer | no | Optional questline id used by quest views. |
 | filters.tagNames | array | no | Optional tag names used by quest views. |
@@ -92,7 +115,7 @@ Read-only.
 | now | integer | no | Optional evaluation timestamp for time-sensitive views. |
 
 ```sh
-ghostpaw-questlog call review_questlog '{"view":"questlines"}'
+ghostpaw-questlog call review_questlog '{"view":"deliveries"}'
 ```
 
 ### inspect_questlog_item
@@ -376,6 +399,7 @@ ghostpaw-questlog call retire_work '{"action":"hide","target":{"kind":"quest","i
 
 ### Workflow guides
 
+- `ghostpaw-questlog skill webhooks` ([webhooks](skills/questlog/references/webhooks.md)): Configure signed outbound event webhooks and verify deliveries.
 - `ghostpaw-questlog skill archive-delete-and-prune` ([archive-delete-and-prune](skills/questlog/references/archive-delete-and-prune.md)): Choose the right retirement action for each kind of work so history stays honest and hiding does not get confused with archival or terminal execution truth.
 - `ghostpaw-questlog skill choose-work-shape` ([choose-work-shape](skills/questlog/references/choose-work-shape.md)): Choose the right structure for new work by separating uncertainty, one-shot execution, multi-step arcs, and recurring patterns.
 - `ghostpaw-questlog skill clarify-ambiguous-requests` ([clarify-ambiguous-requests](skills/questlog/references/clarify-ambiguous-requests.md)): Treat ambiguity as a real state, capture uncertainty honestly, and only commit work structure once the next executable shape is clear.

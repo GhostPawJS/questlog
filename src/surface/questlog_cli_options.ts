@@ -32,6 +32,15 @@ export const questlogCliOptions: ToolCliOptions<QuestlogDb> = {
 	},
 	closeContext: (db) => db.close(),
 	commands: {
+		names: ['hook', 'watch'],
+		run: async (command, args, options, io) => {
+			if (command !== 'hook' && command !== 'watch') return undefined;
+			const { runHookCommand } = await import('./run_hook_command.ts');
+			return runHookCommand(command, args, io, async () => {
+				const { openQuestlogDb } = await import('./open_questlog_db.ts');
+				return openQuestlogDb(selectedDbPath(options));
+			});
+		},
 		plain: questlogPlainCommands(),
 		guides: questlogSkills,
 		mcp: async (options) => {

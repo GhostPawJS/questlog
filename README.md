@@ -498,3 +498,101 @@ If this package helps your project, consider sponsoring its maintenance:
 ---
 
 **[Anonyfox](https://anonyfox.com) • [MIT License](LICENSE)**
+
+## Webhooks
+
+Configure opt-in outbound wakes with the release binary. No server or scheduler is started.
+With no targets, tick makes no network calls. Targets and retry state live in the database.
+
+```sh
+questlog hook add https://example.org/wake --min-gap 60
+questlog hook add https://example.org/team --tag work --events quest.due,quest.overdue --secret-stdin
+questlog hook label work
+questlog hook list
+questlog tick --dry-run
+questlog tick
+questlog watch --interval 60
+questlog hook test 1
+questlog review deliveries
+questlog show 12
+questlog hook remove 1
+```
+
+Save the signing secret printed once by `hook add` (including its `--json` result).
+`--secret-stdin` reads a supplied secret from standard input; there is no secret flag.
+List output redacts URL userinfo and query strings. Removal deletes the target and its deliveries.
+A target covers the database unless `--tag` restricts it to quests with that tag;
+rumors have no tags and reach database targets only. `--events` defaults to all five events.
+The label defaults to the database filename without directory or extension (`questlog` for memory).
+Only use labels suitable for disclosure to the receiver.
+
+For cron:
+
+```cron
+* * * * * questlog tick
+```
+
+Cron's PATH may need `$HOME/.local/bin/questlog tick --db /path/to/quests.db`.
+`watch` repeats tick (default 60 seconds, minimum 5), finishing its current tick on SIGINT/SIGTERM.
+Tick exits 0 after running even when deliveries need retrying. Dry runs roll back all changes,
+including repeatable materialization, and make no network calls.
+
+Events are detected from the model at tick time:
+
+- `quest.due`: an unresolved, undeleted quest reaches its effective due time (own `due_at`, otherwise its undeleted questline's due time).
+- `quest.overdue`: that effective deadline is strictly earlier than now and the quest remains unresolved.
+- `quest.unblocked`: an unresolved quest is available, all active prerequisites have succeeded or been deleted, and at least one prerequisite succeeded after its unlock was installed. Occurrence time is the latest active prerequisite success or not-before time, whichever is later.
+- `repeatable.spawned`: a concrete repeatable instance was created; occurrence time is its creation time. Tick first materializes due anchors through the existing spawn operation.
+- `rumor.captured`: an undeleted rumor was created; occurrence time is its creation time, even if subsequently settled or dismissed.
+
+Each type, entity and occurrence timestamp has a persistent unique event key. Repeated ticks
+and restarts do not create another occurrence. Changes removed before any tick cannot be
+reconstructed. Occurrences earlier than target creation are excluded, preventing backlog floods.
+Tags are evaluated when assigning an event. Already assigned events retain their batch membership.
+
+One POST batch per target per tick contains only identifiers, types, timestamps, and the DB label:
+
+```json
+{"type":"questlog.events","db":"work","deliveryId":"d_…","sentAt":"2026-10-28T10:00:00.000Z","events":[{"id":"e_…","type":"quest.due","questId":12,"occurredAt":"2026-10-28T09:59:00.000Z"}]}
+```
+
+Headers are `content-type: application/json`, `user-agent: questlog/<version>`,
+`x-questlog-delivery: <deliveryId>`, `x-questlog-timestamp: <unix seconds>`, and
+`x-questlog-signature: sha256=<hex HMAC-SHA256(secret, timestamp + "." + rawBody)>`.
+No titles, objectives, details, or tag text are sent. `hook test` sends a logged `hook.test`
+event immediately, ignoring the min gap. Add and test are CLI-only in the tool facade;
+`manage_hooks` supports list, remove, tick (with `dry_run`), and deliveries.
+
+2xx delivers the batch. Requests time out after 5 seconds. Other responses, timeouts, and
+network errors retry after 30 seconds, 1 minute, 2 minutes, 4 minutes, and so on, capped
+at 1 hour, plus less than 1 second jitter. The target's min gap also applies to retries.
+Eight unsuccessful attempts mark a delivery failed. Retries retain the delivery id and events.
+Pending batches wait behind retries. Only the last 500 delivered entries per target are kept;
+pending and failed entries are retained. Transactions and two-minute leases prevent overlapping
+ticks from claiming the same delivery. A crash after receipt but before recording success can
+cause another request: receivers must dedupe by delivery id.
+
+### Verifying a delivery
+
+Compute HMAC-SHA256 over `timestamp + "." + rawBody` with the secret and compare in constant
+time. Reject timestamps older than 5 minutes (and timestamps too far in the future), then
+dedupe on `x-questlog-delivery`. Use durable deduplication storage in a production receiver.
+This 15-line Node example uses an in-memory set:
+
+```js
+import { createHmac, timingSafeEqual } from 'node:crypto';
+import { createServer } from 'node:http';
+const secret = process.env.WEBHOOK_SECRET, seen = new Set();
+createServer(async (req, res) => {
+  const chunks = []; for await (const chunk of req) chunks.push(chunk);
+  const rawBody = Buffer.concat(chunks), h = req.headers;
+  const timestamp = h['x-questlog-timestamp'], id = h['x-questlog-delivery'];
+  const age = Date.now() / 1000 - Number(timestamp);
+  const expected = createHmac('sha256', secret).update(timestamp + '.').update(rawBody).digest();
+  const signature = String(h['x-questlog-signature'] || '');
+  const actual = Buffer.from(signature.slice(7), 'hex');
+  if (!id || !/^\d+$/.test(timestamp) || age > 300 || age < -300 || !/^sha256=[a-f0-9]{64}$/.test(signature) || actual.length !== expected.length || !timingSafeEqual(actual, expected)) { res.writeHead(401).end(); return; }
+  if (!seen.has(id)) { seen.add(id); console.log(JSON.parse(rawBody)); }
+  res.writeHead(204).end();
+}).listen(8080, '127.0.0.1');
+```

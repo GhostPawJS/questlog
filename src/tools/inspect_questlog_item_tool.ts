@@ -1,3 +1,5 @@
+import { listDeliveries } from '../hooks/list_deliveries.ts';
+import type { HookDelivery } from '../hooks/types.ts';
 import { getQuestlineDetail } from '../questlines/get_questline_detail.ts';
 import { getQuestDetail } from '../quests/get_quest_detail.ts';
 import { getRepeatableQuestOrThrow } from '../repeatable_quests/get_repeatable_quest_or_throw.ts';
@@ -30,6 +32,7 @@ export interface InspectQuestlogItemToolInput {
 
 export interface InspectQuestlogItemToolData {
 	item: QuestInspectItem;
+	deliveries?: HookDelivery[];
 	related: ToolEntityRef[];
 	detailLevel: 'compact' | 'full';
 }
@@ -183,6 +186,7 @@ export function inspectQuestlogItemToolHandler(
 						},
 						related,
 						detailLevel,
+						deliveries: listDeliveries(db, { questId: detail.id }),
 					},
 					{ entities },
 				);

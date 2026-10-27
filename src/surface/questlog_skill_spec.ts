@@ -37,6 +37,7 @@ export const questlogSkillSpec = {
 		'- Exit codes: 0 ok / 1 error / 2 usage / 3 needs input.',
 		'- Database: `~/.ghostpaw/questlog.db`; override with `--db` or `GHOSTPAW_QUESTLOG_DB`.',
 		'- Use one database per agent or project.',
+		'- Webhooks: `questlog hook add <url>`, `questlog tick --dry-run`, `questlog watch`. Read `questlog skill webhooks` for events, signing, verification, and cron setup.',
 	].join('\n'),
 	description:
 		'Use the release binary ghostpaw-questlog to manage local tasks, calendar commitments, and recurring work. Use when planning, executing, reviewing, or organizing work.',
