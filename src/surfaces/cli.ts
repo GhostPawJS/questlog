@@ -1,7 +1,14 @@
 import type { Readable, Writable } from 'node:stream';
+import { type CliSpec, CliUsageError, parseCliArgs, renderCliHelp } from './cli_args.ts';
 import { isErrorResult, type JsonSchema, type SurfaceTool } from './surface_types.ts';
 import { validateInput } from './validate_input.ts';
 
+export interface PlainCliCommand<TCtx> {
+	spec: CliSpec;
+	tool: string;
+	input(values: Record<string, unknown>): Record<string, unknown>;
+	render(result: unknown, context: TCtx, values: Record<string, unknown>): string;
+}
 export interface ToolCliOptions<TCtx> {
 	bin: string;
 	version: string;
@@ -10,6 +17,7 @@ export interface ToolCliOptions<TCtx> {
 	openContext(opts: { db?: string }): TCtx | Promise<TCtx>;
 	closeContext?: (ctx: TCtx) => void | Promise<void>;
 	commands?: {
+		plain?: readonly PlainCliCommand<TCtx>[];
 		mcp?: (opts: { db?: string }) => unknown | Promise<unknown>;
 		skill?: () => string | Promise<string>;
 	};
@@ -48,7 +56,7 @@ export async function runToolCli<TCtx>(
 	const normalize = (name: string) => name.replace(/[-_]/g, '').toLowerCase();
 	if (['help', '--help', '-h'].includes(command)) {
 		stdout.write(
-			`${options.bin} ${options.version}\n${options.description}\n\nUsage: ${options.bin} [--db path] <command>\nCommands: tools [--json], describe <tool>, call <tool> [JSON|-], <tool> --parameter value, mcp, skill\nOptions: --help, --version, --compact\n\n${options.tools.map((tool) => `${tool.name}  ${tool.description}`).join('\n')}\n`,
+			`${options.bin} ${options.version}\n${options.description}\n\nUsage: ${options.bin} [--db path] <command>\nCommands: ${options.commands?.plain?.map((entry) => entry.spec.command).join(', ') ?? ''}${options.commands?.plain?.length ? ', ' : ''}tools [--json], describe <tool>, call <tool> [JSON|-], <tool> --parameter value, mcp, skill\nOptions: --help, --version, --compact\n\n${options.tools.map((tool) => `${tool.name}  ${tool.description}`).join('\n')}\n`,
 		);
 		return 0;
 	}
@@ -78,7 +86,34 @@ export async function runToolCli<TCtx>(
 		await options.commands.mcp(ctxOptions);
 		return 0;
 	}
-	const name = command === 'call' || command === 'describe' ? args.shift() : command;
+	const plain = options.commands?.plain?.find((entry) => entry.spec.command === command);
+	let plainValues: Record<string, unknown> = {};
+	if (plain) {
+		if (args.includes('--help') || args.includes('-h')) {
+			stdout.write(
+				renderCliHelp({
+					...plain.spec,
+					command: `${options.bin} ${command}`,
+					flags: [
+						...(plain.spec.flags ?? []),
+						{ name: 'db', type: 'string' },
+						{ name: 'compact', type: 'boolean' },
+					],
+				}),
+			);
+			return 0;
+		}
+		try {
+			plainValues = parseCliArgs(args, plain.spec);
+		} catch (cause) {
+			return fail(String(cause), cause instanceof CliUsageError ? 2 : 1);
+		}
+	}
+	const name = plain
+		? plain.tool
+		: command === 'call' || command === 'describe'
+			? args.shift()
+			: command;
 	const tool = options.tools.find((tool) => normalize(tool.name) === normalize(name ?? ''));
 	if (!tool) return fail(`Unknown tool: ${name ?? ''}`);
 	if (command === 'describe') {
@@ -101,7 +136,9 @@ export async function runToolCli<TCtx>(
 			for await (const chunk of stdin) text += String(chunk);
 			return text;
 		};
-		if (command === 'call') {
+		if (plain) {
+			input = plain.input(plainValues);
+		} else if (command === 'call') {
 			if (args.length > 1) return fail('Expected a single JSON argument');
 			const raw = args[0];
 			input = JSON.parse(
@@ -168,7 +205,11 @@ export async function runToolCli<TCtx>(
 	}
 	try {
 		const result = await tool.handler(context, input as Record<string, unknown>);
-		stdout.write(`${JSON.stringify(result, null, compact ? undefined : 2)}\n`);
+		stdout.write(
+			plain && !plainValues.json
+				? plain.render(result, context, plainValues)
+				: `${JSON.stringify(result, null, compact ? undefined : 2)}\n`,
+		);
 		if (
 			typeof result === 'object' &&
 			result !== null &&

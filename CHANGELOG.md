@@ -5,6 +5,10 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Added
+
+- Plain CLI commands `add`, `list`, `done`, `search`, and `show`, with command help, short text output, and optional full tool JSON (2026-10-27).
+
 ## [0.6.2] - 2026-10-24
 
 ### Changed

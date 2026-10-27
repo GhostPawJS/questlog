@@ -1,3 +1,4 @@
+import { questlogPlainCommands } from './surface/questlog_plain_commands.ts';
 import { questlogSurfaceTools } from './surface/questlog_surface_tools.ts';
 import { runToolCli } from './surfaces/cli.ts';
 import { questlogVersion } from './version.ts';
@@ -16,6 +17,7 @@ process.exitCode = await runToolCli(process.argv.slice(2), {
 	},
 	closeContext: (db) => db.close(),
 	commands: {
+		plain: questlogPlainCommands(),
 		mcp: async (options) => {
 			const { serveQuestlogMcp } = await import('./surface/serve_questlog_mcp.ts');
 			await serveQuestlogMcp(options.db === undefined ? {} : { dbPath: options.db });

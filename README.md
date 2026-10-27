@@ -65,13 +65,37 @@ initialize-based revisions 2025-11-25, 2025-06-18, 2025-03-26 and 2024-11-05.
 
 ## CLI
 
+Install globally for the `ghostpaw-questlog` binary: `npm i -g @ghostpaw/questlog`.
+
 ```bash
-npx -y @ghostpaw/questlog tools
-npx -y @ghostpaw/questlog call capture_rumor '{"title":"Review release notes"}'
-npx -y @ghostpaw/questlog call search_questlog '{"query":"release notes"}'
+ghostpaw-questlog add --title "Review release notes" --tag release --due 2030-01-02
+ghostpaw-questlog list --limit 10
+ghostpaw-questlog search release notes --limit 5
+ghostpaw-questlog show 1
+ghostpaw-questlog done 1 --outcome "Reviewed changes"
+ghostpaw-questlog list --view quests.resolved --json
 ```
 
-Install globally for the `ghostpaw-questlog` binary: `npm i -g @ghostpaw/questlog`.
+`add` accepts repeated `--tag` flags, `--objective` (defaults to the title),
+`--questline <id>`, and `--due` as an ISO date or milliseconds since epoch.
+`list` defaults to available quests; `list --help` lists all supported views.
+Its `--limit` caps text output; JSON preserves the full review tool result.
+`search --limit` caps matches in both formats. `show` inspects a quest id.
+`done` requires `--outcome`, the written result stored with the finished quest.
+
+Plain commands print short text by default. Use `--json` for the full tool result
+and `--compact` for compact JSON. `--db path` works before or after the command.
+Each command accepts `--help`. Exit codes are 0 for success, 1 for invalid input
+or a tool error, 2 for usage errors, and 3 when clarification is needed.
+
+The `call` command and the per-tool form still reach every tool and parameter:
+
+```bash
+ghostpaw-questlog tools
+ghostpaw-questlog call capture_rumor '{"title":"Review release notes"}'
+ghostpaw-questlog search_questlog --query "release notes"
+```
+
 `ghostpaw-questlog mcp` starts the stdio server.
 
 ## Agent Skill
