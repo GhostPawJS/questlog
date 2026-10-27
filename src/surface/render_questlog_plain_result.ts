@@ -26,7 +26,9 @@ export function renderQuestlogPlainResult(
 			.replace(/[\r\n]+/g, ' ');
 	};
 	if (!r.ok)
-		return `${r.summary}\n${r.outcome === 'needs_clarification' ? r.clarification.question : r.error.message}\n`;
+		return r.outcome === 'needs_clarification'
+			? `${r.clarification.question}\nMissing: ${r.clarification.missing.map((name) => `--${name}`).join(', ')}\n`
+			: `${r.summary}\n${r.error.message}\n`;
 	if (r.data.items) {
 		const items =
 			values.limit === undefined

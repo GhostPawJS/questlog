@@ -81,7 +81,7 @@ ghostpaw-questlog list --view quests.resolved --json
 `list` defaults to available quests; `list --help` lists all supported views.
 Its `--limit` caps text output; JSON preserves the full review tool result.
 `search --limit` caps matches in both formats. `show` inspects a quest id.
-`done` requires `--outcome`, the written result stored with the finished quest.
+`done` stores `--outcome` with the finished quest; without it the command asks for one and exits 3.
 
 Plain commands print short text by default. Use `--json` for the full tool result
 and `--compact` for compact JSON. `--db path` works before or after the command.

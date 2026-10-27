@@ -5,6 +5,10 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Fixed
+
+- `run_quest` `finish`, `abandon` and `abandon_and_spawn_followups` without an `outcome` return `needs_clarification` (`missing_required_choice`, `missing: ["outcome"]`) instead of a TypeError; `done <id>` without `--outcome` prints the question and exits 3 (2026-10-27).
+
 ## [0.7.0] - 2026-10-27
 
 ### Added

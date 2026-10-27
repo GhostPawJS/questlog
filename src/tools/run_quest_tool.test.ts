@@ -1,6 +1,7 @@
 import { strictEqual } from 'node:assert/strict';
 import { beforeEach, describe, it } from 'node:test';
 import type { QuestlogDb } from '../database.ts';
+import type { RunQuestToolInput } from './run_quest_tool.ts';
 import { runQuestTool } from './run_quest_tool.ts';
 import { shapeWorkTool } from './shape_work_tool.ts';
 import { createToolTestDb, expectError, expectSuccess } from './tool_test_utils.ts';
@@ -49,6 +50,38 @@ describe('runQuestTool', () => {
 
 		strictEqual(result.error.kind, 'domain');
 		strictEqual(result.error.code, 'invalid_state');
+	});
+
+	it('asks for an outcome when finish or abandon omits it, without resolving the quest', () => {
+		const created = expectSuccess(
+			shapeWorkTool.handler(db, {
+				action: 'create_quest',
+				quest: { title: 'No outcome yet', objective: 'Exercise outcome clarification.' },
+			}),
+		);
+		if (!created.data.quest) {
+			throw new Error('expected created quest');
+		}
+		const questId = created.data.quest.id;
+		for (const action of ['finish', 'abandon', 'abandon_and_spawn_followups'] as const) {
+			const result = runQuestTool.handler(db, {
+				action,
+				questId,
+				followups: [],
+			} as unknown as RunQuestToolInput);
+			strictEqual(result.ok, false);
+			strictEqual(result.outcome, 'needs_clarification');
+			if (result.outcome !== 'needs_clarification') throw new Error('expected clarification');
+			strictEqual(result.clarification.code, 'missing_required_choice');
+			strictEqual(result.clarification.missing[0], 'outcome');
+			strictEqual(result.clarification.question.includes('No outcome yet'), true);
+		}
+		const blank = expectError(
+			runQuestTool.handler(db, { action: 'finish', questId, outcome: '   ' }),
+		);
+		strictEqual(blank.error.code, 'invalid_input');
+		const still = expectSuccess(runQuestTool.handler(db, { action: 'start', questId }));
+		strictEqual(still.data.quest.resolvedAt, null);
 	});
 
 	it('rejects abandon-and-spawn-followups calls with no follow-up quests', () => {

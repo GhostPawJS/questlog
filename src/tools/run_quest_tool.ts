@@ -21,7 +21,7 @@ import { runQuestToolName } from './tool_names.ts';
 import { inspectItemNext } from './tool_next.ts';
 import { toQuestRef } from './tool_ref.ts';
 import type { ToolEntityRef, ToolResult } from './tool_types.ts';
-import { toolFailure, toolNoOp, toolSuccess } from './tool_types.ts';
+import { toolFailure, toolNeedsClarification, toolNoOp, toolSuccess } from './tool_types.ts';
 
 export type RunQuestToolInput =
 	| { action: 'abandon'; outcome: string; questId: number; resolvedAt?: number }
@@ -53,6 +53,16 @@ export function runQuestToolHandler(
 ): RunQuestToolResult {
 	try {
 		const current = getQuestDetail(db, input.questId);
+		if (input.action !== 'start' && input.action !== 'log_effort') {
+			const outcome: unknown = input.outcome;
+			if (typeof outcome !== 'string') {
+				return toolNeedsClarification(
+					'missing_required_choice',
+					`What outcome should be recorded for quest \`${current.title}\`?`,
+					['outcome'],
+				);
+			}
+		}
 
 		switch (input.action) {
 			case 'start': {

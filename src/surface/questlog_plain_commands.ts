@@ -68,8 +68,7 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 					{
 						name: 'outcome',
 						type: 'string',
-						required: true,
-						description: 'What the finished quest produced.',
+						description: 'What the finished quest produced; asked for when omitted.',
 					},
 				],
 			},
@@ -77,7 +76,7 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 			input: (v) => ({
 				action: 'finish',
 				questId: v.id,
-				outcome: v.outcome,
+				...(v.outcome === undefined ? {} : { outcome: v.outcome }),
 			}),
 			render: renderQuestlogPlainResult,
 		},
