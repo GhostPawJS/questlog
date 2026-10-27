@@ -5,6 +5,13 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Changed
+
+- Release binary installation is the default in the README and generated skill, with explicit installer targets.
+- Human CLI version output includes the binary, npm, or library variant.
+- `add` accepts a positional title and rejects giving the title twice.
+- Flag values may start with dashes unless they look like a long flag.
+
 ## [0.9.1] - 2026-10-27
 
 ### Changed

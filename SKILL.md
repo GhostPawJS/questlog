@@ -2,16 +2,33 @@
 name: questlog
 description: "Manage local tasks, calendar commitments, and recurring work. Use when planning, executing, reviewing, or organizing work."
 license: "MIT"
-compatibility: "Node.js 24 or newer. MCP stdio or ghostpaw-questlog CLI."
+compatibility: "Release binary needs no runtime. npx requires Node.js 24 or newer. MCP stdio or ghostpaw-questlog CLI."
 ---
 
 # questlog
 
-No install? Use `npx -y @ghostpaw/questlog <command>`.
+## Install
+
+Linux/macOS:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.sh | sh
+```
+
+Installs `~/.local/bin/ghostpaw-questlog` after checking SHA256SUMS.
+
+Windows x64 (PowerShell):
+
+```powershell
+irm https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.ps1 | iex
+```
+
+Run tools as `ghostpaw-questlog ...`; use `~/.local/bin/ghostpaw-questlog` if it is not on PATH.
+
 `questlog` and `ghostpaw-questlog` are the same binary.
 
 - `questlog search <words>` before `add` to avoid duplicates.
-- `questlog add --title "..." --tag a,b --due tomorrow`
+- `ghostpaw-questlog add "..." --tag a,b --due tomorrow`
 - `questlog list [--view <view>]`: questlines, quests.active, quests.available, quests.blocked, quests.deferred, quests.due_soon, quests.in_progress, quests.missed_scheduled, quests.open, quests.overdue, quests.resolved, quests.scheduled_for_day, quests.scheduled_now, repeatables.due_anchors, rumors.
 - `questlog done <id> --outcome "..."`
 - `questlog search <words>`
@@ -29,7 +46,7 @@ Questlog manages local tasks, calendar commitments, and recurring work. Search b
 
 MCP: connect to ghostpaw-questlog, then call a tool by name with its JSON arguments.
 
-CLI: `ghostpaw-questlog call <tool> '<JSON object>'` or `ghostpaw-questlog <tool> --parameter value` (without a global install: `npx -y @ghostpaw/questlog <tool> ...`).
+CLI: `ghostpaw-questlog call <tool> '<JSON object>'` or `ghostpaw-questlog <tool> --parameter value`.
 
 Inspect schemas with `ghostpaw-questlog describe <tool>`. Use `--db <path>` to select a database.
 
@@ -307,3 +324,7 @@ Writes: writes_state.
 - Read before you prescribe.
 - Protect history when reality changes.
 - Close the last mile, not just the main work.
+
+## Without the binary
+
+Use `npx -y @ghostpaw/questlog ...` in npm-based environments (Node 24+). Harnesses that embed it in code can import `@ghostpaw/questlog` as a library.

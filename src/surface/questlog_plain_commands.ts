@@ -1,6 +1,7 @@
 import type { QuestlogDb } from '../database.ts';
 import type { PlainCliCommand } from '../surfaces/cli.ts';
 import type { CliArgument } from '../surfaces/cli_args.ts';
+import { CliUsageError } from '../surfaces/cli_args.ts';
 import { reviewQuestlogTool } from '../tools/review_questlog_tool.ts';
 import { parsePlainDue } from './plain_dates.ts';
 import { renderQuestlogPlainResult } from './render_questlog_plain_result.ts';
@@ -22,9 +23,11 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 		{
 			spec: {
 				command: 'add',
-				description: 'Create a quest. Objective defaults to the title.',
+				description:
+					'Create a quest: add "My title" or add --title "My title". Objective defaults to the title.',
+				positionals: [{ name: 'positionalTitle', type: 'string' }],
 				flags: [
-					{ name: 'title', type: 'string', required: true },
+					{ name: 'title', type: 'string' },
 					{ name: 'tag', type: 'array' },
 					{ name: 'objective', type: 'string' },
 					{
@@ -37,9 +40,15 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 			},
 			tool: 'shape_work',
 			input: (v) => {
+				if (v.title !== undefined && v.positionalTitle !== undefined)
+					throw new CliUsageError(
+						'give the title once: either as the first argument or with --title',
+					);
+				const title = v.positionalTitle ?? v.title;
+				if (title === undefined) throw new CliUsageError('Missing required argument: title');
 				const quest: Record<string, unknown> = {
-					title: v.title,
-					objective: v.objective ?? v.title,
+					title,
+					objective: v.objective ?? title,
 				};
 				if (v.tag !== undefined)
 					quest.tags = (v.tag as string[]).flatMap((tag) =>

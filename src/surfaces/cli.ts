@@ -13,6 +13,7 @@ export interface PlainCliCommand<TCtx> {
 export interface ToolCliOptions<TCtx> {
 	bin: string;
 	version: string;
+	versionLine?: () => string;
 	description: string;
 	describeDb?: (opts: { db?: string }) => string;
 	tools: readonly SurfaceTool<TCtx>[];
@@ -63,7 +64,7 @@ export async function runToolCli<TCtx>(
 		return 0;
 	}
 	if (['--version', '-v'].includes(command)) {
-		stdout.write(`${options.version}\n`);
+		stdout.write(`${options.versionLine?.() ?? options.version}\n`);
 		return 0;
 	}
 	if (command === 'tools') {

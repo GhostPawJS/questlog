@@ -48,7 +48,7 @@ export function renderSkillMarkdown<TCtx>(
 		'',
 		`MCP: connect to ${spec.server}, then call a tool by name with its JSON arguments.`,
 		'',
-		`CLI: \`${spec.bin} call <tool> '<JSON object>'\` or \`${spec.bin} <tool> --parameter value\`${spec.packageName ? ` (without a global install: \`npx -y ${spec.packageName} <tool> ...\`)` : ''}.`,
+		`CLI: \`${spec.bin} call <tool> '<JSON object>'\` or \`${spec.bin} <tool> --parameter value\`.`,
 		'',
 		`Inspect schemas with \`${spec.bin} describe <tool>\`. Use \`--db <path>\` to select a database.`,
 		'',
@@ -88,8 +88,15 @@ export function renderSkillMarkdown<TCtx>(
 		'',
 	);
 	const output = lines.join('\n');
-	if (!spec.cheatSheet) return output;
+	const fallback = spec.packageName
+		? `
+## Without the binary
+
+Use \`npx -y ${spec.packageName} ...\` in npm-based environments (Node 24+). Harnesses that embed it in code can import \`${spec.packageName}\` as a library.
+`
+		: '';
+	if (!spec.cheatSheet) return output + fallback;
 	const title = `# ${spec.name}\n\n`;
 	const start = output.indexOf(title) + title.length;
-	return `${output.slice(0, start)}${spec.cheatSheet}\n\n## Appendix: MCP and tool calls\n\n${output.slice(start).replace(/^## /gm, '### ')}`;
+	return `${output.slice(0, start)}${spec.cheatSheet}\n\n## Appendix: MCP and tool calls\n\n${output.slice(start).replace(/^## /gm, '### ')}${fallback}`;
 }

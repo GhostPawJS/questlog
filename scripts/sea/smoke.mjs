@@ -31,7 +31,8 @@ const run = (args) => {
 };
 
 const version = run(['--version']).trim();
-if (version !== pkg.version) fail(`--version printed ${version}, expected ${pkg.version}`);
+const expectedVersion = `questlog ${pkg.version} (binary, ${process.platform === 'win32' ? 'windows' : process.platform}-${process.arch})`;
+if (version !== expectedVersion) fail(`--version printed ${version}, expected ${expectedVersion}`);
 run(['--help']);
 const wrote = JSON.parse(
 	run(['--db', db, 'capture_rumor', '--title', 'The binary runs node:sqlite']),

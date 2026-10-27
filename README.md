@@ -7,7 +7,7 @@
 **Agent tasks as quests that finish only with a written outcome.**
 
 ```bash
-npm install @ghostpaw/questlog
+curl -fsSL https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.sh | sh
 ```
 
 A unified task and calendar model for Node.js, built on SQLite.
@@ -16,14 +16,15 @@ Questlog treats tasks, events, deadlines, recurring commitments, and loose intak
 
 ## MCP server
 
-Every client below starts the same stdio server: `npx -y @ghostpaw/questlog mcp`.
+Every client below starts the same stdio server: `ghostpaw-questlog mcp`.
+For npm-based environments, use `npx -y @ghostpaw/questlog mcp` (Node 24+).
 Data lives in `~/.ghostpaw/questlog.db` unless the `GHOSTPAW_QUESTLOG_DB`
 environment variable (absolute path) or `--db <path>` says otherwise.
 
 **Claude Code**
 
 ```bash
-claude mcp add ghostpaw-questlog -- npx -y @ghostpaw/questlog mcp
+claude mcp add ghostpaw-questlog -- ghostpaw-questlog mcp
 ```
 
 or as a plugin, which also installs the skill:
@@ -37,8 +38,8 @@ or as a plugin, which also installs the skill:
 
 ```toml
 [mcp_servers.ghostpaw-questlog]
-command = "npx"
-args = ["-y", "@ghostpaw/questlog", "mcp"]
+command = "ghostpaw-questlog"
+args = ["mcp"]
 ```
 
 **Cursor** (`.cursor/mcp.json`), **Claude Desktop** (`claude_desktop_config.json`)
@@ -48,8 +49,8 @@ or a project `.mcp.json`:
 {
   "mcpServers": {
     "ghostpaw-questlog": {
-      "command": "npx",
-      "args": ["-y", "@ghostpaw/questlog", "mcp"]
+      "command": "ghostpaw-questlog",
+      "args": ["mcp"]
     }
   }
 }
@@ -65,10 +66,10 @@ initialize-based revisions 2025-11-25, 2025-06-18, 2025-03-26 and 2024-11-05.
 
 ## CLI
 
-Install globally for `questlog` (`ghostpaw-questlog` is the same binary): `npm i -g @ghostpaw/questlog`.
+Install the [release binary](#install) for `ghostpaw-questlog` (`questlog` is an alias).
 
 ```bash
-questlog add --title "Review release notes" --tag release --due 2030-01-02
+questlog add "Review release notes" --tag release --due 2030-01-02
 questlog list --limit 10
 questlog search release notes --limit 5
 questlog show 1
@@ -114,31 +115,51 @@ an installation hint on older Node versions, including for help and version.
 Copy `skills/questlog/` into your agent's skills folder, or print it:
 
 ```bash
-npx -y @ghostpaw/questlog skill > SKILL.md
+ghostpaw-questlog skill > SKILL.md
 ```
 
 ## Install
 
-The [npm package](https://www.npmjs.com/package/@ghostpaw/questlog) requires Node 24+:
+### Release binary (default)
+
+Each line downloads the latest release asset, checks it against the release’s SHA256SUMS and installs it on the PATH (~/.local/bin on Linux/macOS; the Windows script adds its folder to the user PATH).
+
+linux-x64:
 
 ```sh
-npm install -g @ghostpaw/questlog
-npx -y @ghostpaw/questlog --help
+curl -fsSL https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.sh | sh -s -- --target linux-x64 && export PATH="$HOME/.local/bin:$PATH"
 ```
 
-As a library dependency: `npm install @ghostpaw/questlog`. It uses the built-in
-`node:sqlite` module, so there are no runtime dependencies.
-
-Standalone binaries are available from [GitHub Releases](https://github.com/GhostPawJS/questlog/releases)
-for linux-x64, linux-arm64, darwin-arm64, darwin-x64 and windows-x64.
+linux-arm64:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.sh | sh -s -- --target linux-arm64 && export PATH="$HOME/.local/bin:$PATH"
 ```
+
+darwin-arm64:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.sh | sh -s -- --target darwin-arm64 && export PATH="$HOME/.local/bin:$PATH"
+```
+
+darwin-x64:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.sh | sh -s -- --target darwin-x64 && export PATH="$HOME/.local/bin:$PATH"
+```
+
+windows-x64 (PowerShell):
 
 ```powershell
 irm https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.ps1 | iex
 ```
+
+```text
+$ ghostpaw-questlog --version
+questlog 0.9.1 (binary, linux-x64)
+```
+
+Standalone binaries are available from [GitHub Releases](https://github.com/GhostPawJS/questlog/releases).
 
 A session with the 0.9.1 linux-x64 binary against a fresh database:
 
@@ -198,6 +219,27 @@ download on macOS, remove quarantine with
 `xattr -d com.apple.quarantine /path/to/ghostpaw-questlog`.
 Linux binaries require glibc 2.28+; use npx on Alpine.
 See the [binary build workflow](.github/workflows/release-binaries.yml).
+
+### npx / npm (for npm-based environments)
+
+The [npm package](https://www.npmjs.com/package/@ghostpaw/questlog) requires Node 24+:
+
+```sh
+npx -y @ghostpaw/questlog --help
+npm install -g @ghostpaw/questlog
+```
+
+### Library (for harnesses embedding it in code)
+
+```sh
+npm install @ghostpaw/questlog
+```
+
+```ts
+import { initQuestlogTables, read, write } from '@ghostpaw/questlog';
+```
+
+See [library usage](#quick-start). The library uses built-in `node:sqlite` with zero runtime dependencies.
 
 ## Quick Start
 

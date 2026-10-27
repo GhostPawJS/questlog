@@ -104,9 +104,12 @@ test('plain JSON recursively adds ISO siblings without changing tool data', () =
 });
 
 test('skill cheat sheet wraps an otherwise unchanged appendix', () => {
-	const { cheatSheet: _cheatSheet, ...spec } = questlogSkillSpec;
+	const { cheatSheet: _cheatSheet, packageName: _packageName, ...spec } = questlogSkillSpec;
 	const original = renderSkillMarkdown(spec);
-	const withSheet = renderSkillMarkdown({ ...spec, cheatSheet: 'Quick commands' });
+	const withSheet = renderSkillMarkdown({
+		...spec,
+		cheatSheet: 'Quick commands',
+	});
 	const title = '# questlog\n\n';
 	const start = original.indexOf(title) + title.length;
 	assert.equal(
@@ -116,13 +119,19 @@ test('skill cheat sheet wraps an otherwise unchanged appendix', () => {
 	assert.equal(renderSkillMarkdown(spec), original);
 });
 
-test('skill cheat sheet opens with the npx fallback and says to search before add', () => {
+test('skill opens with binary installation and keeps npm in the final fallback', () => {
 	const lines = questlogSkillSpec.cheatSheet.split('\n');
-	assert.equal(lines[0], 'No install? Use `npx -y @ghostpaw/questlog <command>`.');
+	assert.equal(lines[0], '## Install');
+	const markdown = renderSkillMarkdown(questlogSkillSpec);
+	assert.match(markdown, /# questlog\n\n## Install/);
+	const fallback = markdown.indexOf('## Without the binary');
+	assert.ok(fallback > markdown.indexOf('## Appendix'));
+	assert.doesNotMatch(markdown.slice(markdown.indexOf('# questlog'), fallback), /npx|npm|Node/);
+	assert.match(markdown.slice(fallback), /npx -y @ghostpaw\/questlog/);
 	assert.ok(lines.includes('- `questlog search <words>` before `add` to avoid duplicates.'));
 	assert.ok(
 		lines.indexOf('- `questlog search <words>` before `add` to avoid duplicates.') <
-			lines.findIndex((line) => line.startsWith('- `questlog add')),
+			lines.findIndex((line) => line.startsWith('- `ghostpaw-questlog add')),
 	);
 });
 
@@ -184,5 +193,53 @@ test('shell installer creates and refreshes its alias but preserves unrelated fi
 		assert.equal(readFileSync(join(dir, 'questlog'), 'utf8'), 'unrelated');
 	} finally {
 		rmSync(dir, { recursive: true, force: true });
+	}
+});
+
+test('add accepts a positional title or --title and rejects both', () => {
+	for (const args of [['My title'], ['--title', 'My title']]) {
+		const result = capture(['src/cli.ts', '--db', ':memory:', 'add', ...args, '--json']);
+		assert.equal(result.status, 0, result.stderr);
+		assert.equal(JSON.parse(result.stdout).data.quest.title, 'My title');
+	}
+	const both = capture(['src/cli.ts', '--db', ':memory:', 'add', 'My title', '--title', 'Other']);
+	assert.equal(both.status, 2);
+	assert.match(both.stderr, /give the title once: either as the first argument or with --title/);
+});
+
+test('package entry reports npm for both version flags', () => {
+	for (const flag of ['--version', '-v']) {
+		const result = capture(['src/cli.ts', flag]);
+		assert.equal(result.status, 0, result.stderr);
+		assert.match(result.stdout, /^questlog \d+\.\d+\.\d+ \(npm\)\n$/);
+	}
+});
+
+test('shell installer validates explicit targets and permits Rosetta', () => {
+	const source = readFileSync('install.sh', 'utf8');
+	const setup = source.slice(0, source.indexOf('if [ -z "$VERSION" ]'));
+	const script = `uname() { case "$1" in -s) printf '%s\\n' "$TEST_OS" ;; -m) printf '%s\\n' "$TEST_ARCH" ;; esac; }\n${setup}\nprintf '%s\\n' "$OS-$ARCH"`;
+	for (const [os, arch, detected] of [
+		['Linux', 'x86_64', 'linux-x64'],
+		['Linux', 'aarch64', 'linux-arm64'],
+		['Darwin', 'arm64', 'darwin-arm64'],
+		['Darwin', 'x86_64', 'darwin-x64'],
+	] as const) {
+		const env = { ...process.env, TEST_OS: os, TEST_ARCH: arch };
+		const run = (...args: string[]) =>
+			capture(['-c', script, 'install.sh', ...args], env, '/bin/sh');
+		assert.equal(run().stdout.trim(), detected);
+		assert.equal(run('--target', detected as string).stdout.trim(), detected);
+		const wrong = detected === 'linux-x64' ? 'linux-arm64' : 'linux-x64';
+		assert.match(
+			run('--target', wrong).stderr,
+			new RegExp(`this machine is ${detected}; use the ${detected} install line`),
+		);
+		assert.match(
+			run('--target', 'unknown').stderr,
+			/linux-x64, linux-arm64, darwin-arm64, darwin-x64/,
+		);
+		if (detected === 'darwin-arm64')
+			assert.equal(run('--target', 'darwin-x64').stdout.trim(), 'darwin-x64');
 	}
 });

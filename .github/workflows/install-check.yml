@@ -36,7 +36,7 @@ jobs:
           export PATH="$GHOSTPAW_INSTALL_DIR:$PATH"
           if [ "$RUNNER_OS" = Linux ]; then export GHOSTPAW_VERIFY=attestation; fi
           curl -fsSL https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.sh | sh -s -- --version "$version"
-          test "$(ghostpaw-questlog --version)" = "$version"
+          test "$(ghostpaw-questlog --version)" = "questlog $version (binary, ${{ matrix.os == 'ubuntu-24.04' && 'linux-x64' || 'darwin-arm64' }})"
           echo "Version: $version verified on $RUNNER_OS" >> "$GITHUB_STEP_SUMMARY"
           ghostpaw-questlog add --title "Install check marker" --db "$RUNNER_TEMP/questlog.db" --json | jq -e '.ok == true'
           echo 'Quest add: passed' >> "$GITHUB_STEP_SUMMARY"
@@ -64,7 +64,7 @@ jobs:
           $env:GHOSTPAW_VERSION = $version
           $env:GHOSTPAW_INSTALL_DIR = Join-Path $env:RUNNER_TEMP 'questlog-bin'
           irm https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.ps1 | iex
-          if ((ghostpaw-questlog --version) -ne $version) { throw 'Version mismatch' }
+          if ((ghostpaw-questlog --version) -ne "questlog $version (binary, windows-x64)") { throw 'Version mismatch' }
           "Version: $version verified on Windows" >> $env:GITHUB_STEP_SUMMARY
           $db = Join-Path $env:RUNNER_TEMP 'questlog.db'
           $added = ghostpaw-questlog add --title 'Install check marker' --db $db --json | ConvertFrom-Json

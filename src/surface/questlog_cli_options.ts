@@ -1,5 +1,6 @@
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { cliVersion } from '../cli_version.ts';
 import type { QuestlogDb } from '../database.ts';
 import type { ToolCliOptions } from '../surfaces/cli.ts';
 import { questlogVersion } from '../version.ts';
@@ -15,6 +16,7 @@ function selectedDbPath(options: { db?: string }): string {
 export const questlogCliOptions: ToolCliOptions<QuestlogDb> = {
 	bin: 'ghostpaw-questlog',
 	version: questlogVersion,
+	versionLine: () => cliVersion(questlogVersion),
 	description: 'Local task and calendar library',
 	tools: questlogSurfaceTools,
 	describeDb: (options) =>

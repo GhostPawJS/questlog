@@ -62,3 +62,12 @@ test('generic parser reports typed usage errors and renders schema help', () => 
 		{ ids: [1, 2] },
 	);
 });
+
+test('flag values may start with dashes unless they look like a flag', () => {
+	const spec = { command: 'example', flags: [{ name: 'title', type: 'string' as const }] };
+	for (const title of ['--', '---text', '--123', '-text']) {
+		assert.deepEqual(parseCliArgs(['--title', title], spec), { title });
+	}
+	assert.throws(() => parseCliArgs(['--title', '--other'], spec), /Missing value/);
+	assert.throws(() => parseCliArgs(['--title', '--Other'], spec), /Missing value/);
+});
