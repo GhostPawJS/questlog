@@ -5,6 +5,10 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Changed
+
+- README and site add a labelled install line that also adds ~/.local/bin to ~/.profile, and a pinned line on the site.
+
 ## [0.10.1] - 2026-10-28
 
 ### Added
