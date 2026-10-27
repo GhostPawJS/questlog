@@ -1,7 +1,7 @@
 {
 	"size": {
 		"full": {
-			"minBytes": 171584,
+			"minBytes": 171648,
 			"gzipBytes": 45120
 		},
 		"tools": {
@@ -17,8 +17,8 @@
 			"gzipBytes": 30528
 		},
 		"cli": {
-			"minBytes": 186368,
-			"gzipBytes": 52480
+			"minBytes": 186624,
+			"gzipBytes": 52608
 		},
 		"mcp-server": {
 			"minBytes": 131520,
