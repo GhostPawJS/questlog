@@ -5,12 +5,13 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+## [0.9.2] - 2026-10-27
+
 ### Changed
 
 - Embed workflow guides in the CLI with guide listing and help.
 - Expand skill parameter tables and include schema-checked call examples.
 - Validate nested and action-specific tool input before execution, with recovery shapes.
-
 - Release binary installation is the default in the README and generated skill, with explicit installer targets.
 - Human CLI version output includes the binary, npm, or library variant.
 - `add` accepts a positional title and rejects giving the title twice.
@@ -132,7 +133,8 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 - Semantic markers, structured tool facade, workflow skills, and usage documentation.
 - ESM and CommonJS bundles with TypeScript declarations and native Node test execution.
 
-[Unreleased]: https://github.com/GhostPawJS/questlog/compare/v0.9.1...HEAD
+[Unreleased]: https://github.com/GhostPawJS/questlog/compare/v0.9.2...HEAD
+[0.9.2]: https://github.com/GhostPawJS/questlog/compare/v0.9.1...v0.9.2
 [0.9.1]: https://github.com/GhostPawJS/questlog/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/GhostPawJS/questlog/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/GhostPawJS/questlog/compare/v0.7.0...v0.8.0
