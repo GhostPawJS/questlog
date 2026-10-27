@@ -21,7 +21,12 @@ const fail = (message) => {
 const run = (args) => {
 	const r = spawnSync(binary, args, { encoding: 'utf8' });
 	if (r.status !== 0) fail(`${args.join(' ')} exited ${r.status}\n${r.stderr}`);
-	if (r.stderr.trim()) fail(`${args.join(' ')} wrote to stderr:\n${r.stderr}`);
+	// The only expected stderr line is the one-time notice for a new database file.
+	const stderr = r.stderr
+		.split(/\r?\n/)
+		.filter((line) => line.trim() && line !== `created ${db}`)
+		.join('\n');
+	if (stderr) fail(`${args.join(' ')} wrote to stderr:\n${r.stderr}`);
 	return r.stdout;
 };
 
