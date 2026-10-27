@@ -124,6 +124,8 @@ ghostpaw-questlog skill > SKILL.md
 
 Each line downloads the latest release asset, checks it against the release’s SHA256SUMS and installs it on the PATH (~/.local/bin on Linux/macOS; the Windows script adds its folder to the user PATH).
 
+These lines never edit ~/.profile or other shell startup files: `export PATH` applies to the current shell only. To keep it, add `export PATH="$HOME/.local/bin:$PATH"` to your shell profile yourself.
+
 linux-x64:
 
 ```sh
@@ -148,16 +150,30 @@ darwin-x64:
 curl -fsSL https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.sh | sh -s -- --target darwin-x64 && export PATH="$HOME/.local/bin:$PATH"
 ```
 
-windows-x64 (PowerShell):
+windows-x64 (PowerShell; persistently adds its folder to the user PATH):
 
 ```powershell
 irm https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.ps1 | iex
 ```
 
+Pinned to a release:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.sh | sh -s -- --target linux-x64 --version 0.10.1 && export PATH="$HOME/.local/bin:$PATH"
+```
+
+To skip the persistent Windows user PATH edit (the installer still installs and prints the folder to add):
+
+```powershell
+$env:GHOSTPAW_NO_MODIFY_PATH=1; irm https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.ps1 | iex
+```
+
 ```text
 $ ghostpaw-questlog --version
-questlog 0.9.2 (binary, linux-x64)
+questlog 0.10.1 (binary, linux-x64)
 ```
+
+Scripts that compare versions should use `--version --short` or `--version --json`.
 
 Standalone binaries are available from [GitHub Releases](https://github.com/GhostPawJS/questlog/releases).
 

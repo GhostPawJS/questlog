@@ -17,7 +17,7 @@ function selectedDbPath(options: { db?: string }): string {
 export const questlogCliOptions: ToolCliOptions<QuestlogDb> = {
 	bin: 'ghostpaw-questlog',
 	version: questlogVersion,
-	versionLine: () => cliVersion(questlogVersion),
+	versionLine: (args) => cliVersion(questlogVersion, { args }),
 	description: 'Local task and calendar library',
 	tools: questlogSurfaceTools,
 	describeDb: (options) =>

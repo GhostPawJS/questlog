@@ -14,7 +14,7 @@ export interface PlainCliCommand<TCtx> {
 export interface ToolCliOptions<TCtx> {
 	bin: string;
 	version: string;
-	versionLine?: () => string;
+	versionLine?: (args: string[]) => string;
 	description: string;
 	describeDb?: (opts: { db?: string }) => string;
 	tools: readonly SurfaceTool<TCtx>[];
@@ -63,6 +63,11 @@ export async function runToolCli<TCtx>(
 			i--;
 		}
 	}
+	const versionArgs = args.filter((arg) => arg !== '--short' && arg !== '--json');
+	if (versionArgs[0] === '--version' || versionArgs[0] === '-v') {
+		stdout.write(`${options.versionLine?.(args) ?? options.version}\n`);
+		return 0;
+	}
 	const ctxOptions = db === undefined ? {} : { db };
 	const command = args.shift() ?? 'help';
 	const normalize = (name: string) => name.replace(/[-_]/g, '').toLowerCase();
@@ -75,12 +80,8 @@ export async function runToolCli<TCtx>(
 				.map((name) => `${name}, `)
 				.join(
 					'',
-				)}tools [--json], describe <tool>, call <tool> [JSON|-], <tool> --parameter value, mcp, skill\nOptions: --help, --version, --compact, --db <path>\n${options.describeDb ? `${options.describeDb(ctxOptions)}\n` : ''}\n${options.tools.map((tool) => `${tool.name}  ${tool.description}`).join('\n')}\n`,
+				)}tools [--json], describe <tool>, call <tool> [JSON|-], <tool> --parameter value, mcp, skill\nOptions: --help, --version, --compact, --db <path>\nVersion formats: --version --short, --version --json\n${options.describeDb ? `${options.describeDb(ctxOptions)}\n` : ''}\n${options.tools.map((tool) => `${tool.name}  ${tool.description}`).join('\n')}\n`,
 		);
-		return 0;
-	}
-	if (['--version', '-v'].includes(command)) {
-		stdout.write(`${options.versionLine?.() ?? options.version}\n`);
 		return 0;
 	}
 	if (command === 'tools') {

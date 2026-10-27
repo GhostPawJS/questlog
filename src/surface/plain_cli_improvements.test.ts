@@ -7,6 +7,7 @@ import { test } from 'node:test';
 import { checkNodeVersion } from '../check_node_version.ts';
 import { enrichPlainJson, suggestCommand } from '../surfaces/cli_output.ts';
 import { renderSkillMarkdown } from '../surfaces/skill_markdown.ts';
+import { questlogVersion } from '../version.ts';
 import { formatPlainDate, parsePlainDue } from './plain_dates.ts';
 import { questlogPlainCommands } from './questlog_plain_commands.ts';
 import { questlogSkillSpec } from './questlog_skill_spec.ts';
@@ -242,4 +243,31 @@ test('shell installer validates explicit targets and permits Rosetta', () => {
 		if (detected === 'darwin-arm64')
 			assert.equal(run('--target', 'darwin-x64').stdout.trim(), 'darwin-x64');
 	}
+});
+
+test('package entry supports machine version flags in every order', () => {
+	const permutations = (items: string[]): string[][] =>
+		items.length === 0
+			? [[]]
+			: items.flatMap((item, index) =>
+					permutations(items.filter((_, i) => i !== index)).map((rest) => [item, ...rest]),
+				);
+	for (const versionFlag of ['--version', '-v']) {
+		for (const formats of [['--short'], ['--json'], ['--short', '--json']]) {
+			for (const args of permutations([versionFlag, ...formats])) {
+				const result = capture(['src/cli.ts', ...args]);
+				assert.equal(result.status, 0, result.stderr);
+				assert.equal(result.stderr, '');
+				assert.equal(
+					result.stdout,
+					formats.includes('--json')
+						? `${JSON.stringify({ name: 'questlog', version: questlogVersion, variant: 'npm', target: `${process.platform === 'win32' ? 'windows' : process.platform}-${process.arch}` })}\n`
+						: `${questlogVersion}\n`,
+				);
+			}
+		}
+	}
+	const help = capture(['src/cli.ts', '--help']);
+	assert.equal(help.status, 0, help.stderr);
+	assert.match(help.stdout, /Version formats: --version --short, --version --json/);
 });

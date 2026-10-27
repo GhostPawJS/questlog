@@ -5,6 +5,15 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Added
+
+- Machine-friendly `--version --short` and `--version --json` CLI output.
+- `GHOSTPAW_NO_MODIFY_PATH=1` Windows installer opt-out for persistent user PATH changes.
+
+### Notes
+
+- The v0.10.0 tag stopped at the size gate and was not published; 0.10.1 is the first published release with webhooks.
+
 ## [0.10.0] - 2026-10-28
 
 ### Added
