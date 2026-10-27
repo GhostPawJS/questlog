@@ -5,6 +5,8 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-10-27
+
 ### Added
 
 - Plain CLI commands `add`, `list`, `done`, `search`, and `show`, with command help, short text output, and optional full tool JSON (2026-10-27).
@@ -83,7 +85,8 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 - Semantic markers, structured tool facade, workflow skills, and usage documentation.
 - ESM and CommonJS bundles with TypeScript declarations and native Node test execution.
 
-[Unreleased]: https://github.com/GhostPawJS/questlog/compare/v0.6.2...HEAD
+[Unreleased]: https://github.com/GhostPawJS/questlog/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/GhostPawJS/questlog/compare/v0.6.2...v0.7.0
 [0.6.2]: https://github.com/GhostPawJS/questlog/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/GhostPawJS/questlog/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/GhostPawJS/questlog/compare/v0.5.1...v0.6.0
