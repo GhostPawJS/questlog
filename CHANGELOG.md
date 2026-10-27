@@ -5,6 +5,10 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Added
+
+- Standalone binaries for Linux, macOS and Windows, checksum-verifying install scripts, and release build and install checks (2026-10-27).
+
 ### Fixed
 
 - `run_quest` `finish`, `abandon` and `abandon_and_spawn_followups` without an `outcome` return `needs_clarification` (`missing_required_choice`, `missing: ["outcome"]`) instead of a TypeError; `done <id>` without `--outcome` prints the question and exits 3 (2026-10-27).

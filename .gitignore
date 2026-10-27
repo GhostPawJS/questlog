@@ -11,3 +11,4 @@ coverage/
 .mcpb-build/
 server.mcpb
 bench-results.json
+dist-sea/

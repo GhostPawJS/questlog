@@ -110,11 +110,79 @@ npx -y @ghostpaw/questlog skill > SKILL.md
 
 ## Install
 
-```bash
-npm install @ghostpaw/questlog
+The [npm package](https://www.npmjs.com/package/@ghostpaw/questlog) requires Node 24+:
+
+```sh
+npm install -g @ghostpaw/questlog
+npx -y @ghostpaw/questlog --help
 ```
 
-Requires **Node.js 24+** (uses the built-in `node:sqlite` module).
+As a library dependency: `npm install @ghostpaw/questlog`. It uses the built-in
+`node:sqlite` module, so there are no runtime dependencies.
+
+Standalone binaries are available from [GitHub Releases](https://github.com/GhostPawJS/questlog/releases)
+for linux-x64, linux-arm64, darwin-arm64, darwin-x64 and windows-x64.
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.sh | sh
+```
+
+```powershell
+irm https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.ps1 | iex
+```
+
+Other release installers:
+
+```sh
+mise use -g github:GhostPawJS/questlog
+ubi --project GhostPawJS/questlog --exe ghostpaw-questlog --in ~/.local/bin
+eget GhostPawJS/questlog
+```
+
+For [aqua](https://aquaproj.github.io/docs/reference/registry-config/), define a
+`github_release` package in `aqua.yaml`:
+
+```yaml
+registries:
+  - name: questlog
+    type: local
+    path: questlog-registry.yaml
+packages:
+  - name: GhostPawJS/questlog@v0.8.0
+    registry: questlog
+```
+
+`questlog-registry.yaml`:
+
+```yaml
+packages:
+  - type: github_release
+    repo_owner: GhostPawJS
+    repo_name: questlog
+    asset: ghostpaw-questlog-{{trimV .Version}}-{{.OS}}-{{.Arch}}.tar.gz
+    format: tar.gz
+    replacements: { amd64: x64 }
+    overrides:
+      - goos: windows
+        asset: ghostpaw-questlog-{{trimV .Version}}-windows-{{.Arch}}.zip
+        format: zip
+    files:
+      - name: ghostpaw-questlog
+```
+
+Install scripts verify SHA256SUMS. To verify a downloaded archive's
+[build attestation](https://cli.github.com/manual/gh_attestation_verify):
+
+```sh
+gh attestation verify <archive> -R GhostPawJS/questlog
+```
+
+Set `GHOSTPAW_VERIFY=attestation` for attestation verification in `install.sh`.
+Binaries are unsigned; macOS binaries carry an ad-hoc signature. For a browser
+download on macOS, remove quarantine with
+`xattr -d com.apple.quarantine /path/to/ghostpaw-questlog`.
+Linux binaries require glibc 2.28+; use npx on Alpine.
+See the [binary build workflow](.github/workflows/release-binaries.yml).
 
 ## Quick Start
 
