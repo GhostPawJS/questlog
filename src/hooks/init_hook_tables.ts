@@ -20,4 +20,11 @@ export function initHookTables(db: QuestlogDb): void {
  CREATE INDEX IF NOT EXISTS idx_hook_deliveries_target ON hook_deliveries(target_id, status, next_attempt_at);
  CREATE TABLE IF NOT EXISTS hook_settings (id INTEGER PRIMARY KEY CHECK(id = 1), label TEXT NOT NULL);
  `);
+	if (
+		!db
+			.prepare('PRAGMA table_info(hook_targets)')
+			.all()
+			.some((row) => row.name === 'headers')
+	)
+		db.exec("ALTER TABLE hook_targets ADD COLUMN headers TEXT NOT NULL DEFAULT '{}'");
 }

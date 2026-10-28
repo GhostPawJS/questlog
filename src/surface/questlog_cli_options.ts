@@ -34,6 +34,38 @@ export const questlogCliOptions: ToolCliOptions<QuestlogDb> = {
 	commands: {
 		names: ['hook', 'watch'],
 		run: async (command, args, options, io) => {
+			if (command === 'show' && args[0]?.startsWith('d_')) {
+				const { listDeliveries } = await import('../hooks/list_deliveries.ts');
+				const { listHooks } = await import('../hooks/list_hooks.ts');
+				const { textOutput } = await import('../surfaces/text_output.ts');
+				if (args.includes('--help') || args.includes('-h')) {
+					io.stdout.write('questlog show <delivery-id> [--json]\n');
+					return 0;
+				}
+				const { openQuestlogDb } = await import('./open_questlog_db.ts');
+				const db = await openQuestlogDb(selectedDbPath(options));
+				try {
+					const delivery = listDeliveries(db, { includeDelivered: true }).find(
+						(d) => d.id === args[0],
+					);
+					if (!delivery) {
+						io.stderr.write(`Delivery ${args[0]} not found\n`);
+						return 1;
+					}
+					const target = listHooks(db).find((h) => h.id === delivery.targetId);
+					const result = {
+						...delivery,
+						target: target ?? null,
+						eventIds: delivery.events.map((e) => e.id),
+					};
+					io.stdout.write(
+						`${args.includes('--json') ? JSON.stringify(result, null, 2) : textOutput(result)}\n`,
+					);
+					return 0;
+				} finally {
+					db.close();
+				}
+			}
 			if (command !== 'hook' && command !== 'watch') return undefined;
 			const { runHookCommand } = await import('./run_hook_command.ts');
 			return runHookCommand(command, args, io, async () => {

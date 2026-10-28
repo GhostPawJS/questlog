@@ -1,5 +1,6 @@
 import { minimalInput } from './schema_examples.ts';
-import type { JsonSchema, SurfaceTool } from './surface_types.ts';
+import { schemaRows } from './schema_rows.ts';
+import type { SurfaceTool } from './surface_types.ts';
 
 export interface SkillMarkdownSpec<TCtx> {
 	cheatSheet?: string;
@@ -18,7 +19,7 @@ export interface SkillMarkdownSpec<TCtx> {
 }
 export function renderSkillMarkdown<TCtx>(
 	spec: SkillMarkdownSpec<TCtx>,
-	{ referencesBase = 'references' }: { referencesBase?: string } = {},
+	{ referencesBase: _referencesBase = 'references' }: { referencesBase?: string } = {},
 ): string {
 	if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(spec.name) || spec.name.length > 64)
 		throw new Error('Invalid skill name');
@@ -69,24 +70,7 @@ export function renderSkillMarkdown<TCtx>(
 			'| Parameter | Type | Required | Values / description |',
 			'| --- | --- | --- | --- |',
 		);
-		const rows = (schema: JsonSchema, prefix = '') => {
-			const properties = { ...schema.properties };
-			const required = new Set(schema.required);
-			for (const branch of schema.oneOf ?? []) {
-				for (const [key, value] of Object.entries(branch.properties ?? {}))
-					properties[key] ??= value;
-				for (const key of branch.required ?? []) required.add(key);
-			}
-			for (const [name, property] of Object.entries(properties)) {
-				if (prefix && Object.keys(properties).length > 8 && !required.has(name)) continue;
-				const path = `${prefix}${name}`;
-				lines.push(
-					`| ${path} | ${property.type ?? property.oneOf?.map((branch) => branch.type).join(' / ') ?? 'any'} | ${required.has(name) ? 'yes' : 'no'} | ${((property.enum ? `${property.enum.join(', ')}. ` : '') + (property.description ?? '')).replaceAll('|', '\\|').replaceAll('\n', ' ')} |`,
-				);
-				if (property.properties || property.oneOf) rows(property, `${path}.`);
-			}
-		};
-		rows(tool.inputSchema);
+		lines.push(...schemaRows(tool.inputSchema).map((row) => `| ${row} |`));
 		lines.push('', '```sh');
 		for (const action of tool.inputSchema.properties?.action?.enum?.slice(0, 3) ?? [undefined]) {
 			lines.push(
@@ -100,8 +84,7 @@ export function renderSkillMarkdown<TCtx>(
 		'## Workflow guides',
 		'',
 		...spec.workflows.map(
-			(workflow) =>
-				`- \`${spec.bin} skill ${workflow.name}\` ([${workflow.name}](${referencesBase}/${workflow.name}.md)): ${workflow.description}`,
+			(workflow) => `- \`${spec.bin} skill ${workflow.name}\`: ${workflow.description}`,
 		),
 		'',
 		'## Principles',

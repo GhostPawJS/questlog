@@ -74,7 +74,10 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 						'give the title once: either as the first argument or with --title',
 					);
 				const title = v.positionalTitle ?? v.title;
-				if (title === undefined) throw new CliUsageError('Missing required argument: title');
+				if (title === undefined)
+					throw new CliUsageError(
+						'Missing required argument: title. Example: questlog add "Write the report" --due tomorrow',
+					);
 				const quest: Record<string, unknown> = {
 					title,
 					objective: v.objective ?? title,

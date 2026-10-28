@@ -21,6 +21,9 @@ questlog hook remove 1
 
 `hook add` prints its random 32-byte signing secret once, also as `secret` in `--json`.
 Save it securely. `--secret-stdin` supplies one via stdin; there is no secret flag.
+Secrets and custom header values are stored in the DB. New POSIX DB/WAL/SHM files use 0600 and created directories use 0700; existing DB modes are preserved. Windows uses existing access controls.
+Use repeatable `--header "Name: value"` or `--header-stdin` (one line per header, avoiding shell history). Headers are sent on every delivery and test; output shows names with `***` values. HTTP token names are required; host, content-length, content-type, and x-questlog-* are reserved. Change headers by removing and adding the hook again. Use --header-stdin and --secret-stdin separately. URL userinfo is rejected; use a custom header or query key.
+`questlog show d_…` displays delivery status, attempts, HTTP status, next attempt, redacted target URL and event ids. Text is the default; --json prints JSON. Missing hook remove/test targets exit 3; missing quests/deliveries exit 1. hook label names the database.
 List output redacts userinfo/query strings. Removal deletes the target and deliveries.
 Default scope is the database; `--tag` matches quest tags, never rumors.
 `--events` defaults to all types. The DB label defaults to the filename without its

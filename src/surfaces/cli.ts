@@ -2,6 +2,7 @@ import type { Readable, Writable } from 'node:stream';
 import { type CliSpec, CliUsageError, parseCliArgs, renderCliHelp } from './cli_args.ts';
 import { enrichPlainJson, suggestCommand } from './cli_output.ts';
 import { minimalInput } from './schema_examples.ts';
+import { schemaRows } from './schema_rows.ts';
 import { isErrorResult, type JsonSchema, type SurfaceTool } from './surface_types.ts';
 import { validateInput } from './validate_input.ts';
 
@@ -84,6 +85,16 @@ export async function runToolCli<TCtx>(
 		);
 		return 0;
 	}
+	if (
+		['tools', 'call', 'describe'].includes(command) &&
+		args.length === 1 &&
+		['--help', '-h'].includes(args[0] ?? '')
+	) {
+		stdout.write(
+			`Usage: ${options.bin} ${command}${command === 'tools' ? ' [--json]' : ' <tool> [--help]'}\n`,
+		);
+		return 0;
+	}
 	if (command === 'tools') {
 		stdout.write(
 			args.includes('--json')
@@ -98,12 +109,16 @@ export async function runToolCli<TCtx>(
 	}
 	if (command === 'skill') {
 		if (!options.commands?.skill) return fail('skill command unavailable');
-		if (args.length > 1) return fail(`Usage: ${options.bin} skill [--list | <guide> | --help]`);
-		const guide = args[0];
+		if (args.length > 1 && !args.some((arg) => ['--help', '-h'].includes(arg)))
+			return fail(`Usage: ${options.bin} skill [--short | --list | <guide> | --help]`);
+		const guide = args.some((arg) => ['--help', '-h'].includes(arg)) ? '--help' : args[0];
 		if (guide === '--help' || guide === '-h') {
 			stdout.write(
-				`Usage:\n  ${options.bin} skill\n  ${options.bin} skill --list\n  ${options.bin} skill <guide>\n`,
+				`Usage:\n  ${options.bin} skill\n  ${options.bin} skill --list\n  ${options.bin} skill --short\n  ${options.bin} skill <guide>\n`,
 			);
+		} else if (guide === '--short') {
+			const full = await options.commands.skill();
+			stdout.write(full.split('## Appendix:')[0]?.replace(/^---[\s\S]*?---\n+/, '') ?? full);
 		} else if (guide === '--list') {
 			stdout.write(
 				`${(options.commands.guides ?? [])
@@ -115,6 +130,10 @@ export async function runToolCli<TCtx>(
 			if (!entry) return fail(`unknown guide ${guide}; run ${options.bin} skill --list`);
 			stdout.write(entry.content);
 		} else stdout.write(await options.commands.skill());
+		return 0;
+	}
+	if (command === 'mcp' && (args.includes('--help') || args.includes('-h'))) {
+		stdout.write(`${options.bin} mcp [--db path]\n`);
 		return 0;
 	}
 	if (command === 'mcp') {
@@ -172,19 +191,14 @@ export async function runToolCli<TCtx>(
 		]);
 		return fail(`Unknown command: ${command}.${suggestion ? ` Did you mean ${suggestion}?` : ''}`);
 	}
-	if (command === 'describe') {
+	if (command === 'describe' || args.includes('--help') || args.includes('-h')) {
 		stdout.write(
-			`${tool.name}\n${tool.description}\nUse when: ${tool.whenToUse ?? ''}\nNot for: ${tool.whenNotToUse ?? ''}\nRead only: ${tool.readOnly ?? false}\n\nParameter | Type | Required | Description\n${Object.entries(
-				tool.inputSchema.properties ?? {},
-			)
-				.map(
-					([key, schema]) =>
-						`${key} | ${schema.type ?? 'oneOf'} | ${tool.inputSchema.required?.includes(key) ?? false} | ${schema.description ?? ''}`,
-				)
-				.join('\n')}\n\n${JSON.stringify(tool.inputSchema, null, 2)}\n`,
+			`${tool.name}\nUsage: ${options.bin} ${tool.name} --parameter value [--json]\n${tool.description}\nUse when: ${tool.whenToUse ?? ''}\nNot for: ${tool.whenNotToUse ?? ''}\nRead only: ${tool.readOnly ?? false}\n\nParameter | Type | Required | Description\n${schemaRows(tool.inputSchema).join('\n')}\n\n${JSON.stringify(tool.inputSchema, null, 2)}\n`,
 		);
 		return 0;
 	}
+	const json = args.includes('--json');
+	if (!plain && json) args.splice(args.indexOf('--json'), 1);
 	let input: unknown = {};
 	try {
 		const readStdin = async () => {

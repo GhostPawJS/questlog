@@ -110,6 +110,7 @@ test('plain commands operate on real quests in text and JSON modes', async () =>
 			const compact = await invoke([
 				'call',
 				'inspect_questlog_item',
+				'--json',
 				JSON.stringify({ target: { kind: 'quest', id } }),
 			]);
 			const compactDetail = JSON.parse(compact.out).data.item.detail;
@@ -141,6 +142,7 @@ test('plain commands operate on real quests in text and JSON modes', async () =>
 		const questline = await invoke([
 			'call',
 			'shape_work',
+			'--json',
 			'{"action":"create_questline","questline":{"title":"Release"}}',
 		]);
 		const questlineId = JSON.parse(questline.out).data.primary.id;
@@ -180,7 +182,7 @@ test('plain commands operate on real quests in text and JSON modes', async () =>
 			['call', 'search_questlog', '{"query":"Release"}'],
 			['search_questlog', '--query', 'Release'],
 		]) {
-			const result = await invoke(['--db', ':memory:', ...args]);
+			const result = await invoke(['--db', ':memory:', ...args, '--json']);
 			assert.equal(result.code, 0);
 			assert.equal(JSON.parse(result.out).ok, true);
 		}

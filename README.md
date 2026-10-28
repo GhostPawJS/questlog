@@ -88,10 +88,14 @@ Lists show local due dates, overdue markers, and recorded outcomes. Plain JSON
 adds ISO UTC siblings for numeric timestamp fields ending in `At`.
 `done` stores `--outcome` with the finished quest; without it the command asks for one and exits 3.
 
-Plain commands print short text by default. Use `--json` for the full tool result
+Commands print text by default, including hooks, delivery views and each watch tick; `call` and direct tool commands return the raw tool result as JSON. Use `--json` for the full tool result
 and `--compact` for compact JSON. `--db path` works before or after the command.
 Each command accepts `--help`. Exit codes are 0 for success, 1 for invalid input
-or a tool error, 2 for usage errors, and 3 when clarification is needed.
+or a tool error, 2 for usage errors, and 3 when clarification is needed or `hook remove`/`hook test` addresses a missing target.
+Missing quests and deliveries exit 1. `hook label` names the database, not an individual target.
+
+`questlog skill --short` prints the compact cheat sheet; `questlog skill --list` lists guides.
+ISO date-times without a zone (for example `2026-10-29T09:00`) use the local time zone.
 
 The `call` command and the per-tool form still reach every tool and parameter:
 
@@ -159,7 +163,7 @@ irm https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.ps1 | iex
 Pinned to a release:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.sh | sh -s -- --target linux-x64 --version 0.10.1 && export PATH="$HOME/.local/bin:$PATH"
+curl -fsSL https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.sh | sh -s -- --target linux-x64 --version 0.11.0 && export PATH="$HOME/.local/bin:$PATH"
 ```
 
 Also adding ~/.local/bin to ~/.profile (edits ~/.profile once; skipped if it already mentions ~/.local/bin; zsh login shells read ~/.zprofile instead, so use that file name there):
@@ -176,7 +180,7 @@ $env:GHOSTPAW_NO_MODIFY_PATH=1; irm https://raw.githubusercontent.com/GhostPawJS
 
 ```text
 $ ghostpaw-questlog --version
-questlog 0.10.1 (binary, linux-x64)
+questlog 0.11.0 (binary, linux-x64)
 ```
 
 Scripts that compare versions should use `--version --short` or `--version --json`.
@@ -542,6 +546,22 @@ questlog hook remove 1
 
 Save the signing secret printed once by `hook add` (including its `--json` result).
 `--secret-stdin` reads a supplied secret from standard input; there is no secret flag.
+Secrets and custom header values are stored in the database. On POSIX, new database files
+and their WAL/SHM siblings use mode 0600, and directories created for them use 0700.
+Existing database permissions are preserved; Windows uses its existing access controls.
+
+Add repeatable custom headers with `--header "Authorization: Bearer value"` or
+`--header-stdin` (one `Name: value` line per header, keeping values out of shell history).
+For example: `questlog hook add https://example.org/wake --header "X-Key: value"`.
+Headers accompany every delivery and test. Header names are shown with values replaced by
+`***`; values are never included in list, show, test, tick, watch, or tool output.
+Names must be HTTP tokens; `host`, `content-length`, `content-type`, and `x-questlog-*`
+are reserved (case insensitive). To change headers, remove the hook and add it again.
+Use separate invocations for `--header-stdin` and `--secret-stdin`.
+URL userinfo is rejected; use a custom header or query key instead.
+`questlog show d_…` prints delivery status, attempts, HTTP status, next attempt,
+redacted target URL, and event ids; add `--json` for JSON.
+
 List output redacts URL userinfo and query strings. Removal deletes the target and its deliveries.
 A target covers the database unless `--tag` restricts it to quests with that tag;
 rumors have no tags and reach database targets only. `--events` defaults to all five events.

@@ -5,9 +5,22 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
-### Changed
+### Added
+- Custom webhook headers via repeatable `--header` or `--header-stdin`, with redacted inspection.
+- Delivery inspection with `show d_…` and a compact `skill --short` cheat sheet.
 
+### Changed
 - README and site add a labelled install line that also adds ~/.local/bin to ~/.profile, and a pinned line on the site.
+- Hook commands, delivery views (`list --view deliveries`, `review deliveries`, `show d_…`) and watch ticks print text by default; `--json` selects JSON. `call` and direct tool commands stay JSON, since they return the raw tool result.
+- Zone-free ISO date-times use the local time zone. Skill guides use runnable commands and parameter tables include nested fields.
+
+### Fixed
+- Tool help, missing-title examples, precise webhook validation, and exit 3 for missing hook remove/test targets.
+
+### Security
+- New database files and WAL/SHM siblings use private POSIX permissions; created directories use 0700. Existing DB modes are preserved.
+- Webhook URLs reject userinfo; custom header values remain private in stored configuration and delivery output.
+
 
 ## [0.10.1] - 2026-10-28
 

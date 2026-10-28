@@ -31,8 +31,14 @@ export async function sendHookDelivery(
 			method: 'POST',
 			redirect: 'error',
 			headers: {
-				'content-type': 'application/json',
 				'user-agent': `questlog/${questlogVersion}`,
+				...JSON.parse(
+					String(
+						db.prepare('SELECT headers FROM hook_targets WHERE id = ?').get(target.id)?.headers ??
+							'{}',
+					),
+				),
+				'content-type': 'application/json',
 				'x-questlog-delivery': delivery.id,
 				'x-questlog-timestamp': timestamp,
 				'x-questlog-signature': `sha256=${signature}`,

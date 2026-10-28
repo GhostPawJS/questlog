@@ -102,6 +102,7 @@ test('CLI coerces schema flags, aliases, arrays, objects and global options', as
 		'--db',
 		':memory:',
 		'--compact',
+		'--json',
 	]);
 	assert.equal(result.code, 0);
 	assert.equal(result.closes, 1);

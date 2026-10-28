@@ -24,6 +24,7 @@ test('HTTP receiver verifies constant-time HMAC and receives one immutable retry
 		assert.ok(timingSafeEqual(signature, expected));
 		assert.equal(request.headers['user-agent'], `questlog/${questlogVersion}`);
 		assert.equal(request.headers['content-type'], 'application/json');
+		assert.equal(request.headers.authorization, 'Bearer receiver-key');
 		batches.push({ id: String(request.headers['x-questlog-delivery']), body: body.toString() });
 		response.writeHead(batches.length === 1 ? 500 : 204).end();
 	});
@@ -34,7 +35,15 @@ test('HTTP receiver verifies constant-time HMAC and receives one immutable retry
 		});
 		const address = server.address();
 		assert.ok(address && typeof address !== 'string');
-		addHook(db, { url: `http://127.0.0.1:${address.port}`, secret, minGap: 0, now: 1 });
+		addHook(db, {
+			url: `http://127.0.0.1:${address.port}`,
+			secret,
+			minGap: 0,
+			now: 1,
+		});
+		db.prepare('UPDATE hook_targets SET headers = ?').run(
+			JSON.stringify({ authorization: 'Bearer receiver-key' }),
+		);
 		createQuest(db, { title: 'PRIVATE_TITLE', objective: 'PRIVATE_OBJECTIVE', dueAt: 2, now: 1 });
 		createQuest(db, { title: 'PRIVATE_TITLE', objective: 'PRIVATE_OBJECTIVE', dueAt: 2, now: 1 });
 		await tickQuestlog(db, { now: 3 });

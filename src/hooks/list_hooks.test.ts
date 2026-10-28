@@ -8,12 +8,16 @@ test('lists redacted targets with scope and filters, never secrets', async () =>
 	const db = await createInitializedQuestlogDb();
 	try {
 		addHook(db, {
-			url: 'https://user:password@example.org/wake?private=value#fragment',
+			url: 'https://example.org/wake?private=value#fragment',
 			secret: 'sentinel',
 			tag: 'Work',
 			events: ['quest.due'],
 			now: 1,
 		});
+		// Legacy targets still need credential redaction.
+		db.prepare('UPDATE hook_targets SET url = ?').run(
+			'https://user:password@example.org/wake?private=value#fragment',
+		);
 		const targets = listHooks(db);
 		assert.equal(targets[0]?.url, 'https://example.org/wake');
 		assert.equal(targets[0]?.tag, 'work');

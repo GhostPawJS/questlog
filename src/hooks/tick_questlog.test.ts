@@ -133,11 +133,15 @@ test('retry schedule preserves delivery id and events, eight failures appear in 
 	try {
 		const secret = 'SECRET_SENTINEL';
 		addHook(db, {
-			url: 'https://user:password@example.org/path?secret=hidden',
+			url: 'https://example.org/path?secret=hidden',
 			secret,
 			minGap: 0,
 			now: 1,
 		});
+		// Legacy targets still need credential redaction.
+		db.prepare('UPDATE hook_targets SET url = ?').run(
+			'https://user:password@example.org/path?secret=hidden',
+		);
 		const q = createQuest(db, { title: 'due', objective: 'due', dueAt: 10, now: 1 });
 		await tickQuestlog(db, { now: 11, fetch: sender });
 		let delivery = listDeliveries(db)[0];

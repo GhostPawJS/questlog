@@ -44,12 +44,7 @@ test('CLI add/list/label/test/remove, dry-run, secret redaction, and watch signa
 		return { code, output, errors };
 	};
 	try {
-		let result = await run([
-			'hook',
-			'add',
-			'https://user:password@example.org/wake?token=hidden',
-			'--json',
-		]);
+		let result = await run(['hook', 'add', 'https://example.org/wake?token=hidden', '--json']);
 		assert.equal(result.code, 0);
 		const created = JSON.parse(result.output) as { id: number; secret: string };
 		assert.match(created.secret, /^[a-f0-9]{64}$/);
@@ -85,7 +80,13 @@ test('CLI add/list/label/test/remove, dry-run, secret redaction, and watch signa
 		result = await run(['watch', '--interval', '5']);
 		stopping = false;
 		assert.equal(result.code, 0);
-		assert.match(result.output, /"events"/);
+		assert.match(result.output, /events/);
+		assert.equal(result.output.trim().split('\n').length, 1);
+		stopping = true;
+		result = await run(['watch', '--interval', '5', '--json']);
+		stopping = false;
+		assert.equal(result.code, 0);
+		assert.ok(Array.isArray(JSON.parse(result.output).events));
 	} finally {
 		globalThis.fetch = originalFetch;
 		rmSync(dir, { recursive: true });

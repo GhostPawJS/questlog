@@ -28,15 +28,19 @@ Run tools as `ghostpaw-questlog ...`; use `~/.local/bin/ghostpaw-questlog` if it
 `questlog` and `ghostpaw-questlog` are the same binary.
 
 - `questlog search <words>` before `add` to avoid duplicates.
-- `ghostpaw-questlog add "..." --tag a,b --due tomorrow`
+- `ghostpaw-questlog add "Write the report" --tag work --due tomorrow`
 - `questlog list [--view <view>]`: deliveries, questlines, quests.active, quests.available, quests.blocked, quests.deferred, quests.due_soon, quests.in_progress, quests.missed_scheduled, quests.open, quests.overdue, quests.resolved, quests.scheduled_for_day, quests.scheduled_now, repeatables.due_anchors, rumors.
-- `questlog done <id> --outcome "..."`
-- `questlog search <words>`
-- `questlog show <id>`
+- `questlog done 12 --outcome "Report sent"`
+- `questlog search "release"`
+- `questlog show 12`
+- `questlog list --view quests.available`
 - Use `--json` on any plain command.
-- Exit codes: 0 ok / 1 error / 2 usage / 3 needs input.
+- Exit codes: 0 ok / 1 error / 2 usage / 3 needs input or hook target not found.
 - Database: `~/.ghostpaw/questlog.db`; override with `--db` or `GHOSTPAW_QUESTLOG_DB`.
-- Use one database per agent or project.
+- Use one database per project.
+- `questlog --version` prints the installed version.
+- `questlog skill --short` prints this compact cheat sheet.
+- `questlog skill --list` lists guides; `questlog skill webhooks` reads one.
 - Webhooks: `questlog hook add <url>`, `questlog tick --dry-run`, `questlog watch`. Read `questlog skill webhooks` for events, signing, verification, and cron setup.
 
 ## Appendix: MCP and tool calls
@@ -175,16 +179,39 @@ Writes: writes_state.
 | action | string | yes | attach_quest_to_questline, create_quest, create_questline, detach_quest_from_questline, dismiss_rumor, reopen_rumor, settle_rumor, update_rumor. Action to perform. |
 | questId | integer | no | Quest to attach or detach. |
 | questlineId | integer | no | Questline that should receive the quest. |
-| quest | object | no |  |
+| quest | object | no | Object: title (required), objective (required), questlineId, tags, rewards, dueAt, notBeforeAt, scheduledStartAt, scheduledEndAt, allDay, estimateSeconds |
 | quest.title | string | yes | Title for the new quest. |
 | quest.objective | string | yes | Objective for the new quest. |
-| questline | object | no |  |
+| quest.questlineId | integer | no | Optional questline to place the quest in. |
+| quest.tags | array | no | Optional tags to apply at creation. |
+| quest.rewards | array | no | Optional rewards to attach at creation. |
+| quest.rewards[].kind | string | yes | Reward kind. |
+| quest.rewards[].name | string | yes | Reward name. |
+| quest.dueAt | integer | no | Optional latest acceptable completion timestamp. |
+| quest.notBeforeAt | integer | no | Optional earliest actionable timestamp. |
+| quest.scheduledStartAt | integer | no | Optional planned schedule window start. |
+| quest.scheduledEndAt | integer | no | Optional planned schedule window end. |
+| quest.allDay | boolean | no | Whether the scheduled window is all-day. |
+| quest.estimateSeconds | integer | no | Optional active-effort estimate in seconds. |
+| questline | object | no | Object: title (required), description |
 | questline.title | string | yes | Questline title. |
 | questline.description | string | no | Optional questline description. |
 | rumorId | integer | no | Rumor to settle, dismiss, or reopen. |
 | dismissedAt | integer | no | Optional dismissal timestamp. |
 | settledAt | integer | no | Optional settlement timestamp. |
 | quests | array | no | Quests to create during rumor settlement. Include timing and tags directly. |
+| quests[].title | string | yes | Title for a created quest. |
+| quests[].objective | string | yes | Objective for a created quest. |
+| quests[].tags | array | no | Optional tags to apply at creation. |
+| quests[].rewards | array | no | Optional rewards to attach at creation. |
+| quests[].rewards[].kind | string | yes | Reward kind. |
+| quests[].rewards[].name | string | yes | Reward name. |
+| quests[].dueAt | integer | no | Optional latest acceptable completion timestamp. |
+| quests[].notBeforeAt | integer | no | Optional earliest actionable timestamp. |
+| quests[].scheduledStartAt | integer | no | Optional planned schedule window start. |
+| quests[].scheduledEndAt | integer | no | Optional planned schedule window end. |
+| quests[].allDay | boolean | no | Whether the scheduled window is all-day. |
+| quests[].estimateSeconds | integer | no | Optional active-effort estimate in seconds. |
 | now | integer | no | Optional timestamp for membership, reopen, or rumor update. |
 | title | string | no | New title for the update_rumor action. |
 | details | string | no | New or enriched context text for the update_rumor action. |
@@ -244,6 +271,8 @@ Writes: writes_state.
 | outcome | string | no | Terminal outcome text. Required for finish, abandon, and abandon_and_spawn_followups. |
 | resolvedAt | integer | no | Optional resolved timestamp for finish or abandon actions. |
 | followups | array | no | Follow-up quests to create atomically. Required for abandon_and_spawn_followups. |
+| followups[].title | string | yes | Title for a follow-up quest. |
+| followups[].objective | string | yes | Objective for a follow-up quest. |
 
 ```sh
 ghostpaw-questlog call run_quest '{"action":"start","questId":1}'
@@ -295,7 +324,7 @@ Writes: writes_state.
 | --- | --- | --- | --- |
 | action | string | yes | archive, create, preview_due, spawn_due, update. Action to perform. |
 | repeatableQuestId | integer | no | Repeatable quest to archive or update. |
-| repeatableQuest | object | no |  |
+| repeatableQuest | object | no | Object: title (required), objective (required), rrule (required), anchorAt (required) |
 | repeatableQuest.title | string | yes | Title for the new repeatable quest. |
 | repeatableQuest.objective | string | yes | Objective for the new repeatable quest. |
 | repeatableQuest.rrule | string | yes | RRULE describing recurrence. |
@@ -333,7 +362,7 @@ Writes: writes_state.
 | Parameter | Type | Required | Values / description |
 | --- | --- | --- | --- |
 | action | string | yes | add, remove, replace. Action to perform. |
-| target | object | yes |  |
+| target | object | yes | Object: id (required), kind (required) |
 | target.id | integer | yes | Target entity id. |
 | target.kind | string | yes | quest, repeatable_quest. Target kind. |
 | tagNames | array | yes | Tag names to add, remove, or replace. |
@@ -358,14 +387,16 @@ Writes: writes_state.
 | Parameter | Type | Required | Values / description |
 | --- | --- | --- | --- |
 | action | string | yes | add, claim, remove, replace_repeatable_template, update. Action to perform. |
-| target | object | yes |  |
+| target | object | yes | Object: id (required), kind (required) |
 | target.id | integer | yes | Target entity id. |
 | target.kind | string | yes | quest, reward, repeatable_quest. Target kind. |
-| reward | object | no |  |
+| reward | object | no | Object: kind (required), name (required), now |
 | reward.kind | string | yes | Reward kind. |
 | reward.name | string | yes | Reward name. |
 | reward.now | integer | no | Optional update timestamp for the update action. |
 | rewards | array | no | Full future reward template set. Required for replace_repeatable_template. |
+| rewards[].kind | string | yes | Reward kind. |
+| rewards[].name | string | yes | Reward name. |
 | claimedAt | integer | no | Optional claim timestamp. |
 | now | integer | no | Optional timestamp for removal or template replacement. |
 
@@ -399,32 +430,32 @@ ghostpaw-questlog call retire_work '{"action":"hide","target":{"kind":"quest","i
 
 ### Workflow guides
 
-- `ghostpaw-questlog skill webhooks` ([webhooks](references/webhooks.md)): Configure signed outbound event webhooks and verify deliveries.
-- `ghostpaw-questlog skill archive-delete-and-prune` ([archive-delete-and-prune](references/archive-delete-and-prune.md)): Choose the right retirement action for each kind of work so history stays honest and hiding does not get confused with archival or terminal execution truth.
-- `ghostpaw-questlog skill choose-work-shape` ([choose-work-shape](references/choose-work-shape.md)): Choose the right structure for new work by separating uncertainty, one-shot execution, multi-step arcs, and recurring patterns.
-- `ghostpaw-questlog skill clarify-ambiguous-requests` ([clarify-ambiguous-requests](references/clarify-ambiguous-requests.md)): Treat ambiguity as a real state, capture uncertainty honestly, and only commit work structure once the next executable shape is clear.
-- `ghostpaw-questlog skill close-work-and-claim-outcomes` ([close-work-and-claim-outcomes](references/close-work-and-claim-outcomes.md)): Close work with the correct terminal lifecycle action, then handle any concrete reward claim as a separate explicit step.
-- `ghostpaw-questlog skill create-concrete-quest` ([create-concrete-quest](references/create-concrete-quest.md)): Create real, bounded executable quests only when the objective is concrete enough to execute without interpretive guesswork.
-- `ghostpaw-questlog skill detect-slips-and-staleness` ([detect-slips-and-staleness](references/detect-slips-and-staleness.md)): Detect work that is slipping or going stale by reading overdue, deferred, in-progress, and related operational views before choosing one recovery move.
-- `ghostpaw-questlog skill escalate-and-unblock` ([escalate-and-unblock](references/escalate-and-unblock.md)): Diagnose blockers honestly, then remove or realign hard gates when the model is wrong instead of treating every delay as generic escalation theater.
-- `ghostpaw-questlog skill frame-initiative-questline` ([frame-initiative-questline](references/frame-initiative-questline.md)): Use questlines for shared initiative context, then attach concrete quests and maintain the structure without confusing one quest with one arc.
-- `ghostpaw-questlog skill handle-exceptions-and-weird-cases` ([handle-exceptions-and-weird-cases](references/handle-exceptions-and-weird-cases.md)): Handle weird cases by diagnosing the actual tool outcome, routing into clarification or recovery when needed, and refusing to fake a clean normal-state story.
-- `ghostpaw-questlog skill intake-triage` ([intake-triage](references/intake-triage.md)): Triage new asks, ideas, and vague incoming work into the right next step without prematurely committing execution structure.
-- `ghostpaw-questlog skill maintain-clear-ownership` ([maintain-clear-ownership](references/maintain-clear-ownership.md)): Keep ownership explicit through quest content and classification because Questlog does not provide a separate assignee field or ownership tool.
-- `ghostpaw-questlog skill manage-approvals-and-promises` ([manage-approvals-and-promises](references/manage-approvals-and-promises.md)): Treat approvals and commitments as modeled work with timing and dependencies instead of burying them as vague narrative promises.
-- `ghostpaw-questlog skill plan-successor-work` ([plan-successor-work](references/plan-successor-work.md)): Create explicit successor work after closure by spawning follow-ups or shaping new work, while keeping uncertain next steps in intake instead of faking certainty.
-- `ghostpaw-questlog skill plan-time-correctly` ([plan-time-correctly](references/plan-time-correctly.md)): Use quest planning fields honestly so availability, due pressure, and schedule intent stay meaningful instead of getting collapsed into one generic date.
-- `ghostpaw-questlog skill prioritize-across-streams` ([prioritize-across-streams](references/prioritize-across-streams.md)): Prioritize across competing work streams by reading real candidate sets, distinguishing available from blocked work, and then reflecting the choice in planning.
-- `ghostpaw-questlog skill protect-capacity-and-focus` ([protect-capacity-and-focus](references/protect-capacity-and-focus.md)): Protect capacity and focus by reading the real in-progress and scheduled-now load, then using planning to rebalance instead of silently overcommitting.
-- `ghostpaw-questlog skill recover-from-modeling-mistakes` ([recover-from-modeling-mistakes](references/recover-from-modeling-mistakes.md)): Recover from modeling mistakes by diagnosing the exact current state first, then applying the smallest honest corrective tool instead of rewriting history blindly.
-- `ghostpaw-questlog skill report-status-and-manage-expectations` ([report-status-and-manage-expectations](references/report-status-and-manage-expectations.md)): Build status reporting from the real questlog state, separating available, blocked, in-progress, slipping, and resolved work without relying on memory.
-- `ghostpaw-questlog skill revise-or-reshape-commitment` ([revise-or-reshape-commitment](references/revise-or-reshape-commitment.md)): Revise a quest objective before execution starts, but reshape commitments honestly with lifecycle tools once real execution history exists.
-- `ghostpaw-questlog skill run-operational-review` ([run-operational-review](references/run-operational-review.md)): Drive daily or weekly operational review from structured list views, then move from diagnosis into actual planning or execution changes.
-- `ghostpaw-questlog skill run-recurring-rhythms` ([run-recurring-rhythms](references/run-recurring-rhythms.md)): Model recurring work as repeatable definitions that spawn fresh concrete quests over time instead of living forever as one immortal task.
-- `ghostpaw-questlog skill search-and-retrieve-context` ([search-and-retrieve-context](references/search-and-retrieve-context.md)): Find relevant questlog context quickly, then switch from discovery to exact inspection without confusing free-text search with structured review surfaces.
-- `ghostpaw-questlog skill sequence-with-unlocks` ([sequence-with-unlocks](references/sequence-with-unlocks.md)): Model hard sequencing with unlocks between concrete quests so blocked and available work stay truthful and reviewable.
-- `ghostpaw-questlog skill settle-rumor-into-structure` ([settle-rumor-into-structure](references/settle-rumor-into-structure.md)): Turn a ready rumor into committed quest or questline structure without losing provenance or pretending vague intake is settled.
-- `ghostpaw-questlog skill tag-and-filter-portfolios` ([tag-and-filter-portfolios](references/tag-and-filter-portfolios.md)): Use tags for cross-cutting classification and portfolio filtering without confusing tags for status, timing, or dependency modeling.
+- `ghostpaw-questlog skill webhooks`: Configure signed outbound event webhooks and verify deliveries.
+- `ghostpaw-questlog skill archive-delete-and-prune`: Choose the right retirement action for each kind of work so history stays honest and hiding does not get confused with archival or terminal execution truth.
+- `ghostpaw-questlog skill choose-work-shape`: Choose the right structure for new work by separating uncertainty, one-shot execution, multi-step arcs, and recurring patterns.
+- `ghostpaw-questlog skill clarify-ambiguous-requests`: Treat ambiguity as a real state, capture uncertainty honestly, and only commit work structure once the next executable shape is clear.
+- `ghostpaw-questlog skill close-work-and-claim-outcomes`: Close work with the correct terminal lifecycle action, then handle any concrete reward claim as a separate explicit step.
+- `ghostpaw-questlog skill create-concrete-quest`: Create real, bounded executable quests only when the objective is concrete enough to execute without interpretive guesswork.
+- `ghostpaw-questlog skill detect-slips-and-staleness`: Detect work that is slipping or going stale by reading overdue, deferred, in-progress, and related operational views before choosing one recovery move.
+- `ghostpaw-questlog skill escalate-and-unblock`: Diagnose blockers honestly, then remove or realign hard gates when the model is wrong instead of treating every delay as generic escalation theater.
+- `ghostpaw-questlog skill frame-initiative-questline`: Use questlines for shared initiative context, then attach concrete quests and maintain the structure without confusing one quest with one arc.
+- `ghostpaw-questlog skill handle-exceptions-and-weird-cases`: Handle weird cases by diagnosing the actual tool outcome, routing into clarification or recovery when needed, and refusing to fake a clean normal-state story.
+- `ghostpaw-questlog skill intake-triage`: Triage new asks, ideas, and vague incoming work into the right next step without prematurely committing execution structure.
+- `ghostpaw-questlog skill maintain-clear-ownership`: Keep ownership explicit through quest content and classification because Questlog does not provide a separate assignee field or ownership tool.
+- `ghostpaw-questlog skill manage-approvals-and-promises`: Treat approvals and commitments as modeled work with timing and dependencies instead of burying them as vague narrative promises.
+- `ghostpaw-questlog skill plan-successor-work`: Create explicit successor work after closure by spawning follow-ups or shaping new work, while keeping uncertain next steps in intake instead of faking certainty.
+- `ghostpaw-questlog skill plan-time-correctly`: Use quest planning fields honestly so availability, due pressure, and schedule intent stay meaningful instead of getting collapsed into one generic date.
+- `ghostpaw-questlog skill prioritize-across-streams`: Prioritize across competing work streams by reading real candidate sets, distinguishing available from blocked work, and then reflecting the choice in planning.
+- `ghostpaw-questlog skill protect-capacity-and-focus`: Protect capacity and focus by reading the real in-progress and scheduled-now load, then using planning to rebalance instead of silently overcommitting.
+- `ghostpaw-questlog skill recover-from-modeling-mistakes`: Recover from modeling mistakes by diagnosing the exact current state first, then applying the smallest honest corrective tool instead of rewriting history blindly.
+- `ghostpaw-questlog skill report-status-and-manage-expectations`: Build status reporting from the real questlog state, separating available, blocked, in-progress, slipping, and resolved work without relying on memory.
+- `ghostpaw-questlog skill revise-or-reshape-commitment`: Revise a quest objective before execution starts, but reshape commitments honestly with lifecycle tools once real execution history exists.
+- `ghostpaw-questlog skill run-operational-review`: Drive daily or weekly operational review from structured list views, then move from diagnosis into actual planning or execution changes.
+- `ghostpaw-questlog skill run-recurring-rhythms`: Model recurring work as repeatable definitions that spawn fresh concrete quests over time instead of living forever as one immortal task.
+- `ghostpaw-questlog skill search-and-retrieve-context`: Find relevant questlog context quickly, then switch from discovery to exact inspection without confusing free-text search with structured review surfaces.
+- `ghostpaw-questlog skill sequence-with-unlocks`: Model hard sequencing with unlocks between concrete quests so blocked and available work stay truthful and reviewable.
+- `ghostpaw-questlog skill settle-rumor-into-structure`: Turn a ready rumor into committed quest or questline structure without losing provenance or pretending vague intake is settled.
+- `ghostpaw-questlog skill tag-and-filter-portfolios`: Use tags for cross-cutting classification and portfolio filtering without confusing tags for status, timing, or dependency modeling.
 
 ### Principles
 

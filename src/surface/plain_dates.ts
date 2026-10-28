@@ -3,7 +3,7 @@ import { CliUsageError } from '../surfaces/cli_args.ts';
 export function parsePlainDue(raw: string, now = Date.now()): number {
 	const invalid = () =>
 		new CliUsageError(
-			`Invalid --due "${raw}". Use YYYY-MM-DD, DD.MM.YYYY, today, tomorrow, +3d or an ISO date-time.`,
+			`Invalid --due "${raw}". Use YYYY-MM-DD, DD.MM.YYYY, today, tomorrow, +Nd (for example +3d), integer epoch milliseconds, or YYYY-MM-DDTHH:mm[:ss[.fraction]][Z|±HH:mm] (no zone means local time).`,
 		);
 	if (/^-?\d+$/.test(raw)) {
 		const value = Number(raw);
@@ -29,7 +29,7 @@ export function parsePlainDue(raw: string, now = Date.now()): number {
 		);
 		date.setHours(23, 59, 59, 999);
 	} else {
-		if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:\d{2})$/.test(raw))
+		if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:\d{2})?$/.test(raw))
 			throw invalid();
 		parsePlainDue(raw.slice(0, 10), now);
 		date = new Date(raw);

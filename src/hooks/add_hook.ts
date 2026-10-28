@@ -21,13 +21,20 @@ export function addHook(
 	} catch {
 		throw new Error('Expected an HTTP or HTTPS URL');
 	}
-	if (!['http:', 'https:'].includes(url.protocol)) throw new Error('Expected an HTTP or HTTPS URL');
+	if (!['http:', 'https:'].includes(url.protocol))
+		throw new Error(`unsupported scheme ${url.protocol}; use http or https`);
+	if (url.username || url.password)
+		throw new Error(
+			'URL userinfo is not supported; use a custom header (--header or --header-stdin) or a query key instead',
+		);
 	const minGap = input.minGap ?? 60;
 	if (!Number.isSafeInteger(minGap) || minGap < 0)
 		throw new Error('Min gap must be a nonnegative integer');
 	const events = input.events ?? [...hookEventTypes];
 	if (!events.length || events.some((e) => !hookEventTypes.includes(e)))
-		throw new Error('Unknown event filter');
+		throw new Error(
+			`unknown event ${events.find((e) => !hookEventTypes.includes(e)) ?? '(empty)'}; valid: ${hookEventTypes.join(', ')}`,
+		);
 	if (input.tag !== undefined && !normalizeTagName(input.tag))
 		throw new Error('Expected a tag name');
 	const secret = input.secret ?? randomBytes(32).toString('hex');

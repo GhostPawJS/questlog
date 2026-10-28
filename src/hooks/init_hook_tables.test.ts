@@ -21,3 +21,21 @@ test('existing 0.9-shaped databases gain webhook tables without changing work', 
 		db.close();
 	}
 });
+
+test('0.10 hook targets gain empty custom headers without changing secrets or configuration', () => {
+	const db = new DatabaseSync(':memory:');
+	try {
+		initQuestlogTables(db);
+		db.exec(
+			"ALTER TABLE hook_targets DROP COLUMN headers; INSERT INTO hook_targets(url, secret, events, min_gap, created_at) VALUES ('https://example.org', 'retained', '[]', 60, 1)",
+		);
+		initHookTables(db);
+		initHookTables(db);
+		const row = db.prepare('SELECT secret, headers, min_gap FROM hook_targets').get();
+		assert.equal(row?.secret, 'retained');
+		assert.equal(row?.headers, '{}');
+		assert.equal(row?.min_gap, 60);
+	} finally {
+		db.close();
+	}
+});
