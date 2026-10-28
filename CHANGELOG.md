@@ -5,6 +5,8 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+## [0.11.1] - 2026-10-28
+
 ### Security
 
 - CLI values are literal by default, including a leading `@`. Before this release any CLI flag value starting with `@` was read from a file. Only `add --objective` is file-capable now: `@path` reads the file as UTF-8, `@-` reads stdin and `@@text` passes a literal `@text`. An empty path or an unreadable file exits 2 and names the path, without file contents or the OS error text. Help marks it `(@file, @- stdin, @@ literal @)`.
@@ -175,7 +177,8 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 - Semantic markers, structured tool facade, workflow skills, and usage documentation.
 - ESM and CommonJS bundles with TypeScript declarations and native Node test execution.
 
-[Unreleased]: https://github.com/GhostPawJS/questlog/compare/v0.11.0...HEAD
+[Unreleased]: https://github.com/GhostPawJS/questlog/compare/v0.11.1...HEAD
+[0.11.1]: https://github.com/GhostPawJS/questlog/compare/v0.11.0...v0.11.1
 [0.11.0]: https://github.com/GhostPawJS/questlog/compare/v0.10.1...v0.11.0
 [0.10.1]: https://github.com/GhostPawJS/questlog/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/GhostPawJS/questlog/compare/v0.9.2...v0.10.0
