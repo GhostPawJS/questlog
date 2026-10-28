@@ -58,7 +58,12 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 				flags: [
 					{ name: 'title', type: 'string' },
 					{ name: 'tag', type: 'array' },
-					{ name: 'objective', type: 'string' },
+					{
+						name: 'objective',
+						type: 'string',
+						file: true,
+						description: 'Quest objective text; defaults to the title.',
+					},
 					{
 						name: 'due',
 						type: 'string',

@@ -81,6 +81,9 @@ questlog list --view quests.resolved --json
 `--questline <id>`, and `--due` as YYYY-MM-DD, DD.MM.YYYY, `today`, `tomorrow`,
 `+3d`, an ISO date-time with timezone, or milliseconds since epoch. Date-only
 values use local end of day.
+`--objective` is the one flag that reads a file: `@path`, `@-` for stdin, and
+`@@text` for a literal `@text` (help marks it `(@file, @- stdin, @@ literal @)`). Every
+other value, including titles, `--outcome` and per-tool flags, is literal.
 `list` defaults to available quests; `list --help` lists all supported views.
 Its `--limit` caps text output; JSON preserves the full review tool result.
 `search --limit` caps matches in both formats. `show` prints full quest detail.
@@ -163,7 +166,7 @@ irm https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.ps1 | iex
 Pinned to a release:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.sh | sh -s -- --target linux-x64 --version 0.11.0 && export PATH="$HOME/.local/bin:$PATH"
+curl -fsSL https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.sh | sh -s -- --target linux-x64 --version 0.11.1 && export PATH="$HOME/.local/bin:$PATH"
 ```
 
 Also adding ~/.local/bin to ~/.profile (edits ~/.profile once; skipped if it already mentions ~/.local/bin; zsh login shells read ~/.zprofile instead, so use that file name there):
@@ -180,7 +183,7 @@ $env:GHOSTPAW_NO_MODIFY_PATH=1; irm https://raw.githubusercontent.com/GhostPawJS
 
 ```text
 $ ghostpaw-questlog --version
-questlog 0.11.0 (binary, linux-x64)
+questlog 0.11.1 (binary, linux-x64)
 ```
 
 Scripts that compare versions should use `--version --short` or `--version --json`.
