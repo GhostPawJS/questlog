@@ -31,17 +31,18 @@
 <main>
   <section class="hero" aria-labelledby="hero-title">
     <div class="hero-copy">
-      <p class="kicker"><code>@ghostpaw/questlog</code> <span class="ver">0.9.1</span></p>
+      <p class="kicker"><code>@ghostpaw/questlog</code> <span class="ver">0.10.1</span></p>
       <h1 id="hero-title">Your agent said it was done. Was it?</h1>
       <p class="lede">An agent that ticks its own box gets to grade its own homework, so questlog makes it write the homework down: no quest is done without an outcome, and work that waits on other work stays blocked until that work is done.</p>
       <div class="install">
-        <p class="cmd-label" id="lib-label">As a library</p>
-        <div class="cmd"><input id="cmd-lib" readonly value="npm install @ghostpaw/questlog" aria-labelledby="lib-label" spellcheck="false"><button type="button" class="copy" data-copy="cmd-lib">Copy</button></div>
-        <p class="cmd-label" id="mcp-label">As a local MCP server</p>
-        <div class="cmd"><input id="cmd-mcp" readonly value="npx -y @ghostpaw/questlog mcp" aria-labelledby="mcp-label" spellcheck="false"><button type="button" class="copy" data-copy="cmd-mcp">Copy</button></div>
+        <p class="cmd-label" id="lib-label">Binary for linux-x64 (checked against SHA256SUMS)</p>
+        <div class="cmd"><input id="cmd-lib" readonly value="curl -fsSL https://raw.githubusercontent.com/GhostPawJS/questlog/main/install.sh | sh -s -- --target linux-x64 &amp;&amp; export PATH=&quot;$HOME/.local/bin:$PATH&quot;" aria-labelledby="lib-label" spellcheck="false"><button type="button" class="copy" data-copy="cmd-lib">Copy</button></div>
+        <p class="cmd-label" id="mcp-label">Then run it as a local MCP server</p>
+        <div class="cmd"><input id="cmd-mcp" readonly value="ghostpaw-questlog mcp" aria-labelledby="mcp-label" spellcheck="false"><button type="button" class="copy" data-copy="cmd-mcp">Copy</button></div>
+        <p class="cmd-label"><a href="#binaries">macOS, Windows, pinned versions, npx and the npm library</a></p>
       </div>
       <p class="actions"><a class="button" href="#board">Try to finish a quest</a> <a href="{{.urls.github}}">Read the source on GitHub</a></p>
-      <p class="terms">Free and MIT licensed for Node.js 24 or newer, with zero runtime dependencies and the tables in a SQLite database you open.</p>
+      <p class="terms">Free and MIT licensed; the binary carries its own Node.js and the npm package needs Node.js 24 or newer, with zero runtime dependencies and the tables in a SQLite database you open.</p>
     </div>
     <figure class="hero-art frame">
       <div class="scope"><picture><source media="(min-width: 52rem)" srcset="assets/images/hero-720.webp" width="720" height="540"><img src="assets/images/hero-480.webp" width="480" height="360" alt="A ghost paw drawn in cyan light pressing a glowing hexagonal exclamation mark, violet sparks around it." fetchpriority="high"></picture><span class="scan" aria-hidden="true"></span></div>
@@ -165,7 +166,7 @@ read.listDueSoonQuests(db, 7 * DAY);
         <li>One package, one bundled file, no runtime dependencies. The numbers are below.</li>
         <li>An outcome is text. It records what the agent claims; it does not run your tests.</li>
         <li>No scheduler and no hosted service. Your code or your agent harness decides when to read.</li>
-        <li>Twelve tools with JSON Schemas, served over MCP stdio by <code>npx -y @ghostpaw/questlog mcp</code> or called from your own harness.</li>
+        <li>Twelve tools with JSON Schemas, served over MCP stdio by <code>ghostpaw-questlog mcp</code> (or <code>npx -y @ghostpaw/questlog mcp</code>) or called from your own harness.</li>
         <li>Node.js 24 or newer, because it uses the built-in <code>node:sqlite</code>.</li>
       </ul>
     </div>
