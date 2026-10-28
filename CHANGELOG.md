@@ -5,6 +5,8 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-10-28
+
 ### Added
 - Custom webhook headers via repeatable `--header` or `--header-stdin`, with redacted inspection.
 - Delivery inspection with `show d_…` and a compact `skill --short` cheat sheet.
@@ -169,7 +171,8 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 - Semantic markers, structured tool facade, workflow skills, and usage documentation.
 - ESM and CommonJS bundles with TypeScript declarations and native Node test execution.
 
-[Unreleased]: https://github.com/GhostPawJS/questlog/compare/v0.10.1...HEAD
+[Unreleased]: https://github.com/GhostPawJS/questlog/compare/v0.11.0...HEAD
+[0.11.0]: https://github.com/GhostPawJS/questlog/compare/v0.10.1...v0.11.0
 [0.10.1]: https://github.com/GhostPawJS/questlog/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/GhostPawJS/questlog/compare/v0.9.2...v0.10.0
 [0.9.2]: https://github.com/GhostPawJS/questlog/compare/v0.9.1...v0.9.2
