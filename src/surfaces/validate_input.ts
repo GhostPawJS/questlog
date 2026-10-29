@@ -3,6 +3,7 @@ import type { JsonSchema } from './surface_types.ts';
 
 export function validateInput(schema: JsonSchema, input: unknown, path = '$'): string[] {
 	const errors: string[] = [];
+	const received = `; received ${JSON.stringify(input)}`;
 	const matchesType = (type: string) => {
 		switch (type) {
 			case 'object':
@@ -23,13 +24,13 @@ export function validateInput(schema: JsonSchema, input: unknown, path = '$'): s
 		schema.type &&
 		!(Array.isArray(schema.type) ? schema.type : [schema.type]).some(matchesType)
 	) {
-		return [`${path}: expected ${String(schema.type)}`];
+		return [`${path}: expected ${schema.type}${received}`];
 	}
 	if (schema.enum && !schema.enum.some((value) => JSON.stringify(value) === JSON.stringify(input)))
-		errors.push(`${path}: expected one of ${JSON.stringify(schema.enum)}`);
+		errors.push(`${path}: expected one of ${JSON.stringify(schema.enum)}${received}`);
 	const constant = 'const' in schema ? schema.const : undefined;
 	if (constant !== undefined && constant !== input)
-		errors.push(`${path}: expected ${JSON.stringify(constant)}`);
+		errors.push(`${path}: expected ${JSON.stringify(constant)}${received}`);
 	if (schema.oneOf) {
 		const branches = schema.oneOf.map((branch) => validateInput(branch, input, path));
 		if (!branches.some((errors) => errors.length === 0)) {
@@ -40,7 +41,7 @@ export function validateInput(schema: JsonSchema, input: unknown, path = '$'): s
 			);
 		}
 	}
-	if (typeof input === 'object' && input !== null && !Array.isArray(input)) {
+	if (matchesType('object')) {
 		const record = input as Record<string, unknown>;
 		for (const name of [...(schema.required ?? []), ...requiredForAction(schema, record.action)])
 			if (!Object.hasOwn(record, name)) errors.push(`${path}.${name}: required`);

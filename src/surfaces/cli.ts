@@ -219,7 +219,8 @@ export async function runToolCli<TCtx>(
 			const coerce = (value: string, schema: JsonSchema): unknown => {
 				if (schema.type === 'number' || schema.type === 'integer') return Number(value);
 				if (schema.type === 'boolean') {
-					if (!['true', 'false'].includes(value)) throw new Error('Expected true or false');
+					if (!['true', 'false'].includes(value))
+						throw new Error(`Expected true or false: ${value}`);
 					return value === 'true';
 				}
 				if (schema.type === 'object' || schema.type === 'array') return JSON.parse(value);
@@ -292,7 +293,11 @@ export async function runToolCli<TCtx>(
 			result.outcome === 'needs_clarification'
 		)
 			return 3;
-		return isErrorResult(result) ? 1 : 0;
+		if (isErrorResult(result)) {
+			const error = (result as { error?: { code?: string } }).error;
+			return error?.code === 'not_found' ? 3 : 1;
+		}
+		return 0;
 	} catch (cause) {
 		return fail(String(cause), 1);
 	} finally {

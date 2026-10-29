@@ -168,3 +168,9 @@ test('handler throws still close the context', async () => {
 	assert.equal(code, 1);
 	assert.equal(closed, true);
 });
+
+test('direct tool boolean validation names the rejected value', async () => {
+	const result = await invoke(['test_tool', '--someValue', '1', '--enabled', 'maybe']);
+	assert.notEqual(result.code, 0);
+	assert.match(result.err, /Expected true or false: maybe/);
+});

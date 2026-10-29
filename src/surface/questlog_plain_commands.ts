@@ -160,7 +160,7 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 		spec: { ...command.spec, flags: [...(command.spec.flags ?? []), json] },
 		input: (values) => {
 			if (values.limit !== undefined && Number(values.limit) < 1)
-				throw new Error('Limit must be at least 1');
+				throw new Error(`Limit ${values.limit} must be at least 1`);
 			return command.input(values);
 		},
 	}));

@@ -311,3 +311,22 @@ just prose.
 Relative imports in source use explicit `.ts` specifiers (and `*/index.ts` for
 package-style barrels) so Node can load and test TypeScript directly with
 `--experimental-strip-types`, without a separate TypeScript execution shim.
+
+## CLI operations
+
+Missing quests, deliveries, and hook targets exit 3. An empty `questlog hook list`
+prints `No hooks`; `--json` returns `[]`. Delivery text timestamps use local time,
+while JSON keeps machine-readable epoch/UTC timestamps.
+
+Prefer `questlog hook add https://example.org/wake --header-stdin < /secure/headers.txt`
+for real credentials. The file contains one `Name: value` per line; keep it private
+(0600 on POSIX). `--header` remains supported but exposes values in process arguments
+and may leave them in shell history. Save the signing secret printed once by
+`hook add` securely, outside logs; `--secret-stdin` supplies an existing signing secret.
+Header values and signing secrets stay redacted in validation diagnostics.
+
+CLI titles are literal, including leading `@`. File input is opt-in for
+`add --objective` (`@path`, `@-`, `@@` for a literal leading `@`). Flag values may
+start with dashes, including multiline `---` frontmatter and negative numbers;
+use `--flag=value` for values that look like another flag, or `--` before a
+dash-leading positional title.

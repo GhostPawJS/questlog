@@ -71,6 +71,8 @@ test('CLI follow-ups validate inputs, redact and deliver headers, and render tex
 				/unknown event quest.bogus; valid: quest.due/,
 			],
 			[['watch', '--interval', '2'], /--interval 2 is below the minimum of 5 seconds/],
+			[['list', '--view', 'bogus'], /view.*bogus.*must be one of/],
+			[['hook', 'add', 'https://example.org', '--min-gap', '-5'], /Min gap -5 must be/],
 			[['add'], /questlog add "Write the report" --due tomorrow/],
 		] as [string[], RegExp][]) {
 			const result = await run(args);
@@ -88,6 +90,9 @@ test('CLI follow-ups validate inputs, redact and deliver headers, and render tex
 			assert.equal(result.code, 2);
 			assert.doesNotMatch(result.out + result.err, /hidden-value/);
 		}
+		assert.equal((await run(['hook', 'list'])).out, 'No hooks\n');
+		assert.equal((await run(['hook', 'list', '--json'])).out.trim(), '[]');
+		for (const id of ['999', 'd_nope']) assert.equal((await run(['show', id])).code, 3);
 		const added = await run(
 			[
 				'hook',
@@ -132,6 +137,13 @@ test('CLI follow-ups validate inputs, redact and deliver headers, and render tex
 			else assert.ok(!result.out.trim().startsWith('{') && !result.out.trim().startsWith('['));
 		}
 		const detail = JSON.parse((await run(['show', deliveryId, '--json'])).out);
+		const textDetail = await run(['show', deliveryId]);
+		assert.ok(
+			textDetail.out.includes(
+				new Date(detail.nextAttemptAt).toLocaleString('en-GB', { timeZoneName: 'short' }),
+			),
+		);
+		assert.doesNotMatch((await run(['review', 'deliveries'])).out, /\d{4}-\d{2}-\d{2}T/);
 		assert.equal(detail.status, 'delivered');
 		assert.equal(detail.attempts, 1);
 		assert.equal(detail.httpStatus, 204);

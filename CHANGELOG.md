@@ -5,6 +5,16 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+## [0.11.2] - 2026-10-29
+
+### Fixed
+- CLI validation names rejected enum, boolean, JSON, and hook min-gap values while preserving header/secret redaction.
+- Missing quests and deliveries exit 3, consistent with missing hook targets; empty hook lists print `No hooks`.
+- Delivery text timestamps use local time; JSON timestamps remain unchanged.
+
+### Documentation
+- Prefer `--header-stdin` for real keys to avoid exposing values in process arguments and shell history.
+
 ## [0.11.1] - 2026-10-28
 
 ### Security

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { it } from 'node:test';
 import { textOutput } from './text_output.ts';
 
-it('renders nested results as indented text with ISO times and joined lists', () => {
+it('renders nested results as indented text with local times and joined lists', () => {
 	const text = textOutput({
 		id: 1,
 		events: ['quest.due', 'rumor.captured'],
@@ -18,7 +18,7 @@ it('renders nested results as indented text with ISO times and joined lists', ()
 			'events: quest.due, rumor.captured',
 			'headers:',
 			'  authorization: ***',
-			'createdAt: 2026-10-28T00:24:47.065Z',
+			`createdAt: ${new Date(1793147087065).toLocaleString('en-GB', { timeZoneName: 'short' })}`,
 			'tag: -',
 			'items:',
 			'  id: a',

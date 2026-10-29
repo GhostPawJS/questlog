@@ -29,14 +29,14 @@ export function addHook(
 		);
 	const minGap = input.minGap ?? 60;
 	if (!Number.isSafeInteger(minGap) || minGap < 0)
-		throw new Error('Min gap must be a nonnegative integer');
+		throw new Error(`Min gap ${minGap} must be a nonnegative integer`);
 	const events = input.events ?? [...hookEventTypes];
 	if (!events.length || events.some((e) => !hookEventTypes.includes(e)))
 		throw new Error(
 			`unknown event ${events.find((e) => !hookEventTypes.includes(e)) ?? '(empty)'}; valid: ${hookEventTypes.join(', ')}`,
 		);
 	if (input.tag !== undefined && !normalizeTagName(input.tag))
-		throw new Error('Expected a tag name');
+		throw new Error(`Expected a tag name: ${JSON.stringify(input.tag)}`);
 	const secret = input.secret ?? randomBytes(32).toString('hex');
 	if (!secret.trim()) throw new Error('Expected a nonempty signing secret');
 	const result = db

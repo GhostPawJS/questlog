@@ -17,3 +17,10 @@ test('validates nested types, enum, integer, required, items and inclusive oneOf
 	assert.ok(validateInput({ type: 'integer' }, 1.5).length);
 	assert.deepEqual(validateInput({ type: ['string', 'null'] }, null), []);
 });
+
+test('validation diagnostics name rejected scalar values', () => {
+	assert.match(validateInput({ type: 'integer' }, 'abc').join(), /received "abc"/);
+	assert.match(validateInput({ enum: ['all'] }, 'bogus').join(), /received "bogus"/);
+	const constantSchema = { type: 'string', const: 'all' };
+	assert.match(validateInput(constantSchema, 'wrong').join(), /received "wrong"/);
+});

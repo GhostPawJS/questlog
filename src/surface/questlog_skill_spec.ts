@@ -35,7 +35,7 @@ export const questlogSkillSpec = {
 		'- `questlog show 12`',
 		'- `questlog list --view quests.available`',
 		'- Use `--json` on any plain command.',
-		'- Exit codes: 0 ok / 1 error / 2 usage / 3 needs input or hook target not found.',
+		'- Exit codes: 0 ok / 1 error / 2 usage / 3 needs input or item not found.',
 		'- Database: `~/.ghostpaw/questlog.db`; override with `--db` or `GHOSTPAW_QUESTLOG_DB`.',
 		'- Use one database per project.',
 		'- `questlog --version` prints the installed version.',

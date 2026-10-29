@@ -50,7 +50,7 @@ export const questlogCliOptions: ToolCliOptions<QuestlogDb> = {
 					);
 					if (!delivery) {
 						io.stderr.write(`Delivery ${args[0]} not found\n`);
-						return 1;
+						return 3;
 					}
 					const target = listHooks(db).find((h) => h.id === delivery.targetId);
 					const result = {

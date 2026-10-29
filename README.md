@@ -94,8 +94,8 @@ adds ISO UTC siblings for numeric timestamp fields ending in `At`.
 Commands print text by default, including hooks, delivery views and each watch tick; `call` and direct tool commands return the raw tool result as JSON. Use `--json` for the full tool result
 and `--compact` for compact JSON. `--db path` works before or after the command.
 Each command accepts `--help`. Exit codes are 0 for success, 1 for invalid input
-or a tool error, 2 for usage errors, and 3 when clarification is needed or `hook remove`/`hook test` addresses a missing target.
-Missing quests and deliveries exit 1. `hook label` names the database, not an individual target.
+or a tool error, 2 for usage errors, and 3 when clarification is needed or a quest, delivery, or hook target is not found.
+An empty `hook list` prints `No hooks` (`[]` with `--json`). Delivery text timestamps use local time; JSON retains UTC/epoch timestamps. `hook label` names the database, not an individual target.
 
 `questlog skill --short` prints the compact cheat sheet; `questlog skill --list` lists guides.
 ISO date-times without a zone (for example `2026-10-29T09:00`) use the local time zone.
@@ -553,9 +553,11 @@ Secrets and custom header values are stored in the database. On POSIX, new datab
 and their WAL/SHM siblings use mode 0600, and directories created for them use 0700.
 Existing database permissions are preserved; Windows uses its existing access controls.
 
-Add repeatable custom headers with `--header "Authorization: Bearer value"` or
-`--header-stdin` (one `Name: value` line per header, keeping values out of shell history).
-For example: `questlog hook add https://example.org/wake --header "X-Key: value"`.
+Prefer `--header-stdin` for real keys (one `Name: value` line per header), keeping
+values out of shell history and process arguments:
+`questlog hook add https://example.org/wake --header-stdin < /secure/headers.txt`.
+Keep that file private (0600 on POSIX). Repeatable `--header "Name: value"` remains
+available, but exposes values in process arguments.
 Headers accompany every delivery and test. Header names are shown with values replaced by
 `***`; values are never included in list, show, test, tick, watch, or tool output.
 Names must be HTTP tokens; `host`, `content-length`, `content-type`, and `x-questlog-*`

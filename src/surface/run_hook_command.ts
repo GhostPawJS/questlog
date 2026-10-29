@@ -144,7 +144,9 @@ export async function runHookCommand(
 				? `${JSON.stringify(result, null, 2)}\n`
 				: action === 'add'
 					? `Created hook ${(result as { id: number }).id}\nSecret (shown once): ${(result as { secret: string }).secret}\n`
-					: `${textOutput(result)}\n`,
+					: action === 'list' && Array.isArray(result) && !result.length
+						? 'No hooks\n'
+						: `${textOutput(result)}\n`,
 		);
 		return 0;
 	} catch (error) {

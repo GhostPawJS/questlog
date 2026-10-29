@@ -39,7 +39,7 @@ export function renderQuestlogPlainResult(
 			? `${r.clarification.question}\nMissing: ${r.clarification.missing.map((name) => `--${name}`).join(', ')}\n`
 			: `${r.summary}\n${r.error.message}\n`;
 	if (r.data.deliveries && !r.data.item)
-		return `${r.data.deliveries.map((d) => `${d.id} target ${d.targetId} ${d.status} attempts ${d.attempts} HTTP ${d.httpStatus ?? '-'} next ${new Date(d.nextAttemptAt).toISOString()} events ${d.events.map((e) => e.id).join(', ')}`).join('\n') || 'No deliveries'}\n`;
+		return `${r.data.deliveries.map((d) => `${d.id} target ${d.targetId} ${d.status} attempts ${d.attempts} HTTP ${d.httpStatus ?? '-'} next ${formatPlainDate(d.nextAttemptAt, true)} events ${d.events.map((e) => e.id).join(', ')}`).join('\n') || 'No deliveries'}\n`;
 	if (r.data.items) {
 		const items =
 			values.limit === undefined

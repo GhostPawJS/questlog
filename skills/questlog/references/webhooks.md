@@ -1,7 +1,6 @@
 # Webhooks
 
-Use `questlog` to configure opt-in outbound automation. No server or scheduler is added.
-No targets means no network calls. `manage_hooks` supports list, remove, tick with
+Use `questlog` to configure opt-in outbound automation. No targets means no network calls. `manage_hooks` supports list, remove, tick with
 `dry_run`, and deliveries; add/test are CLI-only. `review_questlog` view `deliveries`
 and `questlog show <id>` expose pending/failed deliveries.
 
@@ -21,11 +20,11 @@ questlog hook remove 1
 
 `hook add` prints its random 32-byte signing secret once, also as `secret` in `--json`.
 Save it securely. `--secret-stdin` supplies one via stdin; there is no secret flag.
-Secrets and custom header values are stored in the DB. New POSIX DB/WAL/SHM files use 0600 and created directories use 0700; existing DB modes are preserved. Windows uses existing access controls.
-Use repeatable `--header "Name: value"` or `--header-stdin` (one line per header, avoiding shell history). Headers are sent on every delivery and test; output shows names with `***` values. HTTP token names are required; host, content-length, content-type, and x-questlog-* are reserved. Change headers by removing and adding the hook again. Use --header-stdin and --secret-stdin separately. URL userinfo is rejected; use a custom header or query key.
-`questlog show d_…` displays delivery status, attempts, HTTP status, next attempt, redacted target URL and event ids. Text is the default; --json prints JSON. Missing hook remove/test targets exit 3; missing quests/deliveries exit 1. hook label names the database.
+Secrets/headers are stored in the DB. New POSIX DB/WAL/SHM files use 0600; new directories use 0700. Existing modes and Windows access controls are preserved.
+Prefer `--header-stdin` for real keys (one Name: value per line); use a private 0600 file. Repeatable `--header` exposes values in process arguments and shell history. Output redacts values as `***`. host, content-length, content-type and x-questlog-* are reserved. To change headers, remove/add the hook. Use --header-stdin and --secret-stdin separately. URL userinfo is rejected.
+`show d_…` displays delivery attempts, HTTP status, next attempt, redacted target and event ids. Text timestamps are local; --json keeps UTC/epoch times. Missing hook remove/test targets exit 3; missing quests/deliveries also exit 3. Empty hook lists print `No hooks`. hook label names the database.
 List output redacts userinfo/query strings. Removal deletes the target and deliveries.
-Default scope is the database; `--tag` matches quest tags, never rumors.
+Default scope is the DB; `--tag` matches quest tags only.
 `--events` defaults to all types. The DB label defaults to the filename without its
 path/extension (`questlog` in memory); set it to a name suitable for disclosure.
 
@@ -33,8 +32,8 @@ path/extension (`questlog` in memory); set it to a name suitable for disclosure.
 * * * * * questlog tick
 ```
 
-Cron's PATH may need `$HOME/.local/bin/questlog tick --db /path/to/quests.db`.
-Watch defaults to 60 seconds (minimum 5); SIGINT/SIGTERM finishes the current tick.
+Cron may need `$HOME/.local/bin/questlog tick --db /path/to/quests.db`.
+Watch defaults to 60 s (minimum 5); SIGINT/SIGTERM finishes the tick.
 Tick exits 0 even when deliveries need retries. Dry-run records nothing and sends nothing.
 
 Events are detected from the model at tick time:
@@ -45,9 +44,8 @@ Events are detected from the model at tick time:
 - `repeatable.spawned`: a concrete repeatable instance was created; occurrence time is its creation time. Tick first materializes due anchors through the existing spawn operation.
 - `rumor.captured`: an undeleted rumor was created; occurrence time is its creation time, even if subsequently settled or dismissed.
 
-Persistent event keys contain type, entity ids, and occurrence time. Restarts and repeated
-ticks do not repeat occurrences. Removed transitions between ticks cannot be reconstructed.
-Only occurrences at/after target creation are assigned; tags are evaluated at assignment.
+Event keys include type, entity ids and occurrence time, preventing repeats across restarts. Transitions removed between ticks cannot be reconstructed.
+Only events at/after target creation are assigned; tags are checked then.
 Tick materializes due repeatables using the existing spawn path, including during preview
 with rollback. Batches contain only ids, event types, timestamps, and the DB label:
 
@@ -65,15 +63,13 @@ event immediately, ignoring the min gap. Add and test are CLI-only in the tool f
 2xx delivers. Timeout is 5 seconds. Failures retry after 30 s, 1 m, 2 m, 4 m, doubling
 to 1 h plus <1 s jitter, subject to the target's min gap. Eight failures mark failed.
 Retries keep the delivery id/events; new events queue behind them. Keep the last 500
-delivered log entries per target and all pending/failed entries. Transactional claims
-lease work for two minutes. A crash after receipt may retry: dedupe at the receiver.
+delivered log entries per target and all pending/failed entries. Claims lease work for two minutes. Dedupe retries at the receiver.
 
 ### Verifying a delivery
 
 Compute HMAC-SHA256 over `timestamp + "." + rawBody` with the secret and compare in constant
 time. Reject timestamps older than 5 minutes (and timestamps too far in the future), then
-dedupe on `x-questlog-delivery`. Use durable deduplication storage in a production receiver.
-This 15-line Node example uses an in-memory set:
+dedupe on `x-questlog-delivery`. Use durable deduplication in production; this example uses an in-memory set:
 
 ```js
 import { createHmac, timingSafeEqual } from 'node:crypto';

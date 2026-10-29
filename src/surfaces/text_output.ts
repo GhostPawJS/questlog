@@ -1,9 +1,11 @@
-const isTime = (key: string, value: unknown): value is number =>
-	typeof value === 'number' && value > 1e12 && /(At|Wake)$/.test(key);
+const isTime = (key: string, value: unknown): value is number | string =>
+	/(At|Wake)$/.test(key) &&
+	(typeof value === 'number' || (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(value))) &&
+	Number.isFinite(new Date(value).getTime());
 
 function scalar(key: string, value: unknown): string {
 	if (value == null || value === '') return '-';
-	if (isTime(key, value)) return new Date(value).toISOString();
+	if (isTime(key, value)) return new Date(value).toLocaleString('en-GB', { timeZoneName: 'short' });
 	return String(value).replace(/[\r\n]+/g, ' ');
 }
 

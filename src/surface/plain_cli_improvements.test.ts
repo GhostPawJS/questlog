@@ -271,3 +271,22 @@ test('package entry supports machine version flags in every order', () => {
 	assert.equal(help.status, 0, help.stderr);
 	assert.match(help.stdout, /Version formats: --version --short, --version --json/);
 });
+
+test('delivery text uses local time across winter and summer including ISO event timestamps', () => {
+	const result = capture(
+		[
+			'--input-type=module',
+			'-e',
+			`
+ import {textOutput} from './src/surfaces/text_output.ts';
+ console.log(textOutput({nextAttemptAt: Date.parse('2026-10-29T08:00:00Z'), createdAt: Date.parse('2026-07-01T07:00:00Z'), events: [{occurredAt: '2026-07-01T07:00:00Z'}]}));
+ `,
+		],
+		{ ...process.env, TZ: 'Europe/Berlin' },
+	);
+	assert.equal(result.status, 0, result.stderr);
+	assert.match(result.stdout, /nextAttemptAt: 29\/10\/2026, 9:00:00 CET/);
+	assert.match(result.stdout, /createdAt: 01\/07\/2026, 9:00:00 CEST/);
+	assert.match(result.stdout, /occurredAt: 01\/07\/2026, 9:00:00 CEST/);
+	assert.doesNotMatch(result.stdout, /2026-07-01T/);
+});

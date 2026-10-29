@@ -65,7 +65,7 @@ test('generic parser reports typed usage errors and renders schema help', () => 
 
 test('flag values may start with dashes unless they look like a flag', () => {
 	const spec = { command: 'example', flags: [{ name: 'title', type: 'string' as const }] };
-	for (const title of ['--', '---text', '--123', '-text']) {
+	for (const title of ['--', '---text', '---\nname: x\n---', '--123', '-text', '-5']) {
 		assert.deepEqual(parseCliArgs(['--title', title], spec), { title });
 	}
 	assert.throws(() => parseCliArgs(['--title', '--other'], spec), /Missing value/);
@@ -101,4 +101,26 @@ test('a leading @ reads a file only for file-capable arguments, and @@ escapes i
 	} finally {
 		rmSync(dir, { recursive: true });
 	}
+});
+
+test('validation errors identify rejected values', () => {
+	for (const [type, value] of [
+		['boolean', 'maybe'],
+		['json', '{bad'],
+		['integer', 'nope'],
+	] as const) {
+		assert.throws(
+			() =>
+				parseCliArgs([`--value=${value}`], { command: 'test', flags: [{ name: 'value', type }] }),
+			(error: unknown) => error instanceof CliUsageError && error.message.includes(value),
+		);
+	}
+	assert.throws(
+		() =>
+			parseCliArgs(['--view', 'bogus'], {
+				command: 'test',
+				flags: [{ name: 'view', type: 'string', enum: ['all'] }],
+			}),
+		/view.*bogus.*all/,
+	);
 });

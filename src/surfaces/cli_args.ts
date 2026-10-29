@@ -57,17 +57,19 @@ export function parseCliArgs(argv: string[], spec: CliSpec): Record<string, unkn
 				throw new CliUsageError(`Expected ${arg.type} for ${arg.name}: ${value}`);
 		} else if (arg.type === 'boolean') {
 			if (!['true', 'false'].includes(value))
-				throw new CliUsageError(`Expected boolean for ${arg.name}`);
+				throw new CliUsageError(`Expected boolean for ${arg.name}: ${value}`);
 			result = value === 'true';
 		} else if (arg.type === 'json') {
 			try {
 				result = JSON.parse(value);
 			} catch {
-				throw new CliUsageError(`Invalid JSON for ${arg.name}`);
+				throw new CliUsageError(`Invalid JSON for ${arg.name}: ${value}`);
 			}
 		}
 		if (arg.enum && !arg.enum.includes(result))
-			throw new CliUsageError(`${arg.name} must be one of: ${arg.enum.join(', ')}`);
+			throw new CliUsageError(
+				`${arg.name} ${JSON.stringify(value)} must be one of: ${arg.enum.join(', ')}`,
+			);
 		return result;
 	};
 	let ended = false;

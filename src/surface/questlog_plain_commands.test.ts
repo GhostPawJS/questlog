@@ -127,6 +127,7 @@ test('plain commands operate on real quests in text and JSON modes', async () =>
 		assert.match((await invoke(['--help'])).out, /add, list, done, search, show/);
 		assert.equal((await invoke(['list', '--view', 'quests.scheduled_for_day'])).code, 3);
 		assert.equal((await invoke(['list', '--view', 'bad'])).code, 2);
+		assert.match((await invoke(['list', '--limit', '0'])).err, /Limit 0 must be at least 1/);
 		for (const command of ['list', 'search']) {
 			assert.equal(
 				(await invoke([command, ...(command === 'search' ? ['Release'] : []), '--limit', '0']))
@@ -156,7 +157,7 @@ test('plain commands operate on real quests in text and JSON modes', async () =>
 		]);
 		assert.equal(JSON.parse(attached.out).data.quest.questlineId, questlineId);
 		assert.equal((await invoke(['add', '--title', 'Invalid', '--due', 'bad'])).code, 2);
-		assert.equal((await invoke(['show', '99999'])).code, 1);
+		assert.equal((await invoke(['show', '99999'])).code, 3);
 		const untagged = await invoke(['add', '--title', 'No tags here', '--json']);
 		const untaggedId = JSON.parse(untagged.out).data.primary.id;
 		assert.match((await invoke(['show', String(untaggedId)])).out, /^tags\s*: -$/m);
