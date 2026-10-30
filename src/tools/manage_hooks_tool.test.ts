@@ -54,3 +54,24 @@ test('MCP awaits async webhook ticks and returns structured results', async () =
 		db.close();
 	}
 });
+
+test('removing an unknown or already removed hook returns a not-found error', async () => {
+	const db = await createInitializedQuestlogDb();
+	try {
+		const { id } = addHook(db, { url: 'https://example.org' });
+		assert.equal((await manageHooksTool.handler(db, { action: 'remove', id })).ok, true);
+		for (const missingId of [999, id]) {
+			const result = await manageHooksTool.handler(db, { action: 'remove', id: missingId });
+			assert.equal(result.ok, false);
+			assert.equal(result.outcome, 'error');
+			if (result.outcome !== 'error') assert.fail('Expected a tool error');
+			assert.equal(result.error.kind, 'domain');
+			assert.equal(result.error.code, 'not_found');
+			assert.equal(result.error.message, `Hook ${missingId} not found`);
+			assert.deepEqual(result.entities, []);
+			assert.ok(!('data' in result));
+		}
+	} finally {
+		db.close();
+	}
+});

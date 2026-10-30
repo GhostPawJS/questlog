@@ -55,6 +55,14 @@ export const manageHooksTool = defineQuestlogTool<
 						'Provide a positive target id.',
 						{ recovery: 'Pass {"action":"remove","id":1}' },
 					);
+				if (!listHooks(db).some((hook) => hook.id === input.id))
+					return toolFailure(
+						'domain',
+						'not_found',
+						'The requested hook was not found.',
+						`Hook ${input.id} not found`,
+						{ recovery: 'List hooks and retry with the correct target id.' },
+					);
 				removeHook(db, Number(input.id));
 				return toolSuccess('Webhook target removed.', {});
 			case 'tick':

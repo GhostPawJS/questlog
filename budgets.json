@@ -13,16 +13,16 @@
 			"gzipBytes": 43520
 		},
 		"mcp": {
-			"minBytes": 121792,
-			"gzipBytes": 30784
+			"minBytes": 122048,
+			"gzipBytes": 30848
 		},
 		"cli": {
-			"minBytes": 193344,
-			"gzipBytes": 54784
+			"minBytes": 193600,
+			"gzipBytes": 54912
 		},
 		"mcp-server": {
-			"minBytes": 131968,
-			"gzipBytes": 33984
+			"minBytes": 132224,
+			"gzipBytes": 34048
 		}
 	},
 	"startup": {

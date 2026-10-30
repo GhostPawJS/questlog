@@ -92,3 +92,43 @@ test('CLI add/list/label/test/remove, dry-run, secret redaction, and watch signa
 		rmSync(dir, { recursive: true });
 	}
 });
+
+test('missing hook ids exit 3 through plain, direct tool, and call commands', async () => {
+	const dir = mkdtempSync(join(tmpdir(), 'questlog-missing-hook-'));
+	try {
+		for (const args of [
+			['hook', 'remove', '999'],
+			['hook', 'test', '999'],
+			['manage_hooks', '--action', 'remove', '--id', '999'],
+			['call', 'manage_hooks', '{"action":"remove","id":999}'],
+		]) {
+			let output = '',
+				errors = '';
+			const code = await runToolCli(['--db', join(dir, 'demo.db'), ...args], {
+				...questlogCliOptions,
+				stdout: new Writable({
+					write(chunk, _encoding, done) {
+						output += String(chunk);
+						done();
+					},
+				}),
+				stderr: new Writable({
+					write(chunk, _encoding, done) {
+						errors += String(chunk);
+						done();
+					},
+				}),
+			});
+			assert.equal(code, 3, args.join(' '));
+			assert.match(output + errors, /Hook 999 not found/);
+			if (args[0] !== 'hook') {
+				const result = JSON.parse(output);
+				assert.equal(result.ok, false);
+				assert.equal(result.outcome, 'error');
+				assert.equal(result.error.code, 'not_found');
+			}
+		}
+	} finally {
+		rmSync(dir, { recursive: true });
+	}
+});

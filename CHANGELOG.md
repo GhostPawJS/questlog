@@ -5,6 +5,9 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Fixed
+- `manage_hooks` removal returns a `not_found` error naming a missing hook id, and its CLI exits 3, matching `hook remove`.
+
 ## [0.11.2] - 2026-10-29
 
 ### Fixed
