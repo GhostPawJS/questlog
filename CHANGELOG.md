@@ -5,6 +5,8 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+## [0.11.3] - 2026-10-30
+
 ### Fixed
 - `manage_hooks` removal returns a `not_found` error naming a missing hook id, and its CLI exits 3, matching `hook remove`.
 
@@ -190,7 +192,8 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 - Semantic markers, structured tool facade, workflow skills, and usage documentation.
 - ESM and CommonJS bundles with TypeScript declarations and native Node test execution.
 
-[Unreleased]: https://github.com/GhostPawJS/questlog/compare/v0.11.1...HEAD
+[Unreleased]: https://github.com/GhostPawJS/questlog/compare/v0.11.3...HEAD
+[0.11.3]: https://github.com/GhostPawJS/questlog/compare/v0.11.2...v0.11.3
 [0.11.1]: https://github.com/GhostPawJS/questlog/compare/v0.11.0...v0.11.1
 [0.11.0]: https://github.com/GhostPawJS/questlog/compare/v0.10.1...v0.11.0
 [0.10.1]: https://github.com/GhostPawJS/questlog/compare/v0.10.0...v0.10.1
