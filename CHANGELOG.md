@@ -5,6 +5,10 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Changed
+
+- Remove landing page sources and the automated site deployment workflow; retain the demo build tooling. Demo fonts can be supplied through `DOCS_FONT_DIR`.
+
 ## [0.11.3] - 2026-10-30
 
 ### Fixed
