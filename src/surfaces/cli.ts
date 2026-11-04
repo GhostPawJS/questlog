@@ -277,7 +277,10 @@ export async function runToolCli<TCtx>(
 	try {
 		context = await options.openContext(ctxOptions);
 	} catch (cause) {
-		return fail(String(cause), 1);
+		return fail(
+			cause instanceof CliUsageError ? cause.message : String(cause),
+			cause instanceof CliUsageError ? 2 : 1,
+		);
 	}
 	try {
 		const result = await tool.handler(context, input as Record<string, unknown>);
@@ -295,6 +298,12 @@ export async function runToolCli<TCtx>(
 			return 3;
 		if (isErrorResult(result)) {
 			const error = (result as { error?: { code?: string } }).error;
+			if (
+				tool.name === 'search_questlog' &&
+				(input as Record<string, unknown>).fts &&
+				error?.code === 'invalid_input'
+			)
+				return 2;
 			return error?.code === 'not_found' ? 3 : 1;
 		}
 		return 0;

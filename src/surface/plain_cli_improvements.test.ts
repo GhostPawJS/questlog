@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { closeSync, mkdtempSync, openSync, readFileSync, rmSync } from 'node:fs';
+import { closeSync, existsSync, mkdtempSync, openSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
@@ -289,4 +289,129 @@ test('delivery text uses local time across winter and summer including ISO event
 	assert.match(result.stdout, /createdAt: 01\/07\/2026, 9:00:00 CEST/);
 	assert.match(result.stdout, /occurredAt: 01\/07\/2026, 9:00:00 CEST/);
 	assert.doesNotMatch(result.stdout, /2026-07-01T/);
+});
+
+test('list tags filter quests with AND semantics before the display limit', () => {
+	const dir = mkdtempSync(join(tmpdir(), 'questlog-tags-'));
+	try {
+		const db = join(dir, 'nested', 'deeper', 'work.db');
+		const run = (args: string[]) =>
+			capture(['--experimental-strip-types', 'src/cli.ts', '--db', db, ...args]);
+		for (const args of [
+			['add', 'First', '--tag', 'work'],
+			['add', 'Both', '--tag', 'work', '--tag', 'urgent'],
+			['add', 'Other', '--tag', 'home'],
+		]) {
+			const result = run(args);
+			assert.equal(result.status, 0, result.stderr);
+		}
+		assert.ok(existsSync(db));
+		const titles = (args: string[]) => {
+			const result = run(['list', '--json', ...args]);
+			assert.equal(result.status, 0, result.stderr);
+			return JSON.parse(result.stdout)
+				.data.items.map((item: { title: string }) => item.title)
+				.sort();
+		};
+		assert.deepEqual(titles(['--tag', ' WORK ']), ['Both', 'First']);
+		assert.deepEqual(titles(['--tag', 'work', '--tag', 'urgent']), ['Both']);
+		assert.deepEqual(titles(['--view', 'quests.open', '--tag', 'urgent']), ['Both']);
+		assert.deepEqual(titles(['--tag', 'missing']), []);
+		assert.deepEqual(titles(['--tag', 'work', '--limit', '1']), ['Both', 'First']);
+		const limited = run(['list', '--tag', 'urgent', '--limit', '1']);
+		assert.equal(limited.status, 0, limited.stderr);
+		assert.match(limited.stdout, /Both/);
+		assert.doesNotMatch(limited.stdout, /First|Other/);
+		const capped = run(['list', '--tag', 'work', '--limit', '1']);
+		assert.equal(capped.status, 0, capped.stderr);
+		assert.equal((capped.stdout.match(/First|Both/g) ?? []).length, 1);
+		assert.doesNotMatch(capped.stdout, /Other/);
+		for (const view of ['rumors', 'questlines', 'deliveries', 'repeatables.due_anchors']) {
+			const result = run(['list', '--view', view, '--tag', 'work']);
+			assert.equal(result.status, 2);
+			assert.match(result.stderr, /--tag requires a quest view/);
+		}
+		assert.match(run(['list', '--help']).stdout, /Require every tag.*AND/);
+		const invalidDir = join(db, 'nested');
+		const invalid = capture([
+			'--experimental-strip-types',
+			'src/cli.ts',
+			'--db',
+			join(invalidDir, 'work.db'),
+			'list',
+		]);
+		assert.equal(invalid.status, 2);
+		assert.equal(
+			invalid.stderr,
+			`Cannot create database directory ${invalidDir}: a path component is not a directory\n`,
+		);
+	} finally {
+		rmSync(dir, { recursive: true, force: true });
+	}
+});
+
+test('help after positionals at one and two levels never opens a database', () => {
+	for (const command of [
+		['add', 'x'],
+		['hook', 'remove', '3'],
+	]) {
+		for (const flag of ['--help', '-h']) {
+			const result = capture(['src/cli.ts', '--db', '/unavailable/help.db', ...command, flag]);
+			assert.equal(result.status, 0, result.stderr);
+			assert.match(result.stdout, command[0] === 'hook' ? /questlog hook.*remove/s : /Usage:/);
+			assert.equal(result.stderr, '');
+		}
+	}
+});
+
+test('literal search, raw FTS and start work through the CLI', () => {
+	const dir = mkdtempSync(join(tmpdir(), 'questlog-search-'));
+	try {
+		const db = join(dir, 'work.db');
+		const run = (...args: string[]) => capture(['src/cli.ts', '--db', db, ...args]);
+		for (const title of [
+			'instagram-desk: note',
+			'agentpreneur: German WoW price visible',
+			'-leading',
+			'alpha',
+			'beta',
+		]) {
+			const added = run('add', '--', title);
+			assert.equal(added.status, 0, added.stderr);
+		}
+		for (const query of [
+			'instagram-desk:',
+			'agentpreneur: German WoW price visible',
+			'"agentpreneur:"',
+			'German WoW',
+			'-leading',
+		]) {
+			const result = run('search', '--json', '--', query);
+			assert.equal(result.status, 0, result.stderr);
+			assert.equal(JSON.parse(result.stdout).data.returnedCount, 1);
+		}
+		const raw = run('search', 'alpha OR beta', '--fts', '--json');
+		assert.equal(raw.status, 0, raw.stderr);
+		assert.equal(JSON.parse(raw.stdout).data.returnedCount, 2);
+		const invalid = run('search', 'desk:', '--fts');
+		assert.equal(invalid.status, 2);
+		assert.match(invalid.stdout + invalid.stderr, /Invalid FTS query: "desk:"/);
+		const started = run('start', '1');
+		assert.equal(started.status, 0, started.stderr);
+		assert.match(started.stdout, /id 1/);
+		assert.equal(
+			JSON.parse(run('show', '1', '--json').stdout).data.item.detail.state,
+			'in_progress',
+		);
+		assert.equal(run('start', '999').status, 3);
+		assert.match(run('--help').stdout, /start/);
+		assert.deepEqual(
+			questlogPlainCommands()
+				.find((c) => c.spec.command === 'start')
+				?.input({ id: 1, force: true }),
+			{ action: 'start', questId: 1, force: true },
+		);
+	} finally {
+		rmSync(dir, { recursive: true, force: true });
+	}
 });

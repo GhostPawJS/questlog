@@ -30,6 +30,7 @@ Run tools as `ghostpaw-questlog ...`; use `~/.local/bin/ghostpaw-questlog` if it
 - `questlog search <words>` before `add` to avoid duplicates.
 - `ghostpaw-questlog add "Write the report" --tag work --due tomorrow`
 - `questlog list [--view <view>]`: deliveries, questlines, quests.active, quests.available, quests.blocked, quests.deferred, quests.due_soon, quests.in_progress, quests.missed_scheduled, quests.open, quests.overdue, quests.resolved, quests.scheduled_for_day, quests.scheduled_now, repeatables.due_anchors, rumors.
+- `questlog start 12 [--force]` starts a quest.
 - `questlog done 12 --outcome "Report sent"`
 - `questlog search "release"`
 - `questlog show 12`
@@ -89,6 +90,7 @@ Read-only.
 
 | Parameter | Type | Required | Values / description |
 | --- | --- | --- | --- |
+| fts | boolean | no | Use raw FTS5 syntax. Defaults to false. |
 | query | string | yes | Text to search for in rumor and quest titles and body text. |
 | limit | integer | no | Maximum number of matches to return. |
 | kinds | array | no | Optional entity kinds to search. |

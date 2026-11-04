@@ -10,11 +10,21 @@ import type { QuestlogSearchResult } from './search_result.ts';
  * CROSS JOIN keeps the FTS table as the outer loop; with a plain JOIN SQLite
  * may walk idx_quests_deleted_at and probe the FTS index once per quest.
  */
-export function searchQuestlog(db: QuestlogDb, query: string): QuestlogSearchResult[] {
+export function searchQuestlog(
+	db: QuestlogDb,
+	query: string,
+	options: { fts?: boolean } = {},
+): QuestlogSearchResult[] {
 	const trimmed = query.trim();
 	if (!trimmed) {
 		return [];
 	}
+	const quote = (text: string) => `"${text.replaceAll('"', '""')}"`;
+	const match = options.fts
+		? trimmed
+		: trimmed.length >= 2 && trimmed.startsWith('"') && trimmed.endsWith('"')
+			? quote(trimmed.slice(1, -1))
+			: trimmed.split(/\s+/).map(quote).join(' ');
 	const now = Date.now();
 
 	const questRows = db
@@ -45,7 +55,7 @@ export function searchQuestlog(db: QuestlogDb, query: string): QuestlogSearchRes
        FROM quests_fts CROSS JOIN quests q ON q.id = quests_fts.rowid
        WHERE quests_fts MATCH ? AND q.deleted_at IS NULL`,
 		)
-		.all(trimmed)
+		.all(match)
 		.map((row) => {
 			const state = deriveQuestState({
 				startedAt: row.started_at == null ? null : Number(row.started_at),
@@ -83,7 +93,7 @@ export function searchQuestlog(db: QuestlogDb, query: string): QuestlogSearchRes
        FROM rumors_fts CROSS JOIN rumors r ON r.id = rumors_fts.rowid
        WHERE rumors_fts MATCH ? AND r.deleted_at IS NULL`,
 		)
-		.all(trimmed)
+		.all(match)
 		.map((row) => ({
 			entityKind: 'rumor' as const,
 			entityId: Number(row.id),

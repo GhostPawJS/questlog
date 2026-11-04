@@ -73,6 +73,7 @@ questlog add "Review release notes" --tag release --due 2030-01-02
 questlog list --limit 10
 questlog search release notes --limit 5
 questlog show 1
+questlog start 1
 questlog done 1 --outcome "Reviewed changes"
 questlog list --view quests.resolved --json
 ```
@@ -84,8 +85,11 @@ values use local end of day.
 `--objective` is the one flag that reads a file: `@path`, `@-` for stdin, and
 `@@text` for a literal `@text` (help marks it `(@file, @- stdin, @@ literal @)`). Every
 other value, including titles, `--outcome` and per-tool flags, is literal.
+`list --tag work --tag urgent` requires all tags and supports quest views; unknown tags return an empty list.
+
 `list` defaults to available quests; `list --help` lists all supported views.
 Its `--limit` caps text output; JSON preserves the full review tool result.
+`search --fts` enables raw FTS5 syntax; search text is literal by default.
 `search --limit` caps matches in both formats. `show` prints full quest detail.
 Lists show local due dates, overdue markers, and recorded outcomes. Plain JSON
 adds ISO UTC siblings for numeric timestamp fields ending in `At`.

@@ -107,10 +107,19 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 				command: 'list',
 				description:
 					'Review quests and other work. Limit caps text output; JSON contains the full tool result.',
-				flags: [{ name: 'view', type: 'string', enum: ['available', ...views] }, limit],
+				flags: [
+					{ name: 'view', type: 'string', enum: ['available', ...views] },
+					{ name: 'tag', type: 'array', description: 'Require every tag (repeatable; AND).' },
+					limit,
+				],
 			},
 			tool: 'review_questlog',
-			input: (v) => ({ view: !v.view || v.view === 'available' ? 'quests.available' : v.view }),
+			input: (v) => {
+				const view = !v.view || v.view === 'available' ? 'quests.available' : String(v.view);
+				if (v.tag !== undefined && !view.startsWith('quests.'))
+					throw new CliUsageError('--tag requires a quest view');
+				return { view, ...(v.tag === undefined ? {} : { filters: { tagNames: v.tag } }) };
+			},
 			render: renderQuestlogPlainResult,
 		},
 		{
@@ -139,11 +148,12 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 				command: 'search',
 				description: 'Search quests and rumors.',
 				positionals: [{ name: 'query', type: 'string', variadic: true, required: true }],
-				flags: [limit],
+				flags: [limit, { name: 'fts', type: 'boolean', description: 'Use raw FTS5 syntax.' }],
 			},
 			tool: 'search_questlog',
 			input: (v) => ({
 				query: (v.query as string[]).join(' '),
+				...(v.fts === undefined ? {} : { fts: v.fts }),
 				...(v.limit === undefined ? {} : { limit: v.limit }),
 			}),
 			render: renderQuestlogPlainResult,
@@ -152,6 +162,23 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 			spec: { command: 'show', description: 'Inspect a quest by id.', positionals: [id] },
 			tool: 'inspect_questlog_item',
 			input: (v) => ({ target: { kind: 'quest', id: v.id }, detailLevel: 'full' }),
+			render: renderQuestlogPlainResult,
+		},
+		{
+			spec: {
+				command: 'start',
+				description: 'Start a quest.',
+				positionals: [id],
+				flags: [
+					{ name: 'force', type: 'boolean', description: 'Start despite unmet prerequisites.' },
+				],
+			},
+			tool: 'run_quest',
+			input: (v) => ({
+				action: 'start',
+				questId: v.id,
+				...(v.force === undefined ? {} : { force: v.force }),
+			}),
 			render: renderQuestlogPlainResult,
 		},
 	];

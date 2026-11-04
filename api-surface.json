@@ -3711,6 +3711,10 @@
 		"kind": "type",
 		"type": "SearchQuestlogToolInput",
 		"members": {
+			"fts": {
+				"type": "boolean | undefined",
+				"optional": true
+			},
 			"kinds": {
 				"type": "(\"quest\" | \"rumor\")[] | undefined",
 				"optional": true
@@ -3728,7 +3732,7 @@
 				"optional": false
 			}
 		},
-		"definition": "interface SearchQuestlogToolInput { query: string; limit?: number; kinds?: Array<'quest' | 'rumor'>; mode?: 'browse' | 'identify_one'; }"
+		"definition": "interface SearchQuestlogToolInput { query: string; fts?: boolean; limit?: number; kinds?: Array<'quest' | 'rumor'>; mode?: 'browse' | 'identify_one'; }"
 	},
 	".:public.getQuestlogToolByName.types.SearchQuestlogToolResult": {
 		"kind": "type",
@@ -6944,7 +6948,7 @@
 	},
 	".:public.read.searchQuestlog": {
 		"kind": "value",
-		"type": "(db: QuestlogDb, query: string) => QuestlogSearchResult[]"
+		"type": "(db: QuestlogDb, query: string, options?: { fts?: boolean; }) => QuestlogSearchResult[]"
 	},
 	".:public.recoverFromModelingMistakesSkill": {
 		"kind": "value",

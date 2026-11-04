@@ -1,6 +1,7 @@
 import { searchQuestlog } from '../search_questlog.ts';
 import {
 	arraySchema,
+	booleanSchema,
 	defineQuestlogTool,
 	enumSchema,
 	integerSchema,
@@ -16,6 +17,7 @@ import { toolFailure, toolNeedsClarification, toolSuccess, toolWarning } from '.
 
 export interface SearchQuestlogToolInput {
 	query: string;
+	fts?: boolean;
 	limit?: number;
 	kinds?: Array<'quest' | 'rumor'>;
 	mode?: 'browse' | 'identify_one';
@@ -53,7 +55,23 @@ export function searchQuestlogToolHandler(
 		);
 	}
 
-	const allHits = searchQuestlog(db, query);
+	let allHits: ReturnType<typeof searchQuestlog>;
+	try {
+		allHits = searchQuestlog(db, query, { fts: input.fts ?? false });
+	} catch (cause) {
+		if (
+			!input.fts ||
+			!(cause instanceof Error) ||
+			!/fts5|syntax error|unterminated string|no such column/i.test(cause.message)
+		)
+			throw cause;
+		return toolFailure(
+			'protocol',
+			'invalid_input',
+			`Invalid FTS query: ${JSON.stringify(query)}.`,
+			'Use valid FTS5 syntax or omit fts to search literal text.',
+		);
+	}
 	const filteredHits =
 		input.kinds && input.kinds.length > 0
 			? allHits.filter((hit) => input.kinds?.includes(hit.entityKind))
@@ -141,6 +159,7 @@ export const searchQuestlogTool = defineQuestlogTool<
 	supportsClarification: true,
 	targetKinds: ['quest', 'rumor'],
 	inputDescriptions: {
+		fts: 'Use raw FTS5 syntax instead of literal text. Defaults to false.',
 		query: 'Text to search for in rumor and quest titles and body text.',
 		limit: 'Maximum number of matches to return. Leave unset to return all matches.',
 		kinds: 'Optional entity kinds to restrict the search to quests, rumors, or both.',
@@ -150,6 +169,7 @@ export const searchQuestlogTool = defineQuestlogTool<
 		'Returns compact matching items with ids, titles, snippets, and markers, plus returned and total counts. In identify-one mode, the tool can return structured clarification instead of guessing.',
 	inputSchema: objectSchema(
 		{
+			fts: booleanSchema('Use raw FTS5 syntax. Defaults to false.'),
 			query: stringSchema('Text to search for in rumor and quest titles and body text.'),
 			limit: integerSchema('Maximum number of matches to return.'),
 			kinds: arraySchema(

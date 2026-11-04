@@ -30,6 +30,7 @@ export const questlogSkillSpec = {
 		'- `questlog search <words>` before `add` to avoid duplicates.',
 		'- `ghostpaw-questlog add "Write the report" --tag work --due tomorrow`',
 		`- \`questlog list [--view <view>]\`: ${reviewQuestlogTool.inputSchema.properties?.view?.enum?.join(', ')}.`,
+		'- `questlog start 12 [--force]` starts a quest.',
 		'- `questlog done 12 --outcome "Report sent"`',
 		'- `questlog search "release"`',
 		'- `questlog show 12`',

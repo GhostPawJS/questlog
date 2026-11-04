@@ -176,3 +176,26 @@ describe('searchQuestlog query plan', () => {
 		}
 	});
 });
+
+it('quotes punctuation, operators and embedded quotes while retaining AND and phrase searches', () => {
+	const quest = createQuest(db, {
+		title: 'instagram-desk: agentpreneur: German WoW price visible -leading say "hello" AND NEAR',
+		objective: 'note',
+	});
+	captureRumor(db, { title: 'Other', details: 'German unrelated WoW' });
+	for (const query of [
+		'instagram-desk:',
+		'agentpreneur: German WoW price visible',
+		'-leading',
+		'say "hello"',
+		'AND NEAR',
+		'"agentpreneur:"',
+	]) {
+		strictEqual(searchQuestlog(db, query)[0]?.entityId, quest.id);
+		strictEqual(searchQuestlog(db, query).length, 1);
+	}
+	strictEqual(searchQuestlog(db, 'German WoW').length, 2);
+	strictEqual(searchQuestlog(db, '"German WoW"').length, 1);
+	strictEqual(searchQuestlog(db, 'note OR unrelated', { fts: true }).length, 2);
+	strictEqual(searchQuestlog(db, '""').length, 0);
+});

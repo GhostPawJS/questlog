@@ -1,6 +1,7 @@
 import { deepStrictEqual, strictEqual } from 'node:assert/strict';
 import { beforeEach, describe, it } from 'node:test';
 import type { QuestlogDb } from '../database.ts';
+import { createQuest } from '../quests/create_quest.ts';
 import { reviewQuestlogTool } from './review_questlog_tool.ts';
 import {
 	createToolTestDb,
@@ -14,6 +15,23 @@ describe('reviewQuestlogTool', () => {
 
 	beforeEach(async () => {
 		db = await createToolTestDb();
+	});
+
+	it('filters quest views by all filters.tagNames', () => {
+		const first = createQuest(db, { title: 'Work', objective: 'Work', tags: ['work'] });
+		const both = createQuest(db, { title: 'Both', objective: 'Both', tags: ['work', 'urgent'] });
+		const review = (tags: string[]) =>
+			expectSuccess(
+				reviewQuestlogTool.handler(db, { view: 'quests.open', filters: { tagNames: tags } }),
+			)
+				.data.items.map((item) => item.id)
+				.sort();
+		deepStrictEqual(review([' WORK ']), [first.id, both.id].sort());
+		deepStrictEqual(review(['work', 'urgent']), [both.id]);
+		deepStrictEqual(review(['unknown']), []);
+		expectError(
+			reviewQuestlogTool.handler(db, { view: 'rumors', filters: { tagNames: ['work'] } }),
+		);
 	});
 
 	it('asks for the day when scheduled-for-day is underspecified', () => {

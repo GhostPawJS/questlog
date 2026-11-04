@@ -5,9 +5,21 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Added
+
+- Repeatable `list --tag` filters quests by all given tags; combines with `--view` and `--limit` (tool input: `filters.tagNames`).
+- `questlog start <id> [--force]` starts a quest through `run_quest`.
+- Opt-in raw FTS5 search syntax through CLI `--fts` and tool input `fts`.
+
 ### Changed
 
+- Search escapes its input by default: punctuation such as `:` and `-` matches literally, and input wrapped in double quotes is searched as one phrase. Pass `--fts` (tool: `fts: true`) for FTS5 operators.
 - Remove landing page sources and the automated site deployment workflow; retain the demo build tooling. Demo fonts can be supplied through `DOCS_FONT_DIR`.
+
+### Fixed
+
+- `search 'instagram-desk:'` and similar queries no longer fail with `no such column`; invalid `--fts` queries exit 2.
+- A `--db` path whose parent cannot be created reports `Cannot create database directory <dir>: <reason>` and exits 2.
 
 ## [0.11.3] - 2026-10-30
 

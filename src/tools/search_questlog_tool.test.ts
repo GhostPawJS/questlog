@@ -56,3 +56,24 @@ describe('searchQuestlogTool', () => {
 		strictEqual(result.warnings?.[0]?.code, 'empty_result');
 	});
 });
+
+it('supports literal punctuation and opt-in raw syntax with structured query errors', async () => {
+	const db = await createToolTestDb();
+	try {
+		captureRumorTool.handler(db, { title: 'agentpreneur: German WoW price visible' });
+		captureRumorTool.handler(db, { title: 'beta' });
+		for (const query of ['agentpreneur: German WoW price visible', '"agentpreneur:"']) {
+			strictEqual(expectSuccess(searchQuestlogTool.handler(db, { query })).data.totalCount, 1);
+		}
+		strictEqual(
+			expectSuccess(searchQuestlogTool.handler(db, { query: 'German OR beta', fts: true })).data
+				.totalCount,
+			2,
+		);
+		const result = expectError(searchQuestlogTool.handler(db, { query: 'desk:', fts: true }));
+		strictEqual(result.error.code, 'invalid_input');
+		strictEqual(result.summary, 'Invalid FTS query: "desk:".');
+	} finally {
+		db.close();
+	}
+});
