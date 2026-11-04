@@ -1,4 +1,6 @@
+export type { DueInput, DueItem } from '../due.ts';
 export { captureRumorTool, captureRumorToolHandler } from './capture_rumor_tool.ts';
+export { dueTool } from './due_tool.ts';
 export {
 	inspectQuestlogItemTool,
 	inspectQuestlogItemToolHandler,
@@ -39,6 +41,7 @@ export {
 } from './tool_metadata.ts';
 export {
 	captureRumorToolName,
+	dueToolName,
 	inspectQuestlogItemToolName,
 	manageHooksToolName,
 	manageRepeatableToolName,

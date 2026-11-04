@@ -5,6 +5,7 @@ import {
 	enumSchema,
 	integerSchema,
 	objectSchema,
+	stringSchema,
 } from './tool_metadata.ts';
 import { type ToolResult, toolFailure, toolSuccess } from './tool_types.ts';
 
@@ -13,6 +14,8 @@ export const manageHooksTool = defineQuestlogTool<
 		action: 'list' | 'remove' | 'tick' | 'deliveries';
 		id?: number;
 		dry_run?: boolean;
+		claim?: string;
+		within?: string;
 	},
 	Promise<ToolResult<unknown>>
 >({
@@ -26,6 +29,8 @@ export const manageHooksTool = defineQuestlogTool<
 	supportsClarification: false,
 	targetKinds: ['hook'],
 	inputDescriptions: {
+		claim: 'Claim due work for this consumer during tick.',
+		within: 'Due selection duration, default 0m.',
 		action: 'Operation to perform.',
 		id: 'Target id for removal.',
 		dry_run: 'Preview a tick without recording or sending.',
@@ -37,6 +42,8 @@ export const manageHooksTool = defineQuestlogTool<
 			action: enumSchema('Operation.', ['list', 'remove', 'tick', 'deliveries']),
 			id: integerSchema('Target id.'),
 			dry_run: booleanSchema('Preview only.'),
+			claim: stringSchema('Consumer for due claims.'),
+			within: stringSchema('Due duration such as 15m or 1d.'),
 		},
 		['action'],
 	),
@@ -68,7 +75,11 @@ export const manageHooksTool = defineQuestlogTool<
 			case 'tick':
 				return toolSuccess(
 					'Webhook tick completed.',
-					await tickQuestlog(db, { dryRun: input.dry_run ?? false }),
+					await tickQuestlog(db, {
+						dryRun: input.dry_run ?? false,
+						...(input.claim === undefined ? {} : { claim: input.claim }),
+						...(input.within === undefined ? {} : { within: input.within }),
+					}),
 				);
 		}
 	},

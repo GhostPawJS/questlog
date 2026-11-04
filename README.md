@@ -670,3 +670,36 @@ Set `GHOSTPAW_OUTPUT=json` to select CLI JSON output as with `--json`.
 Other values leave the default output unchanged.
 
 When opening the default database, the CLI prints `using default db <path>` to stderr. Suppress this notice with `--quiet` or `GHOSTPAW_QUIET=1`.
+
+### Due selection and consumer claims
+
+`questlog due [--within 15m] [--tag work --tag team] [--limit 100] [--json]`
+selects open overdue/due quests and recurring occurrences through the inclusive
+horizon (default `0m`). Durations use integer `m`, `h`, or `d`; limits are 1–1000.
+Tags require every named tag. JSON `data` contains `items` and `hasMore`.
+Each item has `kind`, `key`, `questId` or `repeatableId` + `occurrenceAt`,
+`title`, epoch-millisecond `dueAt`, `overdue`, and `tags`. Text prints one line per item: key, due status, local date/time (as in list/show),
+then title and space-separated `#tags`, omitted when empty. For example:
+
+```text
+quest:1  overdue  1 Nov 2026 23:59  overdue one #ops #social
+occurrence:1:1792796520000  overdue  24 Oct 2026 01:02  nightly
+```
+
+The occurrence example uses Europe/Berlin local time.
+Recurring occurrences use the stored time zone and due offset (default zero),
+and retain their occurrence key after materialization. Resolved/deleted instances are excluded.
+
+`questlog due --claim worker` atomically records consumer-specific claims;
+reruns return only unclaimed items. Other consumers are independent.
+Release with `questlog due --release 12 --claim worker`, or
+`questlog due --release occurrence:3:1792882920000 --claim worker` using an item's key.
+Release only removes the mark; a subsequent due call selects it again if still open.
+Claims on resolved/deleted items need no cleanup.
+
+`questlog tick --claim worker [--within 2h]` claims up to 100 due items and sends
+one `quest.due` event per new claim through normal webhook batching/retries.
+Its payload adds the item fields above and `consumer`; this opt-in payload includes
+titles and tags. Plain tick retains its existing behavior. Dry-run rolls claims back.
+The MCP/tool `due` accepts `within`, `tags`, `limit`, `claim`, and `release`;
+it is marked as writing state because claim/release persist marks.

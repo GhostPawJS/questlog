@@ -12,3 +12,5 @@ export const rewardWorkToolName = 'reward_work';
 export const retireWorkToolName = 'retire_work';
 
 export const manageHooksToolName = 'manage_hooks';
+
+export const dueToolName = 'due';

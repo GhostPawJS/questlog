@@ -4,7 +4,7 @@ import type { PlainCliCommand } from '../surfaces/cli.ts';
 import type { CliArgument } from '../surfaces/cli_args.ts';
 import { CliUsageError } from '../surfaces/cli_args.ts';
 import { reviewQuestlogTool } from '../tools/review_questlog_tool.ts';
-import { parsePlainDue } from './plain_dates.ts';
+import { formatPlainDate, parsePlainDue } from './plain_dates.ts';
 import { renderQuestlogPlainResult } from './render_questlog_plain_result.ts';
 
 export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] {
@@ -21,6 +21,51 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 	const id: CliArgument = { name: 'id', type: 'integer', required: true };
 	const views = reviewQuestlogTool.inputSchema.properties?.view?.enum ?? [];
 	const commands: PlainCliCommand<QuestlogDb>[] = [
+		{
+			spec: {
+				command: 'due',
+				description: 'Select due work; optionally claim per consumer or release a claim.',
+				flags: [
+					{
+						name: 'within',
+						type: 'string',
+						description: 'Duration (15m, 2h, 1d, 7d); default 0m.',
+					},
+					{ name: 'tag', type: 'array', description: 'Require every tag.' },
+					limit,
+					{ name: 'claim', type: 'string', description: 'Consumer name for idempotent claims.' },
+					{
+						name: 'release',
+						type: 'string',
+						description:
+							'Quest id or occurrence:<repeatableId>:<epoch milliseconds>; requires --claim.',
+					},
+				],
+			},
+			tool: 'due',
+			input: (v) => ({
+				...(v.within === undefined ? {} : { within: v.within }),
+				...(v.tag === undefined ? {} : { tags: v.tag }),
+				...(v.limit === undefined ? {} : { limit: v.limit }),
+				...(v.claim === undefined ? {} : { claim: v.claim }),
+				...(v.release === undefined ? {} : { release: v.release }),
+			}),
+			render: (r) => {
+				const result = r as {
+					summary: string;
+					data?: { items: import('../due.ts').DueItem[]; released?: boolean };
+				};
+				return result.data && result.data.released === undefined
+					? result.data.items
+							.map(
+								(i) =>
+									`${i.key}  ${i.overdue ? 'overdue' : 'due'}  ${formatPlainDate(i.dueAt, true)}  ${i.title.replace(/[\r\n]+/g, ' ')}${i.tags.length ? ` ${i.tags.map((tag) => `#${tag}`).join(' ')}` : ''}`,
+							)
+							.join('\n') + (result.data.items.length ? '\n' : '')
+					: `${result.summary}\n`;
+			},
+		},
+
 		{
 			spec: {
 				command: 'repeatable',
@@ -99,10 +144,19 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 			spec: {
 				command: 'tick',
 				description: 'Detect events and deliver outbound webhooks once.',
-				flags: [{ name: 'dry-run', type: 'boolean' }],
+				flags: [
+					{ name: 'dry-run', type: 'boolean' },
+					{ name: 'claim', type: 'string' },
+					{ name: 'within', type: 'string' },
+				],
 			},
 			tool: 'manage_hooks',
-			input: (v) => ({ action: 'tick', dry_run: v.dryRun ?? false }),
+			input: (v) => ({
+				action: 'tick',
+				dry_run: v.dryRun ?? false,
+				...(v.claim === undefined ? {} : { claim: v.claim }),
+				...(v.within === undefined ? {} : { within: v.within }),
+			}),
 			render: (r, _db, values) => {
 				const result = r as {
 					ok: boolean;
@@ -111,7 +165,7 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 				};
 				if (!result.ok || !result.data) return `${result.summary}\n`;
 				const d = result.data;
-				return `${d.events.length} events found; ${d.sent} deliveries sent, ${d.queued} queued, ${d.retrying} retrying, ${d.failed} failed.\n${values.dryRun ? `${JSON.stringify({ events: d.events, batches: d.batches }, null, 2)}\n` : ''}`;
+				return `${d.dueClaimed === undefined ? '' : `${d.dueClaimed} due items claimed; `}${d.events.length} events found; ${d.sent} deliveries sent, ${d.queued} queued, ${d.retrying} retrying, ${d.failed} failed.\n${values.dryRun ? `${JSON.stringify({ events: d.events, batches: d.batches }, null, 2)}\n` : ''}`;
 			},
 		},
 		{

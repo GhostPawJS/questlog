@@ -15,7 +15,7 @@ describe('tool registry', () => {
 		const names = questlogTools.map((tool) => tool.name);
 		const uniqueNames = new Set(names);
 
-		strictEqual(questlogTools.length, 13);
+		strictEqual(questlogTools.length, 14);
 		strictEqual(uniqueNames.size, questlogTools.length);
 
 		for (const tool of questlogTools) {
@@ -60,6 +60,7 @@ describe('tool registry', () => {
 			'tag_work',
 			'reward_work',
 			'retire_work',
+			'due',
 		]);
 	});
 

@@ -13,6 +13,14 @@ export interface HookEvent {
 	rumorId?: number;
 	repeatableId?: number;
 	occurredAt: string;
+	consumer?: string;
+	kind?: 'quest' | 'occurrence';
+	key?: string;
+	occurrenceAt?: number;
+	title?: string;
+	dueAt?: number;
+	overdue?: boolean;
+	tags?: string[];
 }
 export interface HookTarget {
 	id: number;
@@ -43,10 +51,13 @@ export interface TickOptions {
 	fetch?: typeof globalThis.fetch;
 	dryRun?: boolean;
 	timeoutMs?: number;
+	claim?: string;
+	within?: string;
 }
 export interface TickResult {
 	events: HookEvent[];
 	batches: { targetId: number; events: HookEvent[] }[];
+	dueClaimed?: number;
 	sent: number;
 	queued: number;
 	retrying: number;

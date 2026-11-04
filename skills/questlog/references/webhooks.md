@@ -56,7 +56,7 @@ with rollback. Batches contain only ids, event types, timestamps, and the DB lab
 Headers are `content-type: application/json`, `user-agent: questlog/<version>`,
 `x-questlog-delivery: <deliveryId>`, `x-questlog-timestamp: <unix seconds>`, and
 `x-questlog-signature: sha256=<hex HMAC-SHA256(secret, timestamp + "." + rawBody)>`.
-No titles, objectives, details, or tag text are sent. `hook test` sends a logged `hook.test`
+Plain tick sends no titles, objectives, details, or tag text. With `tick --claim worker [--within 15m]`, quest.due events include kind, key, questId or repeatableId + occurrenceAt, title, dueAt (epoch ms), overdue, tags, and consumer. Each consumer claims a due item once; release via `due --release <key> --claim worker`. The due tool accepts within, tags (AND), limit (default 100, max 1000), claim, release; claim/release write state. Dry-run rolls back claims. `hook test` sends a logged `hook.test`
 event immediately, ignoring the min gap. Add and test are CLI-only in the tool facade;
 `manage_hooks` supports list, remove, tick (with `dry_run`), and deliveries.
 

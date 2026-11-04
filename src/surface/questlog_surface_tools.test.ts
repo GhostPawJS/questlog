@@ -5,6 +5,7 @@ import { questlogSurfaceTools } from './questlog_surface_tools.ts';
 
 const inputs: Record<string, Record<string, unknown>> = {
 	manage_hooks: { action: 'list' },
+	due: {},
 	search_questlog: {
 		query: 'planning',
 	},

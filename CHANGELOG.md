@@ -7,15 +7,15 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ### Added
 
-- Without `--db` or `GHOSTPAW_QUESTLOG_DB`, the CLI prints `using default db <path>` on stderr; `--quiet` or `GHOSTPAW_QUIET=1` suppresses it.
-- `list --offset`; list JSON carries `total`, `offset`, `limit` and `hasMore`.
-
-- Quest title revision through `plan_quest` and `quest revise`, with search index updates.
-- Filtered quest counts by tag or title prefix through `list --count-by`.
-- Open quest duplicate groups through the `quests.duplicates` review view.
-- `review duplicates` is a short alias for `review quests.duplicates`.
+- `quest revise <id> --title` and plan_quest `revise_title` revise a quest title; the search index follows.
+- `list --count-by tag|prefix` counts filtered quests by tag or title prefix.
+- `review duplicates` (view `quests.duplicates`) groups open quests with similar titles.
 - Repeatables take an optional IANA time zone (`--tz`, tool input `tz`); recurrence then follows local wall-clock time across DST changes. Repeatables without one keep the current behavior. `repeatable revise <id> --tz <zone|none>` sets or clears it.
+- `questlog due [--within <dur>] [--tag x] [--limit N] [--claim <consumer>]` lists due and overdue quests and repeatable occurrences (in their time zone); `--claim` returns each item once per consumer and `due --release <key> --claim <consumer>` unclaims. Tool: `due`.
+- `tick --claim <consumer>` emits a `quest.due` webhook event for each newly claimed item; plain `tick` is unchanged.
+- `list --offset`; list JSON carries `total`, `offset`, `limit` and `hasMore`.
 - `GHOSTPAW_OUTPUT=json` makes JSON the CLI output format.
+- Without `--db` or `GHOSTPAW_QUESTLOG_DB`, the CLI prints `using default db <path>` on stderr; `--quiet` or `GHOSTPAW_QUIET=1` suppresses it.
 
 ### Fixed
 

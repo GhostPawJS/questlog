@@ -1,4 +1,5 @@
 import type { QuestlogDb } from './database.ts';
+import { initDueTables } from './due.ts';
 import { initHookTables } from './hooks/init_hook_tables.ts';
 import { initQuestlineTables } from './questlines/init_questline_tables.ts';
 import { initQuestSearch } from './quests/init_quest_search.ts';
@@ -24,4 +25,5 @@ export function initQuestlogTables(db: QuestlogDb): void {
 	initQuestSearch(db);
 	initRumorSearch(db);
 	initHookTables(db);
+	initDueTables(db);
 }

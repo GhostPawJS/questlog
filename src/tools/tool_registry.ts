@@ -1,4 +1,5 @@
 import { captureRumorTool } from './capture_rumor_tool.ts';
+import { dueTool } from './due_tool.ts';
 import { inspectQuestlogItemTool } from './inspect_questlog_item_tool.ts';
 import { manageHooksTool } from './manage_hooks_tool.ts';
 import { manageRepeatableTool } from './manage_repeatable_tool.ts';
@@ -27,6 +28,7 @@ export const questlogTools = [
 	tagWorkTool,
 	rewardWorkTool,
 	retireWorkTool,
+	dueTool,
 ] satisfies ToolDefinitionRegistry;
 
 export function listQuestlogToolDefinitions() {

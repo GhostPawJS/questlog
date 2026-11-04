@@ -721,6 +721,55 @@
 	".:exports.tools.defineQuestlogTool": {
 		"kind": "function"
 	},
+	".:exports.tools.dueTool": {
+		"kind": "object"
+	},
+	".:exports.tools.dueTool.description": {
+		"kind": "string",
+		"value": "Select open due quests and recurring occurrences, optionally claiming them per consumer."
+	},
+	".:exports.tools.dueTool.handler": {
+		"kind": "function"
+	},
+	".:exports.tools.dueTool.inputDescriptions": {
+		"kind": "object"
+	},
+	".:exports.tools.dueTool.inputSchema": {
+		"kind": "object"
+	},
+	".:exports.tools.dueTool.name": {
+		"kind": "string",
+		"value": "due"
+	},
+	".:exports.tools.dueTool.outputDescription": {
+		"kind": "string",
+		"value": "Items with stable keys, dueAt, overdue and tags, plus hasMore. Release removes a claim without selecting items."
+	},
+	".:exports.tools.dueTool.readOnly": {
+		"kind": "boolean"
+	},
+	".:exports.tools.dueTool.sideEffects": {
+		"kind": "string",
+		"value": "writes_state"
+	},
+	".:exports.tools.dueTool.supportsClarification": {
+		"kind": "boolean"
+	},
+	".:exports.tools.dueTool.targetKinds": {
+		"kind": "object"
+	},
+	".:exports.tools.dueTool.whenNotToUse": {
+		"kind": "string",
+		"value": "Use inspection tools for full entity details."
+	},
+	".:exports.tools.dueTool.whenToUse": {
+		"kind": "string",
+		"value": "Read due work or claim a batch for an automation consumer."
+	},
+	".:exports.tools.dueToolName": {
+		"kind": "string",
+		"value": "due"
+	},
 	".:exports.tools.enumSchema": {
 		"kind": "function"
 	},
@@ -1170,6 +1219,9 @@
 	".:exports.tools.questlogToolMappings.58": {
 		"kind": "object"
 	},
+	".:exports.tools.questlogToolMappings.59": {
+		"kind": "object"
+	},
 	".:exports.tools.questlogToolMappings.6": {
 		"kind": "object"
 	},
@@ -1198,6 +1250,9 @@
 		"kind": "object"
 	},
 	".:exports.tools.questlogTools.12": {
+		"kind": "object"
+	},
+	".:exports.tools.questlogTools.13": {
 		"kind": "object"
 	},
 	".:exports.tools.questlogTools.2": {
@@ -2184,6 +2239,76 @@
 			"Rumor": ".:public.Rumor"
 		}
 	},
+	".:public.DueInput": {
+		"kind": "type",
+		"type": "DueInput",
+		"members": {
+			"claim": {
+				"type": "string | undefined",
+				"optional": true
+			},
+			"limit": {
+				"type": "number | undefined",
+				"optional": true
+			},
+			"release": {
+				"type": "string | undefined",
+				"optional": true
+			},
+			"tags": {
+				"type": "string[] | undefined",
+				"optional": true
+			},
+			"within": {
+				"type": "string | undefined",
+				"optional": true
+			}
+		},
+		"definition": "interface DueInput { within?: string; tags?: string[]; limit?: number; claim?: string; release?: string; }"
+	},
+	".:public.DueItem": {
+		"kind": "type",
+		"type": "DueItem",
+		"members": {
+			"dueAt": {
+				"type": "number",
+				"optional": false
+			},
+			"key": {
+				"type": "string",
+				"optional": false
+			},
+			"kind": {
+				"type": "\"quest\" | \"occurrence\"",
+				"optional": false
+			},
+			"occurrenceAt": {
+				"type": "number | undefined",
+				"optional": true
+			},
+			"overdue": {
+				"type": "boolean",
+				"optional": false
+			},
+			"questId": {
+				"type": "number | undefined",
+				"optional": true
+			},
+			"repeatableId": {
+				"type": "number | undefined",
+				"optional": true
+			},
+			"tags": {
+				"type": "string[]",
+				"optional": false
+			},
+			"title": {
+				"type": "string",
+				"optional": false
+			}
+		},
+		"definition": "interface DueItem { kind: 'quest' | 'occurrence'; key: string; questId?: number; repeatableId?: number; occurrenceAt?: number; title: string; dueAt: number; overdue: boolean; tags: string[]; }"
+	},
 	".:public.DueRepeatableAnchor": {
 		"kind": "type",
 		"type": "DueRepeatableAnchor",
@@ -2205,6 +2330,21 @@
 		"references": {
 			"MarkerId": ".:public.MarkerId"
 		}
+	},
+	".:public.dueTool": {
+		"kind": "value",
+		"type": "QuestlogToolDefinition<DueInput, ToolFailure | ToolSuccess<{ items: DueItem[]; hasMore: boolean; released?: boolean; }>>",
+		"references": {
+			"DueInput": ".:public.DueInput",
+			"DueItem": ".:public.DueItem",
+			"QuestlogToolDefinition": ".:public.QuestlogToolDefinition",
+			"ToolFailure": ".:public.ToolFailure",
+			"ToolSuccess": ".:public.ToolSuccess"
+		}
+	},
+	".:public.dueToolName": {
+		"kind": "value",
+		"type": "\"due\""
 	},
 	".:public.enumSchema": {
 		"kind": "value",
@@ -2321,10 +2461,12 @@
 	},
 	".:public.getQuestlogToolByName": {
 		"kind": "value",
-		"type": "(name: string) => QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; }, Promise<ToolResult<unknown>>> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult> | null",
+		"type": "(name: string) => QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<DueInput, ToolFailure | ToolSuccess<{ items: DueItem[]; hasMore: boolean; released?: boolean; }>> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; claim?: string; within?: string; }, Promise<ToolResult<unknown>>> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult> | null",
 		"references": {
 			"CaptureRumorInput": ".:public.CaptureRumorInput",
 			"CaptureRumorToolResult": ".:public.captureRumorTool.types.CaptureRumorToolResult",
+			"DueInput": ".:public.DueInput",
+			"DueItem": ".:public.DueItem",
 			"InspectQuestlogItemToolInput": ".:public.getQuestlogToolByName.types.InspectQuestlogItemToolInput",
 			"InspectQuestlogItemToolResult": ".:public.getQuestlogToolByName.types.InspectQuestlogItemToolResult",
 			"ManageRepeatableToolInput": ".:public.getQuestlogToolByName.types.ManageRepeatableToolInput",
@@ -2348,7 +2490,9 @@
 			"ShapeWorkToolResult": ".:public.getQuestlogToolByName.types.ShapeWorkToolResult",
 			"TagWorkToolInput": ".:public.getQuestlogToolByName.types.TagWorkToolInput",
 			"TagWorkToolResult": ".:public.getQuestlogToolByName.types.TagWorkToolResult",
-			"ToolResult": ".:public.ToolResult"
+			"ToolFailure": ".:public.ToolFailure",
+			"ToolResult": ".:public.ToolResult",
+			"ToolSuccess": ".:public.ToolSuccess"
 		}
 	},
 	".:public.getQuestlogToolByName.types.InspectQuestlogItemToolInput": {
@@ -2483,13 +2627,37 @@
 		"kind": "type",
 		"type": "HookEvent",
 		"members": {
+			"consumer": {
+				"type": "string | undefined",
+				"optional": true
+			},
+			"dueAt": {
+				"type": "number | undefined",
+				"optional": true
+			},
 			"id": {
 				"type": "string",
 				"optional": false
 			},
+			"key": {
+				"type": "string | undefined",
+				"optional": true
+			},
+			"kind": {
+				"type": "\"quest\" | \"occurrence\" | undefined",
+				"optional": true
+			},
 			"occurredAt": {
 				"type": "string",
 				"optional": false
+			},
+			"occurrenceAt": {
+				"type": "number | undefined",
+				"optional": true
+			},
+			"overdue": {
+				"type": "boolean | undefined",
+				"optional": true
 			},
 			"questId": {
 				"type": "number | undefined",
@@ -2503,12 +2671,20 @@
 				"type": "number | undefined",
 				"optional": true
 			},
+			"tags": {
+				"type": "string[] | undefined",
+				"optional": true
+			},
+			"title": {
+				"type": "string | undefined",
+				"optional": true
+			},
 			"type": {
 				"type": "\"quest.due\" | \"quest.overdue\" | \"quest.unblocked\" | \"repeatable.spawned\" | \"rumor.captured\" | \"hook.test\"",
 				"optional": false
 			}
 		},
-		"definition": "interface HookEvent { id: string; type: HookEventType | 'hook.test'; questId?: number; rumorId?: number; repeatableId?: number; occurredAt: string; }",
+		"definition": "interface HookEvent { id: string; type: HookEventType | 'hook.test'; questId?: number; rumorId?: number; repeatableId?: number; occurredAt: string; consumer?: string; kind?: 'quest' | 'occurrence'; key?: string; occurrenceAt?: number; title?: string; dueAt?: number; overdue?: boolean; tags?: string[]; }",
 		"references": {
 			"HookEventType": ".:public.getQuestlogToolByName.types.InspectQuestlogItemToolResult.types.InspectQuestlogItemToolData.types.HookDelivery.types.HookEvent.types.HookEventType"
 		}
@@ -2517,7 +2693,7 @@
 		"kind": "type",
 		"type": "\"quest.due\" | \"quest.overdue\" | \"quest.unblocked\" | \"repeatable.spawned\" | \"rumor.captured\"",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -3264,7 +3440,7 @@
 		"kind": "type",
 		"type": "ReviewQuestlogToolView",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -4066,13 +4242,37 @@
 		"kind": "type",
 		"type": "HookEvent",
 		"members": {
+			"consumer": {
+				"type": "string | undefined",
+				"optional": true
+			},
+			"dueAt": {
+				"type": "number | undefined",
+				"optional": true
+			},
 			"id": {
 				"type": "string",
 				"optional": false
 			},
+			"key": {
+				"type": "string | undefined",
+				"optional": true
+			},
+			"kind": {
+				"type": "\"quest\" | \"occurrence\" | undefined",
+				"optional": true
+			},
 			"occurredAt": {
 				"type": "string",
 				"optional": false
+			},
+			"occurrenceAt": {
+				"type": "number | undefined",
+				"optional": true
+			},
+			"overdue": {
+				"type": "boolean | undefined",
+				"optional": true
 			},
 			"questId": {
 				"type": "number | undefined",
@@ -4084,6 +4284,14 @@
 			},
 			"rumorId": {
 				"type": "number | undefined",
+				"optional": true
+			},
+			"tags": {
+				"type": "string[] | undefined",
+				"optional": true
+			},
+			"title": {
+				"type": "string | undefined",
 				"optional": true
 			},
 			"type": {
@@ -4100,7 +4308,7 @@
 		"kind": "type",
 		"type": "\"quest.due\" | \"quest.overdue\" | \"quest.unblocked\" | \"repeatable.spawned\" | \"rumor.captured\"",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -4442,6 +4650,10 @@
 		"kind": "type",
 		"type": "TickOptions",
 		"members": {
+			"claim": {
+				"type": "string | undefined",
+				"optional": true
+			},
 			"clock": {
 				"type": "(() => number) | undefined",
 				"optional": true
@@ -4460,6 +4672,10 @@
 			},
 			"timeoutMs": {
 				"type": "number | undefined",
+				"optional": true
+			},
+			"within": {
+				"type": "string | undefined",
 				"optional": true
 			}
 		},
@@ -4472,6 +4688,10 @@
 		"kind": "type",
 		"type": "TickOptions",
 		"members": {
+			"claim": {
+				"type": "string | undefined",
+				"optional": true
+			},
 			"clock": {
 				"type": "(() => number) | undefined",
 				"optional": true
@@ -4491,9 +4711,13 @@
 			"timeoutMs": {
 				"type": "number | undefined",
 				"optional": true
+			},
+			"within": {
+				"type": "string | undefined",
+				"optional": true
 			}
 		},
-		"definition": "interface TickOptions { now?: number; clock?: () => number; fetch?: typeof globalThis.fetch; dryRun?: boolean; timeoutMs?: number; }"
+		"definition": "interface TickOptions { now?: number; clock?: () => number; fetch?: typeof globalThis.fetch; dryRun?: boolean; timeoutMs?: number; claim?: string; within?: string; }"
 	},
 	".:public.hooks.tickQuestlog": {
 		"kind": "value",
@@ -4506,6 +4730,10 @@
 			"batches": {
 				"type": "{ targetId: number; events: HookEvent[]; }[]",
 				"optional": false
+			},
+			"dueClaimed": {
+				"type": "number | undefined",
+				"optional": true
 			},
 			"events": {
 				"type": "HookEvent[]",
@@ -4541,6 +4769,10 @@
 				"type": "{ targetId: number; events: HookEvent[]; }[]",
 				"optional": false
 			},
+			"dueClaimed": {
+				"type": "number | undefined",
+				"optional": true
+			},
 			"events": {
 				"type": "HookEvent[]",
 				"optional": false
@@ -4562,7 +4794,7 @@
 				"optional": false
 			}
 		},
-		"definition": "interface TickResult { events: HookEvent[]; batches: { targetId: number; events: HookEvent[]; }[]; sent: number; queued: number; retrying: number; failed: number; }",
+		"definition": "interface TickResult { events: HookEvent[]; batches: { targetId: number; events: HookEvent[]; }[]; dueClaimed?: number; sent: number; queued: number; retrying: number; failed: number; }",
 		"references": {
 			"HookEvent": ".:public.getQuestlogToolByName.types.InspectQuestlogItemToolResult.types.InspectQuestlogItemToolData.types.HookDelivery.types.HookEvent"
 		}
@@ -4664,7 +4896,7 @@
 		"kind": "type",
 		"type": "JsonSchemaType",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -4978,10 +5210,12 @@
 	},
 	".:public.listQuestlogToolDefinitions": {
 		"kind": "value",
-		"type": "() => (QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; }, Promise<ToolResult<unknown>>> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult>)[]",
+		"type": "() => (QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<DueInput, ToolFailure | ToolSuccess<{ items: DueItem[]; hasMore: boolean; released?: boolean; }>> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; claim?: string; within?: string; }, Promise<ToolResult<unknown>>> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult>)[]",
 		"references": {
 			"CaptureRumorInput": ".:public.CaptureRumorInput",
 			"CaptureRumorToolResult": ".:public.captureRumorTool.types.CaptureRumorToolResult",
+			"DueInput": ".:public.DueInput",
+			"DueItem": ".:public.DueItem",
 			"InspectQuestlogItemToolInput": ".:public.getQuestlogToolByName.types.InspectQuestlogItemToolInput",
 			"InspectQuestlogItemToolResult": ".:public.getQuestlogToolByName.types.InspectQuestlogItemToolResult",
 			"ManageRepeatableToolInput": ".:public.getQuestlogToolByName.types.ManageRepeatableToolInput",
@@ -5005,7 +5239,9 @@
 			"ShapeWorkToolResult": ".:public.getQuestlogToolByName.types.ShapeWorkToolResult",
 			"TagWorkToolInput": ".:public.getQuestlogToolByName.types.TagWorkToolInput",
 			"TagWorkToolResult": ".:public.getQuestlogToolByName.types.TagWorkToolResult",
-			"ToolResult": ".:public.ToolResult"
+			"ToolFailure": ".:public.ToolFailure",
+			"ToolResult": ".:public.ToolResult",
+			"ToolSuccess": ".:public.ToolSuccess"
 		}
 	},
 	".:public.listResolvedQuests": {
@@ -5068,7 +5304,7 @@
 	},
 	".:public.manageHooksTool": {
 		"kind": "value",
-		"type": "QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; }, Promise<ToolResult<unknown>>>",
+		"type": "QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; claim?: string; within?: string; }, Promise<ToolResult<unknown>>>",
 		"references": {
 			"QuestlogToolDefinition": ".:public.QuestlogToolDefinition",
 			"ToolResult": ".:public.ToolResult"
@@ -5145,7 +5381,7 @@
 		"kind": "type",
 		"type": "MarkerId",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -5413,7 +5649,7 @@
 		"kind": "type",
 		"type": "MarkerId",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -6250,11 +6486,11 @@
 		"kind": "type",
 		"type": "QuestlogSkillRegistry",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => ArrayIterator<QuestlogSkill>",
 				"optional": false
 			},
-			"__@unscopables@835": {
+			"__@unscopables@863": {
 				"type": "{ readonly [x: number]: boolean | undefined; readonly length?: boolean | undefined; toString?: boolean | undefined; toLocaleString?: boolean | undefined; concat?: boolean | undefined; join?: boolean | undefined; slice?: boolean | undefined; indexOf?: boolean | undefined; lastIndexOf?: boolean | undefined; every?: boolean | undefined; some?: boolean | undefined; forEach?: boolean | undefined; map?: boolean | undefined; filter?: boolean | undefined; reduce?: boolean | undefined; reduceRight?: boolean | undefined; find?: boolean | undefined; findIndex?: boolean | undefined; entries?: boolean | undefined; keys?: boolean | undefined; values?: boolean | undefined; includes?: boolean | undefined; flatMap?: boolean | undefined; flat?: boolean | undefined; at?: boolean | undefined; findLast?: boolean | undefined; findLastIndex?: boolean | undefined; toReversed?: boolean | undefined; toSorted?: boolean | undefined; toSpliced?: boolean | undefined; with?: boolean | undefined; [Symbol.iterator]?: boolean | undefined; readonly [Symbol.unscopables]?: boolean | undefined; }",
 				"optional": false
 			},
@@ -6541,10 +6777,12 @@
 	},
 	".:public.questlogTools": {
 		"kind": "value",
-		"type": "(QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; }, Promise<ToolResult<unknown>>>)[]",
+		"type": "(QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult> | QuestlogToolDefinition<DueInput, ToolFailure | ToolSuccess<{ items: DueItem[]; hasMore: boolean; released?: boolean; }>> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; claim?: string; within?: string; }, Promise<ToolResult<unknown>>>)[]",
 		"references": {
 			"CaptureRumorInput": ".:public.CaptureRumorInput",
 			"CaptureRumorToolResult": ".:public.captureRumorTool.types.CaptureRumorToolResult",
+			"DueInput": ".:public.DueInput",
+			"DueItem": ".:public.DueItem",
 			"InspectQuestlogItemToolInput": ".:public.getQuestlogToolByName.types.InspectQuestlogItemToolInput",
 			"InspectQuestlogItemToolResult": ".:public.getQuestlogToolByName.types.InspectQuestlogItemToolResult",
 			"ManageRepeatableToolInput": ".:public.getQuestlogToolByName.types.ManageRepeatableToolInput",
@@ -6568,7 +6806,9 @@
 			"ShapeWorkToolResult": ".:public.getQuestlogToolByName.types.ShapeWorkToolResult",
 			"TagWorkToolInput": ".:public.getQuestlogToolByName.types.TagWorkToolInput",
 			"TagWorkToolResult": ".:public.getQuestlogToolByName.types.TagWorkToolResult",
-			"ToolResult": ".:public.ToolResult"
+			"ToolFailure": ".:public.ToolFailure",
+			"ToolResult": ".:public.ToolResult",
+			"ToolSuccess": ".:public.ToolSuccess"
 		}
 	},
 	".:public.QuestReward": {
@@ -6645,7 +6885,7 @@
 		"kind": "type",
 		"type": "QuestState",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -7364,7 +7604,7 @@
 		"kind": "type",
 		"type": "RumorState",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -7819,11 +8059,11 @@
 		"kind": "type",
 		"type": "QuestlogSkillRegistry",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => ArrayIterator<QuestlogSkill>",
 				"optional": false
 			},
-			"__@unscopables@835": {
+			"__@unscopables@863": {
 				"type": "{ readonly [x: number]: boolean | undefined; readonly length?: boolean | undefined; toString?: boolean | undefined; toLocaleString?: boolean | undefined; concat?: boolean | undefined; join?: boolean | undefined; slice?: boolean | undefined; indexOf?: boolean | undefined; lastIndexOf?: boolean | undefined; every?: boolean | undefined; some?: boolean | undefined; forEach?: boolean | undefined; map?: boolean | undefined; filter?: boolean | undefined; reduce?: boolean | undefined; reduceRight?: boolean | undefined; find?: boolean | undefined; findIndex?: boolean | undefined; entries?: boolean | undefined; keys?: boolean | undefined; values?: boolean | undefined; includes?: boolean | undefined; flatMap?: boolean | undefined; flat?: boolean | undefined; at?: boolean | undefined; findLast?: boolean | undefined; findLastIndex?: boolean | undefined; toReversed?: boolean | undefined; toSorted?: boolean | undefined; toSpliced?: boolean | undefined; with?: boolean | undefined; [Symbol.iterator]?: boolean | undefined; readonly [Symbol.unscopables]?: boolean | undefined; }",
 				"optional": false
 			},
@@ -8175,7 +8415,7 @@
 		"kind": "type",
 		"type": "ToolClarificationCode",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -8390,11 +8630,11 @@
 		"kind": "type",
 		"type": "ToolDefinitionRegistry",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => ArrayIterator<QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>>",
 				"optional": false
 			},
-			"__@unscopables@835": {
+			"__@unscopables@863": {
 				"type": "{ readonly [x: number]: boolean | undefined; readonly length?: boolean | undefined; toString?: boolean | undefined; toLocaleString?: boolean | undefined; concat?: boolean | undefined; join?: boolean | undefined; slice?: boolean | undefined; indexOf?: boolean | undefined; lastIndexOf?: boolean | undefined; every?: boolean | undefined; some?: boolean | undefined; forEach?: boolean | undefined; map?: boolean | undefined; filter?: boolean | undefined; reduce?: boolean | undefined; reduceRight?: boolean | undefined; find?: boolean | undefined; findIndex?: boolean | undefined; entries?: boolean | undefined; keys?: boolean | undefined; values?: boolean | undefined; includes?: boolean | undefined; flatMap?: boolean | undefined; flat?: boolean | undefined; at?: boolean | undefined; findLast?: boolean | undefined; findLastIndex?: boolean | undefined; toReversed?: boolean | undefined; toSorted?: boolean | undefined; toSpliced?: boolean | undefined; with?: boolean | undefined; [Symbol.iterator]?: boolean | undefined; readonly [Symbol.unscopables]?: boolean | undefined; }",
 				"optional": false
 			},
@@ -8529,7 +8769,7 @@
 		"kind": "type",
 		"type": "ToolEntityKind",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -8775,7 +9015,7 @@
 		"kind": "type",
 		"type": "ToolErrorCode",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -8990,7 +9230,7 @@
 		"kind": "type",
 		"type": "ToolErrorKind",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -9506,7 +9746,7 @@
 		"kind": "type",
 		"type": "ToolNextStepHintKind",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -9734,7 +9974,7 @@
 		"kind": "type",
 		"type": "ToolOutcomeKind",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -9949,7 +10189,7 @@
 		"kind": "type",
 		"type": "string",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -10228,13 +10468,97 @@
 		"kind": "value",
 		"type": "<TInput, TResult extends ToolResult<unknown> | Promise<ToolResult<unknown>>>(definition: QuestlogToolDefinition<TInput, TResult>) => QuestlogToolDefinition<TInput, TResult>"
 	},
+	".:public.tools.DueInput": {
+		"kind": "type",
+		"type": "DueInput",
+		"members": {
+			"claim": {
+				"type": "string | undefined",
+				"optional": true
+			},
+			"limit": {
+				"type": "number | undefined",
+				"optional": true
+			},
+			"release": {
+				"type": "string | undefined",
+				"optional": true
+			},
+			"tags": {
+				"type": "string[] | undefined",
+				"optional": true
+			},
+			"within": {
+				"type": "string | undefined",
+				"optional": true
+			}
+		},
+		"definition": "type index_DueInput = DueInput;",
+		"references": {
+			"DueInput": ".:public.DueInput"
+		}
+	},
+	".:public.tools.DueItem": {
+		"kind": "type",
+		"type": "DueItem",
+		"members": {
+			"dueAt": {
+				"type": "number",
+				"optional": false
+			},
+			"key": {
+				"type": "string",
+				"optional": false
+			},
+			"kind": {
+				"type": "\"quest\" | \"occurrence\"",
+				"optional": false
+			},
+			"occurrenceAt": {
+				"type": "number | undefined",
+				"optional": true
+			},
+			"overdue": {
+				"type": "boolean",
+				"optional": false
+			},
+			"questId": {
+				"type": "number | undefined",
+				"optional": true
+			},
+			"repeatableId": {
+				"type": "number | undefined",
+				"optional": true
+			},
+			"tags": {
+				"type": "string[]",
+				"optional": false
+			},
+			"title": {
+				"type": "string",
+				"optional": false
+			}
+		},
+		"definition": "type index_DueItem = DueItem;",
+		"references": {
+			"DueItem": ".:public.DueItem"
+		}
+	},
+	".:public.tools.dueTool": {
+		"kind": "value",
+		"type": "QuestlogToolDefinition<DueInput, ToolFailure | ToolSuccess<{ items: DueItem[]; hasMore: boolean; released?: boolean; }>>"
+	},
+	".:public.tools.dueToolName": {
+		"kind": "value",
+		"type": "\"due\""
+	},
 	".:public.tools.enumSchema": {
 		"kind": "value",
 		"type": "(description: string, values: ReadonlyArray<boolean | number | string | null>) => JsonSchema"
 	},
 	".:public.tools.getQuestlogToolByName": {
 		"kind": "value",
-		"type": "(name: string) => QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; }, Promise<ToolResult<unknown>>> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult> | null"
+		"type": "(name: string) => QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<DueInput, ToolFailure | ToolSuccess<{ items: DueItem[]; hasMore: boolean; released?: boolean; }>> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; claim?: string; within?: string; }, Promise<ToolResult<unknown>>> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult> | null"
 	},
 	".:public.tools.inspectQuestlogItemTool": {
 		"kind": "value",
@@ -10306,7 +10630,7 @@
 		"kind": "type",
 		"type": "JsonSchemaType",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -10522,7 +10846,7 @@
 	},
 	".:public.tools.listQuestlogToolDefinitions": {
 		"kind": "value",
-		"type": "() => (QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; }, Promise<ToolResult<unknown>>> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult>)[]"
+		"type": "() => (QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<DueInput, ToolFailure | ToolSuccess<{ items: DueItem[]; hasMore: boolean; released?: boolean; }>> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; claim?: string; within?: string; }, Promise<ToolResult<unknown>>> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult>)[]"
 	},
 	".:public.tools.literalSchema": {
 		"kind": "value",
@@ -10530,7 +10854,7 @@
 	},
 	".:public.tools.manageHooksTool": {
 		"kind": "value",
-		"type": "QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; }, Promise<ToolResult<unknown>>>"
+		"type": "QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; claim?: string; within?: string; }, Promise<ToolResult<unknown>>>"
 	},
 	".:public.tools.manageHooksToolName": {
 		"kind": "value",
@@ -10688,7 +11012,7 @@
 	},
 	".:public.tools.questlogTools": {
 		"kind": "value",
-		"type": "(QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; }, Promise<ToolResult<unknown>>>)[]"
+		"type": "(QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult> | QuestlogToolDefinition<DueInput, ToolFailure | ToolSuccess<{ items: DueItem[]; hasMore: boolean; released?: boolean; }>> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; claim?: string; within?: string; }, Promise<ToolResult<unknown>>>)[]"
 	},
 	".:public.tools.retireWorkTool": {
 		"kind": "value",
@@ -10782,7 +11106,7 @@
 		"kind": "type",
 		"type": "ToolClarificationCode",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -11000,11 +11324,11 @@
 		"kind": "type",
 		"type": "ToolDefinitionRegistry",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => ArrayIterator<QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>>",
 				"optional": false
 			},
-			"__@unscopables@835": {
+			"__@unscopables@863": {
 				"type": "{ readonly [x: number]: boolean | undefined; readonly length?: boolean | undefined; toString?: boolean | undefined; toLocaleString?: boolean | undefined; concat?: boolean | undefined; join?: boolean | undefined; slice?: boolean | undefined; indexOf?: boolean | undefined; lastIndexOf?: boolean | undefined; every?: boolean | undefined; some?: boolean | undefined; forEach?: boolean | undefined; map?: boolean | undefined; filter?: boolean | undefined; reduce?: boolean | undefined; reduceRight?: boolean | undefined; find?: boolean | undefined; findIndex?: boolean | undefined; entries?: boolean | undefined; keys?: boolean | undefined; values?: boolean | undefined; includes?: boolean | undefined; flatMap?: boolean | undefined; flat?: boolean | undefined; at?: boolean | undefined; findLast?: boolean | undefined; findLastIndex?: boolean | undefined; toReversed?: boolean | undefined; toSorted?: boolean | undefined; toSpliced?: boolean | undefined; with?: boolean | undefined; [Symbol.iterator]?: boolean | undefined; readonly [Symbol.unscopables]?: boolean | undefined; }",
 				"optional": false
 			},
@@ -11138,7 +11462,7 @@
 		"kind": "type",
 		"type": "ToolEntityKind",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -11386,7 +11710,7 @@
 		"kind": "type",
 		"type": "ToolErrorCode",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -11604,7 +11928,7 @@
 		"kind": "type",
 		"type": "ToolErrorKind",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -11995,7 +12319,7 @@
 		"kind": "type",
 		"type": "ToolNextStepHintKind",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -12217,7 +12541,7 @@
 		"kind": "type",
 		"type": "ToolOutcomeKind",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -12435,7 +12759,7 @@
 		"kind": "type",
 		"type": "string",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -12692,7 +13016,7 @@
 		"kind": "type",
 		"type": "ToolSideEffects",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -12979,7 +13303,7 @@
 		"kind": "type",
 		"type": "ToolWarningCode",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -13197,7 +13521,7 @@
 		"kind": "type",
 		"type": "ToolSideEffects",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -13494,7 +13818,7 @@
 		"kind": "type",
 		"type": "ToolWarningCode",
 		"members": {
-			"__@iterator@815": {
+			"__@iterator@843": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},

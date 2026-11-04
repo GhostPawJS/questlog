@@ -119,6 +119,10 @@
     {
       "name": "retire_work",
       "description": "Hide an item from normal active operation without rewriting history by soft-deleting a rumor, quest, questline, or repeatable quest."
+    },
+    {
+      "name": "due",
+      "description": "Select open due quests and recurring occurrences, optionally claiming them per consumer."
     }
   ],
   "compatibility": {

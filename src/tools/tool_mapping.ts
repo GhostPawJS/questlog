@@ -6,6 +6,7 @@ export interface QuestlogToolMapping {
 }
 
 export const questlogToolMappings: QuestlogToolMapping[] = [
+	{ source: 'selectDue', tool: 'due' },
 	{ source: 'tickQuestlog', tool: 'manage_hooks', action: 'tick' },
 	{ source: 'searchQuestlog', tool: 'search_questlog' },
 	{ source: 'listRumors', tool: 'review_questlog', action: 'rumors' },

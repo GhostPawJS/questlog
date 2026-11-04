@@ -39,14 +39,13 @@ Run tools as `ghostpaw-questlog ...`; use `~/.local/bin/ghostpaw-questlog` if it
 - `questlog list --count-by tag|prefix`: count filtered quests.
 - `questlog list --view quests.duplicates`: review open quests with similar titles.
 - Use `--json` on any plain command, or set `GHOSTPAW_OUTPUT=json`. `list --limit N --offset M` paginates both formats; JSON data includes total, offset, limit, hasMore.
-- Repeatables: `repeatable create --title TITLE --objective OBJECTIVE --rrule FREQ=DAILY --anchor-at ISO --tz Europe/Berlin`; `repeatable revise <id> --tz <zone|none>`. Facade create uses `repeatableQuest.tz`; update/revise uses `tz` (null clears). Zoned recurrence retains wall-clock time across DST; NULL retains UTC behavior. Folds use the earlier instant; gaps move forward.
+- Repeatables: `repeatable create --title TITLE --objective OBJECTIVE --rrule FREQ=DAILY --anchor-at ISO --tz Europe/Berlin`; `repeatable revise <id> --tz <zone|none>`. Facade create uses `repeatableQuest.tz`; update/revise uses `tz` (null clears). Zoned recurrence keeps wall-clock time across DST; no tz keeps UTC behavior.
 - Exit codes: 0 ok / 1 error / 2 usage / 3 needs input or item not found.
-- Database: `~/.ghostpaw/questlog.db`; override with `--db` or `GHOSTPAW_QUESTLOG_DB`. Default opens print `using default db <path>` to stderr; suppress with `--quiet` or `GHOSTPAW_QUIET=1`.
-- Use one database per project.
-- `questlog --version` prints the installed version.
-- `questlog skill --short` prints this compact cheat sheet.
+- Database: `~/.ghostpaw/questlog.db`; override with `--db` or `GHOSTPAW_QUESTLOG_DB`. Default opens print `using default db <path>` to stderr; suppress with `--quiet` or `GHOSTPAW_QUIET=1`. Use one database per project.
+- `questlog --version` prints the installed version; `questlog skill --short` prints this cheat sheet.
 - `questlog skill --list` lists guides; `questlog skill webhooks` reads one.
 - Webhooks: `questlog hook add <url>`, `questlog tick --dry-run`, `questlog watch`. Read `questlog skill webhooks` for events, signing, verification, and cron setup.
+- `questlog due [--within 15m] [--tag x] [--claim worker]`: due/overdue quests and occurrences; `--claim` returns each item once per consumer; `due --release <key> --claim worker` unclaims; `tick --claim worker` sends `quest.due` webhooks.
 
 ## Appendix: MCP and tool calls
 
@@ -75,6 +74,8 @@ Writes: writes_state.
 | action | string | yes | list, remove, tick, deliveries. Operation. |
 | id | integer | no | Target id. |
 | dry_run | boolean | no | Preview only. |
+| claim | string | no | Consumer for due claims. |
+| within | string | no | Due duration such as 15m or 1d. |
 
 ```sh
 ghostpaw-questlog call manage_hooks '{"action":"list"}'
@@ -437,6 +438,28 @@ Writes: writes_state.
 
 ```sh
 ghostpaw-questlog call retire_work '{"action":"hide","target":{"kind":"quest","id":1}}'
+```
+
+### due
+
+Select open due quests and recurring occurrences, optionally claiming them per consumer.
+
+Use when: Read due work or claim a batch for an automation consumer.
+
+Not for: Use inspection tools for full entity details.
+
+Writes: writes_state.
+
+| Parameter | Type | Required | Values / description |
+| --- | --- | --- | --- |
+| within | string | no | Duration: 15m, 2h, 1d, 7d; default 0m. |
+| tags | array | no | Require every tag. |
+| limit | integer | no | Default 100, maximum 1000. |
+| claim | string | no | Consumer name; records claims. |
+| release | string | no | Quest id or occurrence:<repeatableId>:<timestamp>. |
+
+```sh
+ghostpaw-questlog call due '{}'
 ```
 
 ### Workflow guides

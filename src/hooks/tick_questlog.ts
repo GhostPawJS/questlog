@@ -1,5 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import type { QuestlogDb } from '../database.ts';
+import { selectDue } from '../due.ts';
 import { spawnDueRepeatableQuests } from '../repeatable_quests/spawn_due_repeatable_quests.ts';
 import { normalizeTagName } from '../tags/normalize_tag_name.ts';
 import { withTransaction } from '../with_transaction.ts';
@@ -25,7 +26,28 @@ export async function tickQuestlog(db: QuestlogDb, options: TickOptions = {}): P
 	}[] = [];
 	const collect = () => {
 		spawnDueRepeatableQuests(db, now);
-		const detected = detectHookEvents(db, now);
+		const detected = detectHookEvents(db, now).filter(
+			(e) => !options.claim || e.type !== 'quest.due',
+		);
+		if (options.claim !== undefined) {
+			const selected = selectDue(
+				db,
+				{
+					claim: options.claim,
+					...(options.within === undefined ? {} : { within: options.within }),
+				},
+				now,
+			);
+			result.dueClaimed = selected.items.length;
+			for (const item of selected.items)
+				detected.push({
+					...item,
+					id: `e_claim_${randomBytes(16).toString('hex')}`,
+					type: 'quest.due',
+					consumer: options.claim,
+					occurredAt: new Date(now).toISOString(),
+				});
+		}
 		result.events = detected.filter(
 			(e) => !db.prepare('SELECT id FROM hook_events WHERE id = ?').get(e.id),
 		);
@@ -46,12 +68,15 @@ export async function tickQuestlog(db: QuestlogDb, options: TickOptions = {}): P
 					if (!target.events.includes(event.type as HookEventType)) return false;
 					if (target.tag == null) return true;
 					return (
-						event.questId !== undefined &&
-						db
-							.prepare(
-								'SELECT 1 FROM quest_tags qt JOIN tags t ON t.id = qt.tag_id WHERE qt.quest_id = ? AND qt.deleted_at IS NULL AND t.deleted_at IS NULL AND t.normalized_name = ?',
-							)
-							.get(event.questId, normalizeTagName(target.tag)) !== undefined
+						event.tags?.some(
+							(tag) => normalizeTagName(tag) === normalizeTagName(target.tag as string),
+						) ||
+						(event.questId !== undefined &&
+							db
+								.prepare(
+									'SELECT 1 FROM quest_tags qt JOIN tags t ON t.id = qt.tag_id WHERE qt.quest_id = ? AND qt.deleted_at IS NULL AND t.deleted_at IS NULL AND t.normalized_name = ?',
+								)
+								.get(event.questId, normalizeTagName(target.tag)) !== undefined)
 					);
 				});
 			for (const event of events)
