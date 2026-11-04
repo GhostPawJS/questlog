@@ -5,6 +5,13 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Added
+
+- Quest title revision through `plan_quest` and `quest revise`, with search index updates.
+- Filtered quest counts by tag or title prefix through `list --count-by`.
+- Open quest duplicate groups through the `quests.duplicates` review view.
+- `review duplicates` is a short alias for `review quests.duplicates`.
+
 ## [0.12.0] - 2026-11-04
 
 ### Added

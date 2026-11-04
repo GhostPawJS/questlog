@@ -3088,7 +3088,7 @@
 		"type": "PlanQuestToolInput",
 		"members": {
 			"action": {
-				"type": "\"revise_objective\" | \"set_time\"",
+				"type": "\"revise_title\" | \"revise_objective\" | \"set_time\"",
 				"optional": false
 			},
 			"now": {
@@ -3100,7 +3100,7 @@
 				"optional": false
 			}
 		},
-		"definition": "type PlanQuestToolInput = { action: 'revise_objective'; now?: number; objective: string; questId: number; } | ({ action: 'set_time'; questId: number; } & PlanQuestTimeInput);",
+		"definition": "type PlanQuestToolInput = { action: 'revise_title'; now?: number; title: string; questId: number; } | { action: 'revise_objective'; now?: number; objective: string; questId: number; } | ({ action: 'set_time'; questId: number; } & PlanQuestTimeInput);",
 		"references": {
 			"PlanQuestTimeInput": ".:public.PlanQuestTimeInput"
 		}
@@ -3145,7 +3145,7 @@
 		"type": "PlanQuestToolData",
 		"members": {
 			"action": {
-				"type": "\"revise_objective\" | \"set_time\"",
+				"type": "\"revise_title\" | \"revise_objective\" | \"set_time\"",
 				"optional": false
 			},
 			"quest": {
@@ -3234,6 +3234,10 @@
 		"kind": "type",
 		"type": "ReviewQuestlogToolInput",
 		"members": {
+			"countBy": {
+				"type": "\"tag\" | \"prefix\" | undefined",
+				"optional": true
+			},
 			"filters": {
 				"type": "{ questlineId?: number; tagNames?: string[]; includeDeleted?: boolean; dayAt?: number; } | undefined",
 				"optional": true
@@ -3247,7 +3251,7 @@
 				"optional": false
 			}
 		},
-		"definition": "interface ReviewQuestlogToolInput { view: ReviewQuestlogToolView; filters?: { questlineId?: number; tagNames?: string[]; includeDeleted?: boolean; dayAt?: number; }; now?: number; }",
+		"definition": "interface ReviewQuestlogToolInput { view: ReviewQuestlogToolView; countBy?: 'tag' | 'prefix'; filters?: { questlineId?: number; tagNames?: string[]; includeDeleted?: boolean; dayAt?: number; }; now?: number; }",
 		"references": {
 			"ReviewQuestlogToolView": ".:public.getQuestlogToolByName.types.ReviewQuestlogToolInput.types.ReviewQuestlogToolView"
 		}
@@ -3465,7 +3469,7 @@
 				"optional": false
 			}
 		},
-		"definition": "type ReviewQuestlogToolView = 'deliveries' | 'questlines' | 'quests.active' | 'quests.available' | 'quests.blocked' | 'quests.deferred' | 'quests.due_soon' | 'quests.in_progress' | 'quests.missed_scheduled' | 'quests.open' | 'quests.overdue' | 'quests.resolved' | 'quests.scheduled_for_day' | 'quests.scheduled_now' | 'repeatables.due_anchors' | 'rumors';"
+		"definition": "type ReviewQuestlogToolView = 'deliveries' | 'questlines' | 'quests.active' | 'quests.available' | 'quests.blocked' | 'quests.deferred' | 'quests.due_soon' | 'quests.in_progress' | 'quests.missed_scheduled' | 'quests.duplicates' | 'quests.open' | 'quests.overdue' | 'quests.resolved' | 'quests.scheduled_for_day' | 'quests.scheduled_now' | 'repeatables.due_anchors' | 'rumors';"
 	},
 	".:public.getQuestlogToolByName.types.ReviewQuestlogToolResult": {
 		"kind": "type",
@@ -3514,6 +3518,10 @@
 				"type": "number",
 				"optional": false
 			},
+			"counts": {
+				"type": "{ key: string; count: number; }[] | undefined",
+				"optional": true
+			},
 			"deliveries": {
 				"type": "HookDelivery[] | undefined",
 				"optional": true
@@ -3521,6 +3529,10 @@
 			"evaluatedAt": {
 				"type": "number",
 				"optional": false
+			},
+			"groups": {
+				"type": "{ ids: number[]; title: string; }[] | undefined",
+				"optional": true
 			},
 			"items": {
 				"type": "ToolListItem[]",
@@ -3531,7 +3543,7 @@
 				"optional": false
 			}
 		},
-		"definition": "interface ReviewQuestlogToolData { view: ReviewQuestlogToolView; items: ToolListItem[]; deliveries?: HookDelivery[]; count: number; appliedFilters: ReviewQuestlogToolInput['filters'] | undefined; evaluatedAt: number; }",
+		"definition": "interface ReviewQuestlogToolData { view: ReviewQuestlogToolView; items: ToolListItem[]; counts?: { key: string; count: number; }[]; groups?: { ids: number[]; title: string; }[]; deliveries?: HookDelivery[]; count: number; appliedFilters: ReviewQuestlogToolInput['filters'] | undefined; evaluatedAt: number; }",
 		"references": {
 			"HookDelivery": ".:public.getQuestlogToolByName.types.InspectQuestlogItemToolResult.types.InspectQuestlogItemToolData.types.HookDelivery",
 			"ReviewQuestlogToolInput": ".:public.getQuestlogToolByName.types.ReviewQuestlogToolInput",

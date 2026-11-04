@@ -10,6 +10,8 @@ export function renderQuestlogPlainResult(
 	values: Record<string, unknown>,
 ): string {
 	const r = result as ToolResult<{
+		counts?: { key: string; count: number }[];
+		groups?: { ids: number[]; title: string }[];
 		items?: ToolEntityRef[];
 		deliveries?: ReturnType<typeof listDeliveries>;
 		item?: { detail: ToolEntityRef };
@@ -40,6 +42,9 @@ export function renderQuestlogPlainResult(
 			: `${r.summary}\n${r.error.message}\n`;
 	if (r.data.deliveries && !r.data.item)
 		return `${r.data.deliveries.map((d) => `${d.id} target ${d.targetId} ${d.status} attempts ${d.attempts} HTTP ${d.httpStatus ?? '-'} next ${formatPlainDate(d.nextAttemptAt, true)} events ${d.events.map((e) => e.id).join(', ')}`).join('\n') || 'No deliveries'}\n`;
+	if (r.data.counts) return `${r.data.counts.map((c) => `${c.count} ${c.key}`).join('\n')}\n`;
+	if (r.data.groups)
+		return `${r.data.groups.map((g) => `${g.ids.join(', ')} ${g.title.replace(/[\r\n]+/g, ' ')}`).join('\n') || r.summary}\n`;
 	if (r.data.items) {
 		const items =
 			values.limit === undefined

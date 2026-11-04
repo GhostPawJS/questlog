@@ -84,7 +84,7 @@ describe('tool registry', () => {
 
 	it('multi-action tools expose all action variants in their flattened schema', () => {
 		const expectedActions: Record<string, string[]> = {
-			plan_quest: ['revise_objective', 'set_time'],
+			plan_quest: ['revise_objective', 'revise_title', 'set_time'],
 			run_quest: ['start', 'log_effort', 'finish', 'abandon', 'abandon_and_spawn_followups'],
 			shape_work: [
 				'attach_quest_to_questline',
@@ -163,6 +163,7 @@ describe('tool registry', () => {
 	it('multi-action tools list all variant properties at the root level', () => {
 		const expectedProperties: Record<string, string[]> = {
 			plan_quest: [
+				'title',
 				'action',
 				'questId',
 				'objective',

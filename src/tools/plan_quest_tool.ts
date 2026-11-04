@@ -15,6 +15,7 @@ import type { ToolResult } from './tool_types.ts';
 import { toolNoOp, toolSuccess } from './tool_types.ts';
 
 export type PlanQuestToolInput =
+	| { action: 'revise_title'; now?: number; title: string; questId: number }
 	| { action: 'revise_objective'; now?: number; objective: string; questId: number }
 	| ({ action: 'set_time'; questId: number } & PlanQuestTimeInput);
 
@@ -45,6 +46,20 @@ export function planQuestToolHandler(
 ): PlanQuestToolResult {
 	try {
 		const current = getQuestDetail(db, input.questId);
+
+		if (input.action === 'revise_title') {
+			const title = input.title.trim();
+			if (!title) throw new Error(`Quest title ${JSON.stringify(input.title)} must not be empty.`);
+			db.prepare(
+				'UPDATE quests SET title = ?, updated_at = ? WHERE id = ? AND deleted_at IS NULL',
+			).run(title, input.now ?? Date.now(), input.questId);
+			const quest = getQuestDetail(db, input.questId);
+			return toolSuccess(
+				`Retitled quest ${quest.id}.`,
+				{ action: input.action, quest },
+				{ entities: [toQuestRef(quest)] },
+			);
+		}
 
 		if (input.action === 'revise_objective') {
 			const nextObjective = input.objective.trim();
@@ -121,6 +136,7 @@ export const planQuestTool = defineQuestlogTool<PlanQuestToolInput, PlanQuestToo
 	inputDescriptions: {
 		action: 'Whether to revise the quest objective or update the quest timing and estimate fields.',
 		questId: 'The concrete quest to refine.',
+		title: 'The new quest title for revise_title.',
 		objective: 'The new quest objective text for the revise-objective action.',
 		notBeforeAt: 'Optional earliest actionable timestamp for the quest.',
 		dueAt: 'Optional latest acceptable completion timestamp for the quest.',
@@ -134,8 +150,9 @@ export const planQuestTool = defineQuestlogTool<PlanQuestToolInput, PlanQuestToo
 		'Returns the updated quest detail after objective or planning changes. If the requested planning state is already present, the tool returns a structured no-op result.',
 	inputSchema: objectSchema(
 		{
-			action: enumSchema('Action to perform.', ['revise_objective', 'set_time']),
+			action: enumSchema('Action to perform.', ['revise_objective', 'revise_title', 'set_time']),
 			questId: integerSchema('The quest to refine.'),
+			title: stringSchema('New title. Required for revise_title.'),
 			objective: stringSchema('The new quest objective text. Required for revise_objective.'),
 			notBeforeAt: integerSchema('Optional earliest actionable timestamp.'),
 			dueAt: integerSchema('Optional latest acceptable completion timestamp.'),

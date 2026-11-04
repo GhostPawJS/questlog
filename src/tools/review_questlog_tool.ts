@@ -19,6 +19,7 @@ import type { QuestDetail, QuestListFilters } from '../quests/types.ts';
 import { getRepeatableQuestOrThrow } from '../repeatable_quests/get_repeatable_quest_or_throw.ts';
 import { listDueRepeatableQuestAnchors } from '../repeatable_quests/list_due_repeatable_quest_anchors.ts';
 import { listRumors } from '../rumors/list_rumors.ts';
+import { duplicateGroups, tallyQuests } from './review_quest_groups.ts';
 import {
 	arraySchema,
 	booleanSchema,
@@ -49,6 +50,7 @@ export type ReviewQuestlogToolView =
 	| 'quests.due_soon'
 	| 'quests.in_progress'
 	| 'quests.missed_scheduled'
+	| 'quests.duplicates'
 	| 'quests.open'
 	| 'quests.overdue'
 	| 'quests.resolved'
@@ -59,6 +61,7 @@ export type ReviewQuestlogToolView =
 
 export interface ReviewQuestlogToolInput {
 	view: ReviewQuestlogToolView;
+	countBy?: 'tag' | 'prefix';
 	filters?: {
 		questlineId?: number;
 		tagNames?: string[];
@@ -71,6 +74,8 @@ export interface ReviewQuestlogToolInput {
 export interface ReviewQuestlogToolData {
 	view: ReviewQuestlogToolView;
 	items: ToolListItem[];
+	counts?: { key: string; count: number }[];
+	groups?: { ids: number[]; title: string }[];
 	deliveries?: HookDelivery[];
 	count: number;
 	appliedFilters: ReviewQuestlogToolInput['filters'] | undefined;
@@ -94,6 +99,13 @@ function utcDayBounds(dayAt: number): { start: number; end: number } {
 }
 
 function validateReviewInput(input: ReviewQuestlogToolInput): ReviewQuestlogToolResult | null {
+	if (input.countBy && !input.view.startsWith('quests.'))
+		return toolFailure(
+			'protocol',
+			'invalid_input',
+			'Counts require a quest view.',
+			'Use a quest view.',
+		);
 	if (input.view === 'quests.scheduled_for_day') {
 		if (input.filters?.dayAt == null) {
 			return toolNeedsClarification(
@@ -163,6 +175,7 @@ function listQuestItems(
 	dayAt?: number,
 ): QuestDetail[] {
 	switch (view) {
+		case 'quests.duplicates':
 		case 'quests.open':
 			return listOpenQuests(db, filters, now);
 		case 'quests.active':
@@ -214,6 +227,8 @@ export function reviewQuestlogToolHandler(
 		});
 	const now = input.now ?? Date.now();
 	let items: ToolListItem[] = [];
+	let quests: QuestDetail[] = [];
+	let groups: { ids: number[]; title: string }[] = [];
 
 	switch (input.view) {
 		case 'rumors':
@@ -228,9 +243,13 @@ export function reviewQuestlogToolHandler(
 			);
 			break;
 		default:
-			items = listQuestItems(input.view, db, questFilters(input), now, input.filters?.dayAt).map(
-				toQuestListItem,
-			);
+			quests = listQuestItems(input.view, db, questFilters(input), now, input.filters?.dayAt);
+			if (input.view === 'quests.duplicates') {
+				groups = duplicateGroups(quests);
+				const ids = new Set(groups.flatMap((group) => group.ids));
+				quests = quests.filter((quest) => ids.has(quest.id));
+			}
+			items = quests.map(toQuestListItem);
 			break;
 	}
 
@@ -240,7 +259,9 @@ export function reviewQuestlogToolHandler(
 			: summarizeCount(items.length, 'item'),
 		{
 			view: input.view,
-			items,
+			items: input.countBy ? [] : items,
+			...(input.countBy ? { counts: tallyQuests(quests, input.countBy) } : {}),
+			...(input.view === 'quests.duplicates' ? { groups } : {}),
 			count: items.length,
 			appliedFilters: input.filters,
 			evaluatedAt: now,
@@ -277,6 +298,7 @@ export const reviewQuestlogTool = defineQuestlogTool<
 	supportsClarification: true,
 	targetKinds: ['quest', 'questline', 'repeatable_quest', 'rumor'],
 	inputDescriptions: {
+		countBy: 'Count quests by tag or title prefix.',
 		view: 'Which operational read surface to return, such as available quests, open rumors, or due repeatable anchors.',
 		filters:
 			'Optional quest-list filters. Questline, tag, and deleted filters apply only to quest views. `dayAt` applies only to the scheduled-for-day view.',
@@ -286,6 +308,7 @@ export const reviewQuestlogTool = defineQuestlogTool<
 		'Returns compact list items for the chosen view, the item count, the applied filters, and the evaluation timestamp. Empty views return a structured success result, and the scheduled-for-day view can ask for a missing day instead of failing.',
 	inputSchema: objectSchema(
 		{
+			countBy: enumSchema('Count quests by tag or title prefix.', ['tag', 'prefix']),
 			view: enumSchema('Which operational review surface to return.', [
 				'deliveries',
 				'questlines',
@@ -296,6 +319,7 @@ export const reviewQuestlogTool = defineQuestlogTool<
 				'quests.due_soon',
 				'quests.in_progress',
 				'quests.missed_scheduled',
+				'quests.duplicates',
 				'quests.open',
 				'quests.overdue',
 				'quests.resolved',

@@ -22,6 +22,21 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 	const commands: PlainCliCommand<QuestlogDb>[] = [
 		{
 			spec: {
+				command: 'quest',
+				description: 'Revise a quest title.',
+				positionals: [{ name: 'action', type: 'string', required: true, enum: ['revise'] }, id],
+				flags: [{ name: 'title', type: 'string', required: true }],
+			},
+			tool: 'plan_quest',
+			input: (v) => {
+				if (!String(v.title).trim())
+					throw new CliUsageError(`Invalid title ${JSON.stringify(v.title)}: must not be empty`);
+				return { action: 'revise_title', questId: v.id, title: v.title };
+			},
+			render: renderQuestlogPlainResult,
+		},
+		{
+			spec: {
 				command: 'tick',
 				description: 'Detect events and deliver outbound webhooks once.',
 				flags: [{ name: 'dry-run', type: 'boolean' }],
@@ -43,10 +58,12 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 			spec: {
 				command: 'review',
 				description: 'Review an operational view.',
-				positionals: [{ name: 'view', type: 'string', required: true, enum: views }],
+				positionals: [
+					{ name: 'view', type: 'string', required: true, enum: [...views, 'duplicates'] },
+				],
 			},
 			tool: 'review_questlog',
-			input: (v) => ({ view: v.view }),
+			input: (v) => ({ view: v.view === 'duplicates' ? 'quests.duplicates' : v.view }),
 			render: renderQuestlogPlainResult,
 		},
 		{
@@ -109,6 +126,7 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 					'Review quests and other work. Limit caps text output; JSON contains the full tool result.',
 				flags: [
 					{ name: 'view', type: 'string', enum: ['available', ...views] },
+					{ name: 'count-by', type: 'string', enum: ['tag', 'prefix'] },
 					{ name: 'tag', type: 'array', description: 'Require every tag (repeatable; AND).' },
 					limit,
 				],
@@ -118,7 +136,11 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 				const view = !v.view || v.view === 'available' ? 'quests.available' : String(v.view);
 				if (v.tag !== undefined && !view.startsWith('quests.'))
 					throw new CliUsageError('--tag requires a quest view');
-				return { view, ...(v.tag === undefined ? {} : { filters: { tagNames: v.tag } }) };
+				return {
+					view,
+					...(v.countBy === undefined ? {} : { countBy: v.countBy }),
+					...(v.tag === undefined ? {} : { filters: { tagNames: v.tag } }),
+				};
 			},
 			render: renderQuestlogPlainResult,
 		},

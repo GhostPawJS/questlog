@@ -29,12 +29,15 @@ Run tools as `ghostpaw-questlog ...`; use `~/.local/bin/ghostpaw-questlog` if it
 
 - `questlog search <words>` before `add` to avoid duplicates.
 - `ghostpaw-questlog add "Write the report" --tag work --due tomorrow`
-- `questlog list [--view <view>]`: deliveries, questlines, quests.active, quests.available, quests.blocked, quests.deferred, quests.due_soon, quests.in_progress, quests.missed_scheduled, quests.open, quests.overdue, quests.resolved, quests.scheduled_for_day, quests.scheduled_now, repeatables.due_anchors, rumors.
+- `questlog list [--view <view>]`: deliveries, questlines, quests.active, quests.available, quests.blocked, quests.deferred, quests.due_soon, quests.in_progress, quests.missed_scheduled, quests.duplicates, quests.open, quests.overdue, quests.resolved, quests.scheduled_for_day, quests.scheduled_now, repeatables.due_anchors, rumors.
 - `questlog start 12 [--force]` starts a quest.
 - `questlog done 12 --outcome "Report sent"`
 - `questlog search "release"`
 - `questlog show 12`
 - `questlog list --view quests.available`
+- `questlog quest revise <id> --title "New title"`: revise a quest title.
+- `questlog list --count-by tag|prefix`: count filtered quests.
+- `questlog list --view quests.duplicates`: review open quests with similar titles.
 - Use `--json` on any plain command.
 - Exit codes: 0 ok / 1 error / 2 usage / 3 needs input or item not found.
 - Database: `~/.ghostpaw/questlog.db`; override with `--db` or `GHOSTPAW_QUESTLOG_DB`.
@@ -112,7 +115,8 @@ Read-only.
 
 | Parameter | Type | Required | Values / description |
 | --- | --- | --- | --- |
-| view | string | yes | deliveries, questlines, quests.active, quests.available, quests.blocked, quests.deferred, quests.due_soon, quests.in_progress, quests.missed_scheduled, quests.open, quests.overdue, quests.resolved, quests.scheduled_for_day, quests.scheduled_now, repeatables.due_anchors, rumors. Which operational review surface to return. |
+| countBy | string | no | tag, prefix. Count quests by tag or title prefix. |
+| view | string | yes | deliveries, questlines, quests.active, quests.available, quests.blocked, quests.deferred, quests.due_soon, quests.in_progress, quests.missed_scheduled, quests.duplicates, quests.open, quests.overdue, quests.resolved, quests.scheduled_for_day, quests.scheduled_now, repeatables.due_anchors, rumors. Which operational review surface to return. |
 | filters | object | no | Optional filters for supported review surfaces. |
 | filters.questlineId | integer | no | Optional questline id used by quest views. |
 | filters.tagNames | array | no | Optional tag names used by quest views. |
@@ -236,8 +240,9 @@ Writes: writes_state.
 
 | Parameter | Type | Required | Values / description |
 | --- | --- | --- | --- |
-| action | string | yes | revise_objective, set_time. Action to perform. |
+| action | string | yes | revise_objective, revise_title, set_time. Action to perform. |
 | questId | integer | yes | The quest to refine. |
+| title | string | no | New title. Required for revise_title. |
 | objective | string | no | The new quest objective text. Required for revise_objective. |
 | notBeforeAt | integer | no | Optional earliest actionable timestamp. |
 | dueAt | integer | no | Optional latest acceptable completion timestamp. |
@@ -249,6 +254,7 @@ Writes: writes_state.
 
 ```sh
 ghostpaw-questlog call plan_quest '{"action":"revise_objective","questId":1,"objective":"Check changes against the release"}'
+ghostpaw-questlog call plan_quest '{"action":"revise_title","questId":1,"title":"Review release notes"}'
 ghostpaw-questlog call plan_quest '{"action":"set_time","questId":1}'
 ```
 

@@ -24,7 +24,7 @@ export const actionRequirements: Record<string, Record<string, readonly string[]
 		archive_questline: ['questlineId'],
 		set_questline_fields: ['questlineId'],
 	},
-	plan_quest: { revise_objective: ['objective'] },
+	plan_quest: { revise_title: ['title'], revise_objective: ['objective'] },
 	run_quest: {
 		abandon_and_spawn_followups: ['followups'],
 		log_effort: ['effortSeconds'],

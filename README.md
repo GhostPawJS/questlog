@@ -95,6 +95,10 @@ Lists show local due dates, overdue markers, and recorded outcomes. Plain JSON
 adds ISO UTC siblings for numeric timestamp fields ending in `At`.
 `done` stores `--outcome` with the finished quest; without it the command asks for one and exits 3.
 
+Revise a title with `questlog quest revise <id> --title "New title"`.
+Count filtered quests with `questlog list --count-by tag|prefix`.
+Find similar open quest titles with `questlog list --view quests.duplicates`.
+
 Commands print text by default, including hooks, delivery views and each watch tick; `call` and direct tool commands return the raw tool result as JSON. Use `--json` for the full tool result
 and `--compact` for compact JSON. `--db path` works before or after the command.
 Each command accepts `--help`. Exit codes are 0 for success, 1 for invalid input

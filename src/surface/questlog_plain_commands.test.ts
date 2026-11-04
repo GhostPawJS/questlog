@@ -192,3 +192,81 @@ test('plain commands operate on real quests in text and JSON modes', async () =>
 		db.close();
 	}
 });
+
+test('title revision, counts and duplicate CLI views', async () => {
+	const db = await createInitializedQuestlogDb();
+	const paths: { db?: string }[] = [];
+	const invoke = async (args: string[]) => {
+		let out = '';
+		let err = '';
+		const stream = (write: (s: string) => void) =>
+			new Writable({
+				write(chunk, _encoding, cb) {
+					write(String(chunk));
+					cb();
+				},
+			});
+		const code = await runToolCli(args, {
+			bin: 'questlog',
+			version: '1',
+			description: '',
+			tools: questlogSurfaceTools,
+			commands: { plain: questlogPlainCommands() },
+			openContext: (opts) => {
+				paths.push(opts);
+				return db;
+			},
+			stdout: stream((s) => {
+				out += s;
+			}),
+			stderr: stream((s) => {
+				err += s;
+			}),
+		});
+		return { code, out, err };
+	};
+	try {
+		const created = JSON.parse(
+			(await invoke(['add', 'Oldunique', '--objective', 'Neutral', '--tag', 'work', '--json'])).out,
+		).data.quest;
+		assert.equal((await invoke(['quest', 'revise', String(created.id), '--title', '  '])).code, 2);
+		assert.equal((await invoke(['quest', 'revise', '999999', '--title', 'New'])).code, 3);
+		assert.equal(
+			(await invoke(['quest', 'revise', String(created.id), '--title', 'Docs: Newunique'])).out,
+			`Retitled quest ${created.id}.\n`,
+		);
+		assert.equal(
+			JSON.parse((await invoke(['search', 'Oldunique', '--json'])).out).data.items.length,
+			0,
+		);
+		assert.equal(
+			JSON.parse((await invoke(['search', 'Newunique', '--json'])).out).data.items.length,
+			1,
+		);
+		await invoke(['add', 'Docs: Newunique!', '--tag', 'work']);
+		assert.equal((await invoke(['list', '--count-by', 'tag', '--tag', 'work'])).out, '2 work\n');
+		assert.deepEqual(
+			JSON.parse((await invoke(['list', '--count-by', 'prefix', '--tag', 'work', '--json'])).out)
+				.data.counts,
+			[{ key: 'Docs', count: 2 }],
+		);
+		const duplicates = JSON.parse(
+			(await invoke(['list', '--view', 'quests.duplicates', '--json'])).out,
+		).data.groups;
+		assert.equal(duplicates.length, 1);
+		assert.equal(duplicates[0].ids.length, 2);
+		assert.match((await invoke(['list', '--view', 'quests.duplicates'])).out, /Docs: Newunique/);
+		for (let i = 0; i < 2; i++) {
+			const added = await invoke(['add', 'agentpreneur: draft post']);
+			assert.equal(added.code, 0, added.err);
+		}
+		const fullReview = await invoke(['review', 'quests.duplicates']);
+		const aliasReview = await invoke(['review', 'duplicates']);
+		assert.equal(fullReview.code, 0, fullReview.err);
+		assert.equal(aliasReview.code, 0, aliasReview.err);
+		assert.match(fullReview.out, /agentpreneur: draft post/);
+		assert.equal(aliasReview.out, fullReview.out);
+	} finally {
+		db.close();
+	}
+});
