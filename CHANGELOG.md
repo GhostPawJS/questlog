@@ -11,6 +11,8 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 - Filtered quest counts by tag or title prefix through `list --count-by`.
 - Open quest duplicate groups through the `quests.duplicates` review view.
 - `review duplicates` is a short alias for `review quests.duplicates`.
+- Repeatables take an optional IANA time zone (`--tz`, tool input `tz`); recurrence then follows local wall-clock time across DST changes. Repeatables without one keep the current behavior. `repeatable revise <id> --tz <zone|none>` sets or clears it.
+- `GHOSTPAW_OUTPUT=json` makes JSON the CLI output format.
 
 ## [0.12.0] - 2026-11-04
 

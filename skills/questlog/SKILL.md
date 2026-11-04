@@ -38,7 +38,8 @@ Run tools as `ghostpaw-questlog ...`; use `~/.local/bin/ghostpaw-questlog` if it
 - `questlog quest revise <id> --title "New title"`: revise a quest title.
 - `questlog list --count-by tag|prefix`: count filtered quests.
 - `questlog list --view quests.duplicates`: review open quests with similar titles.
-- Use `--json` on any plain command.
+- Use `--json` on any plain command, or set `GHOSTPAW_OUTPUT=json`.
+- Repeatables: `repeatable create --title TITLE --objective OBJECTIVE --rrule FREQ=DAILY --anchor-at ISO --tz Europe/Berlin`; `repeatable revise <id> --tz <zone|none>`. Facade create uses `repeatableQuest.tz`; update/revise uses `tz` (null clears). Zoned recurrence retains wall-clock time across DST; NULL retains UTC behavior. Folds use the earlier instant; gaps move forward.
 - Exit codes: 0 ok / 1 error / 2 usage / 3 needs input or item not found.
 - Database: `~/.ghostpaw/questlog.db`; override with `--db` or `GHOSTPAW_QUESTLOG_DB`.
 - Use one database per project.
@@ -330,16 +331,18 @@ Writes: writes_state.
 
 | Parameter | Type | Required | Values / description |
 | --- | --- | --- | --- |
-| action | string | yes | archive, create, preview_due, spawn_due, update. Action to perform. |
+| action | string | yes | archive, create, preview_due, spawn_due, update, revise. Action to perform. |
 | repeatableQuestId | integer | no | Repeatable quest to archive or update. |
-| repeatableQuest | object | no | Object: title (required), objective (required), rrule (required), anchorAt (required) |
+| repeatableQuest | object | no | Object: title (required), objective (required), tz, rrule (required), anchorAt (required) |
 | repeatableQuest.title | string | yes | Title for the new repeatable quest. |
 | repeatableQuest.objective | string | yes | Objective for the new repeatable quest. |
+| repeatableQuest.tz | oneOf | no | IANA time zone for wall-clock recurrence; null uses UTC. |
 | repeatableQuest.rrule | string | yes | RRULE describing recurrence. |
 | repeatableQuest.anchorAt | integer | yes | Recurrence anchor timestamp. |
 | title | string | no | Optional new title for the update action. |
 | objective | string | no | Optional new objective for the update action. |
 | questlineId | integer | no | Optional new questline id. |
+| tz | oneOf | no | IANA time zone; null clears it (update or revise). |
 | rrule | string | no | Optional new RRULE. |
 | anchorAt | integer | no | Optional new recurrence anchor timestamp. |
 | notBeforeOffsetSeconds | integer | no | Optional new not-before offset in seconds. |

@@ -8,6 +8,7 @@ import { replaceActiveRepeatableQuestTags } from '../tags/replace_active_repeata
 import { withTransaction } from '../with_transaction.ts';
 import { getRepeatableQuestOrThrow } from './get_repeatable_quest_or_throw.ts';
 import { parseRRule } from './parse_rrule.ts';
+import { validateTimeZone } from './time_zone.ts';
 import type { CreateRepeatableQuestInput, RepeatableQuest } from './types.ts';
 
 /**
@@ -22,6 +23,7 @@ export function createRepeatableQuest(
 		const title = assertNonEmpty(input.title, 'Repeatable quest title');
 		const objective = assertNonEmpty(input.objective, 'Repeatable quest objective');
 		parseRRule(input.rrule);
+		validateTimeZone(input.tz);
 
 		if (input.questlineId != null) {
 			assertActiveRowExists(db, 'questlines', input.questlineId, 'Questline');
@@ -33,6 +35,7 @@ export function createRepeatableQuest(
            questline_id,
            title,
            objective,
+           tz,
            rrule,
            anchor_at,
            not_before_offset_seconds,
@@ -43,12 +46,13 @@ export function createRepeatableQuest(
            estimate_seconds,
            created_at,
            updated_at
-         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 			)
 			.run(
 				input.questlineId ?? null,
 				title,
 				objective,
+				input.tz ?? null,
 				input.rrule,
 				input.anchorAt,
 				assertNonNegativeSeconds(input.notBeforeOffsetSeconds, 'Repeatable not-before offset') ??

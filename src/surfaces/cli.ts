@@ -46,6 +46,10 @@ export async function runToolCli<TCtx>(
 	const stderr = options.stderr ?? process.stderr;
 	const stdin = options.stdin ?? process.stdin;
 	const args = [...argv];
+	if (process.env.GHOSTPAW_OUTPUT === 'json' && !args.includes('--json')) {
+		const separator = args.indexOf('--');
+		args.splice(separator < 0 ? args.length : separator, 0, '--json');
+	}
 	let db: string | undefined;
 	let compact = false;
 	const fail = (message: string, code = 2) => {
@@ -81,7 +85,7 @@ export async function runToolCli<TCtx>(
 				.map((name) => `${name}, `)
 				.join(
 					'',
-				)}tools [--json], describe <tool>, call <tool> [JSON|-], <tool> --parameter value, mcp, skill\nOptions: --help, --version, --compact, --db <path>\nVersion formats: --version --short, --version --json\n${options.describeDb ? `${options.describeDb(ctxOptions)}\n` : ''}\n${options.tools.map((tool) => `${tool.name}  ${tool.description}`).join('\n')}\n`,
+				)}tools [--json], describe <tool>, call <tool> [JSON|-], <tool> --parameter value, mcp, skill\nOutput: --json or GHOSTPAW_OUTPUT=json\nOptions: --help, --version, --compact, --db <path>\nVersion formats: --version --short, --version --json\n${options.describeDb ? `${options.describeDb(ctxOptions)}\n` : ''}\n${options.tools.map((tool) => `${tool.name}  ${tool.description}`).join('\n')}\n`,
 		);
 		return 0;
 	}
@@ -297,7 +301,8 @@ export async function runToolCli<TCtx>(
 		)
 			return 3;
 		if (isErrorResult(result)) {
-			const error = (result as { error?: { code?: string } }).error;
+			const error = (result as { error?: { code?: string; message?: string } }).error;
+			if (error?.message?.startsWith('Invalid time zone:')) return 2;
 			if (
 				tool.name === 'search_questlog' &&
 				(input as Record<string, unknown>).fts &&

@@ -31,12 +31,23 @@ export function initRepeatableQuestTables(db: QuestlogDb): void {
       )
     )
   `);
+	if (
+		!db
+			.prepare('PRAGMA table_info(repeatable_quests)')
+			.all()
+			.some((row) => row.name === 'tz')
+	) {
+		db.exec('ALTER TABLE repeatable_quests ADD COLUMN tz TEXT');
+	}
+
 	db.exec(
 		'CREATE INDEX IF NOT EXISTS idx_repeatable_quests_deleted_at ON repeatable_quests(deleted_at)',
 	);
+
 	db.exec(
 		'CREATE INDEX IF NOT EXISTS idx_repeatable_quests_archived_at ON repeatable_quests(archived_at)',
 	);
+
 	db.exec(
 		'CREATE INDEX IF NOT EXISTS idx_repeatable_quests_active_anchor ON repeatable_quests(anchor_at) WHERE deleted_at IS NULL AND archived_at IS NULL',
 	);

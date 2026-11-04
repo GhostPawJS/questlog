@@ -9,6 +9,7 @@ export interface RepeatableQuest {
 	questlineId: number | null;
 	title: string;
 	objective: string;
+	tz?: string | null;
 	rrule: string;
 	anchorAt: number;
 	notBeforeOffsetSeconds: number | null;
@@ -30,6 +31,7 @@ export interface CreateRepeatableQuestInput {
 	title: string;
 	objective: string;
 	questlineId?: number | null;
+	tz?: string | null;
 	rrule: string;
 	anchorAt: number;
 	notBeforeOffsetSeconds?: number | null;
@@ -50,6 +52,7 @@ export interface UpdateRepeatableQuestInput {
 	title?: string;
 	objective?: string;
 	questlineId?: number | null;
+	tz?: string | null;
 	rrule?: string;
 	anchorAt?: number;
 	notBeforeOffsetSeconds?: number | null;

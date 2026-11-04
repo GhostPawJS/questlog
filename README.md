@@ -651,3 +651,20 @@ createServer(async (req, res) => {
   res.writeHead(204).end();
 }).listen(8080, '127.0.0.1');
 ```
+
+Repeatables accept an optional IANA time zone, such as `Europe/Berlin`, via
+`repeatableQuest.tz` in `manage_repeatable` create input. Zoned RRULEs retain local
+wall-clock time across DST. Omitted or null zones keep existing UTC behavior.
+Ambiguous local times use the earlier instant; nonexistent times move forward.
+
+```sh
+questlog repeatable create --title "Daily review" --objective "Review tasks" --rrule FREQ=DAILY --anchor-at 2026-03-28T00:02:00+01:00 --tz Europe/Berlin
+questlog repeatable revise 1 --tz Europe/Berlin
+questlog repeatable revise 1 --tz none
+```
+
+The facade accepts `action: "revise"` (or `"update"`) with
+`repeatableQuestId` and `tz`; null clears the zone. Existing spawned quests are
+unchanged. Invalid zones are rejected; the plain CLI exits 2.
+Set `GHOSTPAW_OUTPUT=json` to select CLI JSON output as with `--json`.
+Other values leave the default output unchanged.

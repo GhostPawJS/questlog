@@ -5,6 +5,7 @@ import { resolveNow } from '../resolve_now.ts';
 import { withTransaction } from '../with_transaction.ts';
 import { getRepeatableQuestOrThrow } from './get_repeatable_quest_or_throw.ts';
 import { parseRRule } from './parse_rrule.ts';
+import { validateTimeZone } from './time_zone.ts';
 import type { RepeatableQuest, UpdateRepeatableQuestInput } from './types.ts';
 
 /**
@@ -21,12 +22,14 @@ export function updateRepeatableQuest(
 		const rrule = input.rrule ?? current.rrule;
 
 		parseRRule(rrule);
+		validateTimeZone(input.tz);
 
 		db.prepare(
 			`UPDATE repeatable_quests
        SET questline_id = ?,
            title = ?,
            objective = ?,
+           tz = ?,
            rrule = ?,
            anchor_at = ?,
            not_before_offset_seconds = ?,
@@ -44,6 +47,7 @@ export function updateRepeatableQuest(
 			input.objective == null
 				? current.objective
 				: assertNonEmpty(input.objective, 'Repeatable quest objective'),
+			input.tz === undefined ? (current.tz ?? null) : input.tz,
 			rrule,
 			input.anchorAt ?? current.anchorAt,
 			input.notBeforeOffsetSeconds === undefined

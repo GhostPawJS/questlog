@@ -30,7 +30,7 @@ export type ManageRepeatableToolInput =
 	| { action: 'create'; repeatableQuest: CreateRepeatableQuestInput }
 	| { action: 'preview_due'; now?: number }
 	| { action: 'spawn_due'; now: number }
-	| ({ action: 'update'; repeatableQuestId: number } & UpdateRepeatableQuestInput);
+	| ({ action: 'update' | 'revise'; repeatableQuestId: number } & UpdateRepeatableQuestInput);
 
 export interface ManageRepeatableToolData {
 	action: ManageRepeatableToolInput['action'];
@@ -126,6 +126,7 @@ export function manageRepeatableToolHandler(
 					},
 				);
 			}
+			case 'revise':
 			case 'update': {
 				const repeatableQuest = updateRepeatableQuest(db, input.repeatableQuestId, input);
 				return toolSuccess(
@@ -201,6 +202,7 @@ export const manageRepeatableTool = defineQuestlogTool<
 		action: 'Which repeatable quest lifecycle action to perform.',
 		repeatableQuest: 'The repeatable quest creation input used for the create action.',
 		repeatableQuestId: 'The repeatable quest definition being updated or archived.',
+		tz: 'Optional IANA time zone for wall-clock recurrence; null clears it. Omit to preserve UTC behavior.',
 		rrule: 'Optional new RRULE that changes future materialization behavior.',
 		anchorAt: 'Optional new recurrence anchor timestamp for future materialization.',
 		notBeforeOffsetSeconds:
@@ -228,12 +230,17 @@ export const manageRepeatableTool = defineQuestlogTool<
 				'preview_due',
 				'spawn_due',
 				'update',
+				'revise',
 			]),
 			repeatableQuestId: integerSchema('Repeatable quest to archive or update.'),
 			repeatableQuest: objectSchema(
 				{
 					title: stringSchema('Title for the new repeatable quest.'),
 					objective: stringSchema('Objective for the new repeatable quest.'),
+					tz: {
+						description: 'IANA time zone for wall-clock recurrence; null uses UTC.',
+						oneOf: [{ type: 'string' }, { type: 'null' }],
+					},
 					rrule: stringSchema('RRULE describing recurrence.'),
 					anchorAt: integerSchema('Recurrence anchor timestamp.'),
 				},
@@ -242,6 +249,10 @@ export const manageRepeatableTool = defineQuestlogTool<
 			title: stringSchema('Optional new title for the update action.'),
 			objective: stringSchema('Optional new objective for the update action.'),
 			questlineId: integerSchema('Optional new questline id.'),
+			tz: {
+				description: 'IANA time zone; null clears it (update or revise).',
+				oneOf: [{ type: 'string' }, { type: 'null' }],
+			},
 			rrule: stringSchema('Optional new RRULE.'),
 			anchorAt: integerSchema('Optional new recurrence anchor timestamp.'),
 			notBeforeOffsetSeconds: integerSchema('Optional new not-before offset in seconds.'),

@@ -13,6 +13,7 @@ export function mapRepeatableQuestRow(row: Record<string, unknown>): RepeatableQ
 		questlineId: row.questline_id == null ? null : Number(row.questline_id),
 		title: String(row.title),
 		objective: String(row.objective),
+		tz: row.tz == null ? null : String(row.tz),
 		rrule: String(row.rrule),
 		anchorAt: Number(row.anchor_at),
 		notBeforeOffsetSeconds:

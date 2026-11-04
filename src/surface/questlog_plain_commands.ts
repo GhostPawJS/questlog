@@ -1,4 +1,5 @@
 import type { QuestlogDb } from '../database.ts';
+import { validateTimeZone } from '../repeatable_quests/time_zone.ts';
 import type { PlainCliCommand } from '../surfaces/cli.ts';
 import type { CliArgument } from '../surfaces/cli_args.ts';
 import { CliUsageError } from '../surfaces/cli_args.ts';
@@ -20,6 +21,65 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 	const id: CliArgument = { name: 'id', type: 'integer', required: true };
 	const views = reviewQuestlogTool.inputSchema.properties?.view?.enum ?? [];
 	const commands: PlainCliCommand<QuestlogDb>[] = [
+		{
+			spec: {
+				command: 'repeatable',
+				description: 'Create a repeatable or revise its IANA time zone (--tz none clears).',
+				positionals: [
+					{ name: 'action', type: 'string', required: true, enum: ['create', 'revise'] },
+					{ name: 'id', type: 'integer' },
+				],
+				flags: [
+					{ name: 'tz', type: 'string', description: 'IANA time zone; none clears.' },
+					{ name: 'title', type: 'string' },
+					{ name: 'objective', type: 'string' },
+					{ name: 'rrule', type: 'string' },
+					{ name: 'anchor-at', type: 'string', description: 'ISO date or epoch milliseconds.' },
+				],
+			},
+			tool: 'manage_repeatable',
+			input: (v) => {
+				const tz = v.tz === 'none' ? null : (v.tz as string | undefined);
+				try {
+					validateTimeZone(tz);
+				} catch (error) {
+					throw new CliUsageError(String(error));
+				}
+				if (v.action === 'revise') {
+					if (v.id === undefined || v.tz === undefined)
+						throw new CliUsageError('repeatable revise requires <id> and --tz');
+					return { action: 'revise', repeatableQuestId: v.id, tz };
+				}
+				if (!v.title || !v.objective || !v.rrule || !v.anchorAt)
+					throw new CliUsageError(
+						'repeatable create requires --title, --objective, --rrule and --anchor-at',
+					);
+				const anchorAt = /^-?\d+$/.test(String(v.anchorAt))
+					? Number(v.anchorAt)
+					: Date.parse(String(v.anchorAt));
+				if (!Number.isFinite(anchorAt)) throw new CliUsageError('Invalid --anchor-at timestamp');
+				return {
+					action: 'create',
+					repeatableQuest: {
+						title: v.title,
+						objective: v.objective,
+						rrule: v.rrule,
+						anchorAt,
+						...(tz === undefined ? {} : { tz }),
+					},
+				};
+			},
+			render: (r) => {
+				const result = r as {
+					summary: string;
+					data?: { repeatableQuest?: { tz?: string | null } };
+					error?: { message: string };
+				};
+				return result.error
+					? `${result.error.message}\n`
+					: `${result.summary}\ntz: ${result.data?.repeatableQuest?.tz ?? 'none'}\n`;
+			},
+		},
 		{
 			spec: {
 				command: 'quest',

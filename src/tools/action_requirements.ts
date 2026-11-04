@@ -15,6 +15,7 @@ export const actionRequirements: Record<string, Record<string, readonly string[]
 		create: ['repeatableQuest'],
 		archive: ['repeatableQuestId'],
 		update: ['repeatableQuestId'],
+		revise: ['repeatableQuestId', 'tz'],
 		spawn_due: ['now'],
 	},
 	organize_work: {

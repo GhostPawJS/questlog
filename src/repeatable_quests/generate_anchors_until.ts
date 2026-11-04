@@ -2,6 +2,7 @@ import { advanceAnchor } from './advance_anchor.ts';
 import { parseRRule } from './parse_rrule.ts';
 import { startOfUtcDay } from './start_of_utc_day.ts';
 import { startOfUtcWeek } from './start_of_utc_week.ts';
+import { wallClock, zonedInstant } from './time_zone.ts';
 import type { RepeatableQuest } from './types.ts';
 
 const DAY_MS = 86_400_000;
@@ -12,6 +13,29 @@ const WEEK_MS = 7 * DAY_MS;
  */
 export function generateAnchorsUntil(repeatable: RepeatableQuest, now: number): number[] {
 	const rule = parseRRule(repeatable.rrule);
+	if (repeatable.tz) {
+		const tz = repeatable.tz;
+		const until = rule.until == null ? now : Math.min(now, rule.until);
+		if (repeatable.anchorAt > until) return [];
+		return generateAnchorsUntil(
+			{
+				...repeatable,
+				tz: null,
+				anchorAt: wallClock(repeatable.anchorAt, tz),
+				rrule: repeatable.rrule
+					.split(';')
+					.filter((part) => !/^UNTIL=/i.test(part.trim()))
+					.join(';'),
+			},
+			wallClock(until, tz) + 2 * DAY_MS,
+		)
+			.map((wall, index) =>
+				index === 0 && wall === wallClock(repeatable.anchorAt, tz)
+					? repeatable.anchorAt
+					: zonedInstant(wall, tz),
+			)
+			.filter((instant) => instant >= repeatable.anchorAt && instant <= until);
+	}
 	const anchors: number[] = [];
 	const until = rule.until == null ? now : Math.min(now, rule.until);
 
