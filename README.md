@@ -88,7 +88,7 @@ other value, including titles, `--outcome` and per-tool flags, is literal.
 `list --tag work --tag urgent` requires all tags and supports quest views; unknown tags return an empty list.
 
 `list` defaults to available quests; `list --help` lists all supported views.
-Its `--limit` caps text output; JSON preserves the full review tool result.
+Its `--limit` and `--offset` paginate text and JSON. JSON `data` includes `total`, `offset`, `limit`, and `hasMore`.
 `search --fts` enables raw FTS5 syntax; search text is literal by default.
 `search --limit` caps matches in both formats. `show` prints full quest detail.
 Lists show local due dates, overdue markers, and recorded outcomes. Plain JSON
@@ -668,3 +668,5 @@ The facade accepts `action: "revise"` (or `"update"`) with
 unchanged. Invalid zones are rejected; the plain CLI exits 2.
 Set `GHOSTPAW_OUTPUT=json` to select CLI JSON output as with `--json`.
 Other values leave the default output unchanged.
+
+When opening the default database, the CLI prints `using default db <path>` to stderr. Suppress this notice with `--quiet` or `GHOSTPAW_QUIET=1`.

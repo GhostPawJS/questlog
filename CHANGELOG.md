@@ -7,12 +7,19 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ### Added
 
+- Without `--db` or `GHOSTPAW_QUESTLOG_DB`, the CLI prints `using default db <path>` on stderr; `--quiet` or `GHOSTPAW_QUIET=1` suppresses it.
+- `list --offset`; list JSON carries `total`, `offset`, `limit` and `hasMore`.
+
 - Quest title revision through `plan_quest` and `quest revise`, with search index updates.
 - Filtered quest counts by tag or title prefix through `list --count-by`.
 - Open quest duplicate groups through the `quests.duplicates` review view.
 - `review duplicates` is a short alias for `review quests.duplicates`.
 - Repeatables take an optional IANA time zone (`--tz`, tool input `tz`); recurrence then follows local wall-clock time across DST changes. Repeatables without one keep the current behavior. `repeatable revise <id> --tz <zone|none>` sets or clears it.
 - `GHOSTPAW_OUTPUT=json` makes JSON the CLI output format.
+
+### Fixed
+
+- `list --limit` and `--offset` now bound `--json` output too.
 
 ## [0.12.0] - 2026-11-04
 

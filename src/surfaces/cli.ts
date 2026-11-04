@@ -8,6 +8,7 @@ import { validateInput } from './validate_input.ts';
 
 export interface PlainCliCommand<TCtx> {
 	spec: CliSpec;
+	transformResult?: (result: unknown, values: Record<string, unknown>) => unknown;
 	tool: string;
 	input(values: Record<string, unknown>): Record<string, unknown>;
 	render(result: unknown, context: TCtx, values: Record<string, unknown>): string;
@@ -17,9 +18,9 @@ export interface ToolCliOptions<TCtx> {
 	version: string;
 	versionLine?: (args: string[]) => string;
 	description: string;
-	describeDb?: (opts: { db?: string }) => string;
+	describeDb?: (opts: { db?: string; quiet?: boolean; stderr?: Writable }) => string;
 	tools: readonly SurfaceTool<TCtx>[];
-	openContext(opts: { db?: string }): TCtx | Promise<TCtx>;
+	openContext(opts: { db?: string; quiet?: boolean; stderr?: Writable }): TCtx | Promise<TCtx>;
 	closeContext?: (ctx: TCtx) => void | Promise<void>;
 	commands?: {
 		plain?: readonly PlainCliCommand<TCtx>[];
@@ -27,10 +28,10 @@ export interface ToolCliOptions<TCtx> {
 		run?: (
 			command: string,
 			args: string[],
-			contextOptions: { db?: string },
+			contextOptions: { db?: string; quiet?: boolean; stderr?: Writable },
 			io: { stdin: Readable; stdout: Writable; stderr: Writable },
 		) => Promise<number | undefined>;
-		mcp?: (opts: { db?: string }) => unknown | Promise<unknown>;
+		mcp?: (opts: { db?: string; quiet?: boolean; stderr?: Writable }) => unknown | Promise<unknown>;
 		skill?: () => string | Promise<string>;
 		guides?: readonly { name: string; description: string; content: string }[];
 	};
@@ -52,6 +53,7 @@ export async function runToolCli<TCtx>(
 	}
 	let db: string | undefined;
 	let compact = false;
+	let quiet = process.env.GHOSTPAW_QUIET === '1';
 	const fail = (message: string, code = 2) => {
 		stderr.write(`${message}\n`);
 		return code;
@@ -62,6 +64,9 @@ export async function runToolCli<TCtx>(
 			db = args[i + 1];
 			args.splice(i, 2);
 			i--;
+		} else if (args[i] === '--quiet') {
+			quiet = true;
+			args.splice(i--, 1);
 		} else if (args[i] === '--compact') {
 			compact = true;
 			args.splice(i, 1);
@@ -73,7 +78,7 @@ export async function runToolCli<TCtx>(
 		stdout.write(`${options.versionLine?.(args) ?? options.version}\n`);
 		return 0;
 	}
-	const ctxOptions = db === undefined ? {} : { db };
+	const ctxOptions = { ...(db === undefined ? {} : { db }), quiet, stderr };
 	const command = args.shift() ?? 'help';
 	const normalize = (name: string) => name.replace(/[-_]/g, '').toLowerCase();
 	if (['help', '--help', '-h'].includes(command)) {
@@ -85,7 +90,7 @@ export async function runToolCli<TCtx>(
 				.map((name) => `${name}, `)
 				.join(
 					'',
-				)}tools [--json], describe <tool>, call <tool> [JSON|-], <tool> --parameter value, mcp, skill\nOutput: --json or GHOSTPAW_OUTPUT=json\nOptions: --help, --version, --compact, --db <path>\nVersion formats: --version --short, --version --json\n${options.describeDb ? `${options.describeDb(ctxOptions)}\n` : ''}\n${options.tools.map((tool) => `${tool.name}  ${tool.description}`).join('\n')}\n`,
+				)}tools [--json], describe <tool>, call <tool> [JSON|-], <tool> --parameter value, mcp, skill\nOutput: --json or GHOSTPAW_OUTPUT=json\nOptions: --help, --version, --compact, --quiet (or GHOSTPAW_QUIET=1), --db <path>\nVersion formats: --version --short, --version --json\n${options.describeDb ? `${options.describeDb(ctxOptions)}\n` : ''}\n${options.tools.map((tool) => `${tool.name}  ${tool.description}`).join('\n')}\n`,
 		);
 		return 0;
 	}
@@ -163,6 +168,7 @@ export async function runToolCli<TCtx>(
 						...(plain.spec.flags ?? []),
 						{ name: 'db', type: 'string' },
 						{ name: 'compact', type: 'boolean' },
+						{ name: 'quiet', type: 'boolean' },
 					],
 				}),
 			);
@@ -287,7 +293,10 @@ export async function runToolCli<TCtx>(
 		);
 	}
 	try {
-		const result = await tool.handler(context, input as Record<string, unknown>);
+		const rawResult = await tool.handler(context, input as Record<string, unknown>);
+		const result = plain?.transformResult
+			? plain.transformResult(rawResult, plainValues)
+			: rawResult;
 		stdout.write(
 			plain && !plainValues.json
 				? plain.render(result, context, plainValues)

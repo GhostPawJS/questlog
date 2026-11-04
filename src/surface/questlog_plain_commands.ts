@@ -16,7 +16,7 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 	const limit: CliArgument = {
 		name: 'limit',
 		type: 'integer',
-		description: 'Maximum displayed items (list text) or search matches.',
+		description: 'Maximum displayed items or search matches.',
 	};
 	const id: CliArgument = { name: 'id', type: 'integer', required: true };
 	const views = reviewQuestlogTool.inputSchema.properties?.view?.enum ?? [];
@@ -182,14 +182,36 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 		{
 			spec: {
 				command: 'list',
-				description:
-					'Review quests and other work. Limit caps text output; JSON contains the full tool result.',
+				description: 'Review quests and other work. Limit and offset apply to text and JSON.',
 				flags: [
 					{ name: 'view', type: 'string', enum: ['available', ...views] },
 					{ name: 'count-by', type: 'string', enum: ['tag', 'prefix'] },
 					{ name: 'tag', type: 'array', description: 'Require every tag (repeatable; AND).' },
 					limit,
+					{ name: 'offset', type: 'integer', description: 'Skip this many items (default 0).' },
 				],
+			},
+			transformResult: (result, values) => {
+				const r = result as { ok: boolean; data?: Record<string, unknown> };
+				if (!r.ok || !r.data) return result;
+				const key = ['items', 'deliveries', 'groups', 'counts'].find((key) =>
+					Array.isArray(r.data?.[key]),
+				);
+				if (!key) return result;
+				const items = r.data[key] as unknown[];
+				const offset = Number(values.offset ?? 0);
+				const limit = Number(values.limit ?? items.length);
+				return {
+					...r,
+					data: {
+						...r.data,
+						[key]: items.slice(offset, offset + limit),
+						total: items.length,
+						offset,
+						limit,
+						hasMore: offset + limit < items.length,
+					},
+				};
 			},
 			tool: 'review_questlog',
 			input: (v) => {
@@ -270,6 +292,8 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 		input: (values) => {
 			if (values.limit !== undefined && Number(values.limit) < 1)
 				throw new Error(`Limit ${values.limit} must be at least 1`);
+			if (values.offset !== undefined && Number(values.offset) < 0)
+				throw new CliUsageError('Offset must be at least 0');
 			return command.input(values);
 		},
 	}));

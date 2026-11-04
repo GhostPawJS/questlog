@@ -14,6 +14,15 @@ function selectedDbPath(options: { db?: string }): string {
 	return selected === ':memory:' ? selected : resolve(selected);
 }
 
+function notice(options: {
+	db?: string;
+	quiet?: boolean;
+	stderr?: import('node:stream').Writable;
+}): void {
+	if (options.db === undefined && !process.env.GHOSTPAW_QUESTLOG_DB && !options.quiet)
+		(options.stderr ?? process.stderr).write(`using default db ${selectedDbPath(options)}\n`);
+}
+
 export const questlogCliOptions: ToolCliOptions<QuestlogDb> = {
 	bin: 'ghostpaw-questlog',
 	version: questlogVersion,
@@ -26,6 +35,7 @@ export const questlogCliOptions: ToolCliOptions<QuestlogDb> = {
 		const { openQuestlogDb } = await import('./open_questlog_db.ts');
 		const path = selectedDbPath(options);
 		const created = path !== ':memory:' && !existsSync(path);
+		notice(options);
 		const db = await openQuestlogDb(path);
 		if (created) process.stderr.write(`created ${path}\n`);
 		return db;
@@ -43,6 +53,7 @@ export const questlogCliOptions: ToolCliOptions<QuestlogDb> = {
 					return 0;
 				}
 				const { openQuestlogDb } = await import('./open_questlog_db.ts');
+				notice(options);
 				const db = await openQuestlogDb(selectedDbPath(options));
 				try {
 					const delivery = listDeliveries(db, { includeDelivered: true }).find(
@@ -70,6 +81,7 @@ export const questlogCliOptions: ToolCliOptions<QuestlogDb> = {
 			const { runHookCommand } = await import('./run_hook_command.ts');
 			return runHookCommand(command, args, io, async () => {
 				const { openQuestlogDb } = await import('./open_questlog_db.ts');
+				notice(options);
 				return openQuestlogDb(selectedDbPath(options));
 			});
 		},
@@ -77,6 +89,7 @@ export const questlogCliOptions: ToolCliOptions<QuestlogDb> = {
 		guides: questlogSkills,
 		mcp: async (options) => {
 			const { serveQuestlogMcp } = await import('./serve_questlog_mcp.ts');
+			notice(options);
 			await serveQuestlogMcp(options.db === undefined ? {} : { dbPath: options.db });
 		},
 		skill: async () => {

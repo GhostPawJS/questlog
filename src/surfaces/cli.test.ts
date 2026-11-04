@@ -53,7 +53,9 @@ async function invoke(args: string[], input = '') {
 		stdout,
 		stderr,
 		openContext: (opts) => {
-			contexts.push(opts);
+			assert.equal(opts.quiet, false);
+			assert.equal(opts.stderr, stderr);
+			contexts.push(opts.db === undefined ? {} : { db: opts.db });
 			return ++opens;
 		},
 		closeContext: () => {
@@ -62,7 +64,9 @@ async function invoke(args: string[], input = '') {
 		commands: {
 			skill: () => 'skill text\n',
 			mcp: (opts) => {
-				contexts.push(opts);
+				assert.equal(opts.quiet, false);
+				assert.equal(opts.stderr, stderr);
+				contexts.push(opts.db === undefined ? {} : { db: opts.db });
 			},
 		},
 	});

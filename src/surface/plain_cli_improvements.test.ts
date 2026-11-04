@@ -317,7 +317,7 @@ test('list tags filter quests with AND semantics before the display limit', () =
 		assert.deepEqual(titles(['--tag', 'work', '--tag', 'urgent']), ['Both']);
 		assert.deepEqual(titles(['--view', 'quests.open', '--tag', 'urgent']), ['Both']);
 		assert.deepEqual(titles(['--tag', 'missing']), []);
-		assert.deepEqual(titles(['--tag', 'work', '--limit', '1']), ['Both', 'First']);
+		assert.equal(titles(['--tag', 'work', '--limit', '1']).length, 1);
 		const limited = run(['list', '--tag', 'urgent', '--limit', '1']);
 		assert.equal(limited.status, 0, limited.stderr);
 		assert.match(limited.stdout, /Both/);
@@ -411,6 +411,73 @@ test('literal search, raw FTS and start work through the CLI', () => {
 				?.input({ id: 1, force: true }),
 			{ action: 'start', questId: 1, force: true },
 		);
+	} finally {
+		rmSync(dir, { recursive: true, force: true });
+	}
+});
+
+test('list pagination bounds text and JSON after filtering', () => {
+	const dir = mkdtempSync(join(tmpdir(), 'questlog-page-'));
+	try {
+		const db = join(dir, 'work.db');
+		const run = (args: string[], env = process.env) =>
+			capture(['src/cli.ts', '--db', db, ...args], env);
+		for (const title of ['One', 'Two', 'Three']) assert.equal(run(['add', title]).status, 0);
+		const full = JSON.parse(run(['list', '--json']).stdout).data.items;
+		for (const envJson of [false, true]) {
+			const result = run(
+				['list', '--limit', '1', '--offset', '1', ...(envJson ? [] : ['--json'])],
+				{ ...process.env, GHOSTPAW_OUTPUT: envJson ? 'json' : '' },
+			);
+			assert.equal(result.status, 0, result.stderr);
+			const data = JSON.parse(result.stdout).data;
+			assert.deepEqual(data.items, full.slice(1, 2));
+			assert.deepEqual([data.total, data.offset, data.limit, data.hasMore], [3, 1, 1, true]);
+		}
+		const text = run(['list', '--limit', '1', '--offset', '1']);
+		assert.match(text.stdout, new RegExp(full[1].title));
+		assert.equal(text.stdout.trim().split('\n').length, 1);
+		const end = JSON.parse(run(['list', '--json', '--offset', '3']).stdout).data;
+		assert.deepEqual(end.items, []);
+		assert.equal(end.hasMore, false);
+		assert.equal(run(['list', '--offset', '-1']).status, 2);
+	} finally {
+		rmSync(dir, { recursive: true, force: true });
+	}
+});
+
+test('default database notice uses stderr and respects explicit selection and quiet', () => {
+	const dir = mkdtempSync(join(tmpdir(), 'questlog-notice-'));
+	try {
+		const env = {
+			...process.env,
+			HOME: dir,
+			GHOSTPAW_QUESTLOG_DB: '',
+			GHOSTPAW_QUIET: '',
+			GHOSTPAW_OUTPUT: '',
+		};
+		const run = (args: string[], overrides = {}) =>
+			capture(['src/cli.ts', ...args], { ...env, ...overrides });
+		const db = join(dir, '.ghostpaw', 'questlog.db');
+		run(['list']);
+		const normal = run(['list']);
+		assert.equal(normal.stderr, `using default db ${db}\n`);
+		for (const quiet of [run(['list', '--quiet']), run(['list'], { GHOSTPAW_QUIET: '1' })]) {
+			assert.equal(quiet.stdout, normal.stdout);
+			assert.equal(quiet.stderr, '');
+		}
+		assert.equal(run(['list', '--db', db]).stderr, '');
+		assert.equal(run(['list'], { GHOSTPAW_QUESTLOG_DB: db }).stderr, '');
+		for (const args of [
+			['help'],
+			['--version'],
+			['tools'],
+			['describe', 'review_questlog'],
+			['skill'],
+			['list', '--help'],
+			['hook', '--help'],
+		])
+			assert.equal(run(args).stderr, '');
 	} finally {
 		rmSync(dir, { recursive: true, force: true });
 	}

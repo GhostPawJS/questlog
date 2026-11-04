@@ -7,7 +7,7 @@ import { formatPlainDate } from './plain_dates.ts';
 export function renderQuestlogPlainResult(
 	result: unknown,
 	db: QuestlogDb,
-	values: Record<string, unknown>,
+	_values: Record<string, unknown>,
 ): string {
 	const r = result as ToolResult<{
 		counts?: { key: string; count: number }[];
@@ -46,10 +46,7 @@ export function renderQuestlogPlainResult(
 	if (r.data.groups)
 		return `${r.data.groups.map((g) => `${g.ids.join(', ')} ${g.title.replace(/[\r\n]+/g, ' ')}`).join('\n') || r.summary}\n`;
 	if (r.data.items) {
-		const items =
-			values.limit === undefined
-				? r.data.items
-				: r.data.items.slice(0, Math.max(0, Number(values.limit)));
+		const items = r.data.items;
 		return `${items.length ? items.map(line).join('\n') : r.summary}\n`;
 	}
 	if (r.data.item) {
