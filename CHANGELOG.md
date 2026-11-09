@@ -5,6 +5,8 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+## [0.14.0] - 2026-11-09
+
 ### Added
 
 - Historical quest creation with `createdAt`, tool creation `now`, and CLI `add --created-at`, `start --at`, and `done --at`; lifecycle tools also accept `now` as an event-time fallback.
@@ -239,7 +241,8 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 - Semantic markers, structured tool facade, workflow skills, and usage documentation.
 - ESM and CommonJS bundles with TypeScript declarations and native Node test execution.
 
-[Unreleased]: https://github.com/GhostPawJS/questlog/compare/v0.13.0...HEAD
+[Unreleased]: https://github.com/GhostPawJS/questlog/compare/v0.14.0...HEAD
+[0.14.0]: https://github.com/GhostPawJS/questlog/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/GhostPawJS/questlog/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/GhostPawJS/questlog/compare/v0.11.3...v0.12.0
 [0.11.3]: https://github.com/GhostPawJS/questlog/compare/v0.11.2...v0.11.3
