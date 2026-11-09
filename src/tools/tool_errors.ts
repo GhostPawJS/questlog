@@ -49,6 +49,7 @@ export function translateToolError(
 		message.includes('must be greater than zero') ||
 		message.includes('must be parseable') ||
 		message.includes('must be a positive integer') ||
+		message.includes('must be an integer in epoch milliseconds') ||
 		message.includes('Unsupported RRULE') ||
 		message.includes('Invalid time zone')
 	) {

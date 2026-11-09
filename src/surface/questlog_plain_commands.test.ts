@@ -82,7 +82,8 @@ test('plain commands operate on real quests in text and JSON modes', async () =>
 				}
 			}
 			const missing = await invoke(['done', String(id), ...flags]);
-			assert.equal(missing.code, 3);
+			assert.equal(missing.code, 2);
+			assert.match(missing.err, /--outcome '\.\.\.'/);
 			if (json) {
 				const parsed = JSON.parse(missing.out);
 				assert.equal(parsed.outcome, 'needs_clarification');

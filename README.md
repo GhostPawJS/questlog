@@ -93,7 +93,7 @@ Its `--limit` and `--offset` paginate text and JSON. JSON `data` includes `total
 `search --limit` caps matches in both formats. `show` prints full quest detail.
 Lists show local due dates, overdue markers, and recorded outcomes. Plain JSON
 adds ISO UTC siblings for numeric timestamp fields ending in `At`.
-`done` stores `--outcome` with the finished quest; without it the command asks for one and exits 3.
+`done` stores `--outcome` with the finished quest; without it the command prints a usage hint (`--outcome '...'`) and exits 2.
 
 Revise a title with `questlog quest revise <id> --title "New title"`.
 Count filtered quests with `questlog list --count-by tag|prefix`.
@@ -669,7 +669,7 @@ unchanged. Invalid zones are rejected; the plain CLI exits 2.
 Set `GHOSTPAW_OUTPUT=json` to select CLI JSON output as with `--json`.
 Other values leave the default output unchanged.
 
-When opening the default database, the CLI prints `using default db <path>` to stderr. Suppress this notice with `--quiet` or `GHOSTPAW_QUIET=1`.
+When opening the default database, the CLI prints `using default db <path>` to stderr. Suppress this notice with `-q`, `--quiet`, or `GHOSTPAW_QUIET=1`.
 
 ### Due selection and consumer claims
 
@@ -703,3 +703,36 @@ Its payload adds the item fields above and `consumer`; this opt-in payload inclu
 titles and tags. Plain tick retains its existing behavior. Dry-run rolls claims back.
 The MCP/tool `due` accepts `within`, `tags`, `limit`, `claim`, and `release`;
 it is marked as writing state because claim/release persist marks.
+
+### Historical work and CLI preflights
+
+```sh
+questlog add "Review report" --due tomorrow --tag work --tag review
+questlog add "Past work" --created-at 2026-10-01T00:00:00Z
+questlog start 1 --at 2026-10-02T00:00:00Z
+questlog done 1 --at 2026-10-05T00:00:00Z --outcome 'Completed'
+questlog show rumor:1
+questlog list --view rumors.open
+questlog list --count --tag work
+```
+
+`createQuest(db, input)` accepts optional `now` or `createdAt` in epoch
+milliseconds. `createdAt` takes precedence and must be an integer >= 1e12;
+future values are accepted. Creation, start, and resolution timestamps must
+remain chronological. `shape_work` accepts top-level `now` for creation,
+settlement, and dismissal; nested creation times and explicit event times take
+precedence. `run_quest` accepts `now` as a fallback for `startedAt` and
+`resolvedAt`. All numeric tool timestamps use epoch milliseconds. Existing
+inputs representing dates before 2001 remain supported through existing fields.
+
+`show` accepts plain quest ids or `kind:id`: quest, rumor, questline,
+repeatable_quest (alias repeatable), using `inspect_questlog_item`.
+`list --view rumors` shows open rumors; `rumors.open` is a CLI alias. Invalid
+views list valid choices. `list --count` prints the filtered total before
+pagination; `--json` prints `{ "total": N }`. Use `--count-by` separately.
+`-q` aliases `--quiet` globally or after a command. `done` requires
+`--outcome '...'`; omission exits 2. Invalid `call` inputs print an error result
+and exit 2. `manage_repeatable` action `spawn_due` defaults `now` to the current
+time, matching `preview_due`. For tool calls, nest creation data under `quest`
+or `questline`, and tagging targets under `target`; validation errors show the
+expected shape.

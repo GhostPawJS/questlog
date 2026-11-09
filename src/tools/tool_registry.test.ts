@@ -128,6 +128,8 @@ describe('tool registry', () => {
 		ok(tool);
 
 		const expectedQuestFields = [
+			'createdAt',
+			'now',
 			'title',
 			'objective',
 			'questlineId',

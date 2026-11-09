@@ -60,6 +60,25 @@ export function defineQuestlogTool<
 	TInput,
 	TResult extends ToolResult<unknown> | Promise<ToolResult<unknown>>,
 >(definition: QuestlogToolDefinition<TInput, TResult>): QuestlogToolDefinition<TInput, TResult> {
+	const describeTimestamps = (schema: JsonSchema) => {
+		for (const [name, property] of Object.entries(schema.properties ?? {})) {
+			if (name === 'now' || name.endsWith('At')) {
+				property.description = `${property.description ?? ''} Unit: epoch milliseconds.`;
+			}
+			describeTimestamps(property);
+		}
+		if (schema.items) describeTimestamps(schema.items);
+		for (const branch of schema.oneOf ?? []) describeTimestamps(branch);
+	};
+	describeTimestamps(definition.inputSchema);
+	definition.inputDescriptions = Object.fromEntries(
+		Object.entries(definition.inputDescriptions).map(([name, description]) => [
+			name,
+			name === 'now' || name.endsWith('At')
+				? `${description} Unit: epoch milliseconds.`
+				: description,
+		]),
+	);
 	const requirements = actionRequirements[definition.name];
 	if (requirements) registerSchemaActions(definition.inputSchema, requirements);
 	const handler = definition.handler;
@@ -68,7 +87,11 @@ export function defineQuestlogTool<
 		if (errors.length) {
 			const action = (input as Record<string, unknown> | null)?.action;
 			const example = minimalInput(definition.inputSchema, action);
-			const message = errors.join('; ');
+			const message =
+				errors.join('; ') +
+				(['shape_work', 'tag_work'].includes(definition.name)
+					? `; expected nested input shape: ${JSON.stringify(example)}`
+					: '');
 			return toolFailure('protocol', 'invalid_input', message, message, {
 				recovery: `${message}; pass ${JSON.stringify(example)}`,
 			}) as TResult;

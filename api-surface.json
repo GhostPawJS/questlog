@@ -1999,6 +1999,10 @@
 				"type": "boolean | undefined",
 				"optional": true
 			},
+			"createdAt": {
+				"type": "number | undefined",
+				"optional": true
+			},
 			"dueAt": {
 				"type": "number | null | undefined",
 				"optional": true
@@ -2060,7 +2064,7 @@
 				"optional": false
 			}
 		},
-		"definition": "interface CreateQuestInput { title: string; objective: string; questlineId?: number | null; sourceRumorId?: number | null; spawnedByQuestId?: number | null; spawnedFromRepeatableId?: number | null; spawnedForAt?: number | null; estimateSeconds?: number | null; notBeforeAt?: number | null; dueAt?: number | null; scheduledStartAt?: number | null; scheduledEndAt?: number | null; allDay?: boolean; tags?: string[]; rewards?: QuestRewardInput[]; now?: number; }",
+		"definition": "interface CreateQuestInput { createdAt?: number; title: string; objective: string; questlineId?: number | null; sourceRumorId?: number | null; spawnedByQuestId?: number | null; spawnedFromRepeatableId?: number | null; spawnedForAt?: number | null; estimateSeconds?: number | null; notBeforeAt?: number | null; dueAt?: number | null; scheduledStartAt?: number | null; scheduledEndAt?: number | null; allDay?: boolean; tags?: string[]; rewards?: QuestRewardInput[]; now?: number; }",
 		"references": {
 			"QuestRewardInput": ".:public.QuestRewardInput"
 		}
@@ -2371,6 +2375,10 @@
 		"members": {
 			"allDay": {
 				"type": "boolean | undefined",
+				"optional": true
+			},
+			"createdAt": {
+				"type": "number | undefined",
 				"optional": true
 			},
 			"dueAt": {
@@ -2693,7 +2701,7 @@
 		"kind": "type",
 		"type": "\"quest.due\" | \"quest.overdue\" | \"quest.unblocked\" | \"repeatable.spawned\" | \"rumor.captured\"",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -3111,7 +3119,7 @@
 				"optional": false
 			}
 		},
-		"definition": "type ManageRepeatableToolInput = { action: 'archive'; archivedAt?: number; repeatableQuestId: number; } | { action: 'create'; repeatableQuest: CreateRepeatableQuestInput; } | { action: 'preview_due'; now?: number; } | { action: 'spawn_due'; now: number; } | ({ action: 'update' | 'revise'; repeatableQuestId: number; } & UpdateRepeatableQuestInput);",
+		"definition": "type ManageRepeatableToolInput = { action: 'archive'; archivedAt?: number; repeatableQuestId: number; } | { action: 'create'; repeatableQuest: CreateRepeatableQuestInput; } | { action: 'preview_due'; now?: number; } | { action: 'spawn_due'; now?: number; } | ({ action: 'update' | 'revise'; repeatableQuestId: number; } & UpdateRepeatableQuestInput);",
 		"references": {
 			"CreateRepeatableQuestInput": ".:public.CreateRepeatableQuestInput",
 			"UpdateRepeatableQuestInput": ".:public.UpdateRepeatableQuestInput"
@@ -3440,7 +3448,7 @@
 		"kind": "type",
 		"type": "ReviewQuestlogToolView",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -3819,12 +3827,16 @@
 				"type": "\"abandon\" | \"abandon_and_spawn_followups\" | \"finish\" | \"log_effort\" | \"start\"",
 				"optional": false
 			},
+			"now": {
+				"type": "number | undefined",
+				"optional": true
+			},
 			"questId": {
 				"type": "number",
 				"optional": false
 			}
 		},
-		"definition": "type RunQuestToolInput = { action: 'abandon'; outcome: string; questId: number; resolvedAt?: number; } | { action: 'abandon_and_spawn_followups'; followups: FollowupQuestInput[]; outcome: string; questId: number; resolvedAt?: number; } | { action: 'finish'; outcome: string; questId: number; resolvedAt?: number; } | { action: 'log_effort'; effortSeconds: number; now?: number; questId: number; } | { action: 'start'; questId: number; startedAt?: number; force?: boolean; };",
+		"definition": "type RunQuestToolInput = { action: 'abandon'; outcome: string; questId: number; now?: number; resolvedAt?: number; } | { action: 'abandon_and_spawn_followups'; followups: FollowupQuestInput[]; outcome: string; questId: number; now?: number; resolvedAt?: number; } | { action: 'finish'; outcome: string; questId: number; now?: number; resolvedAt?: number; } | { action: 'log_effort'; effortSeconds: number; now?: number; questId: number; } | { action: 'start'; questId: number; now?: number; startedAt?: number; force?: boolean; };",
 		"references": {
 			"FollowupQuestInput": ".:public.FollowupQuestInput"
 		}
@@ -3998,9 +4010,13 @@
 			"action": {
 				"type": "\"attach_quest_to_questline\" | \"create_quest\" | \"create_questline\" | \"detach_quest_from_questline\" | \"dismiss_rumor\" | \"reopen_rumor\" | \"settle_rumor\" | \"update_rumor\"",
 				"optional": false
+			},
+			"now": {
+				"type": "number | undefined",
+				"optional": true
 			}
 		},
-		"definition": "type ShapeWorkToolInput = { action: 'attach_quest_to_questline'; now?: number; questId: number; questlineId: number; } | { action: 'create_quest'; quest: CreateQuestInput; } | { action: 'create_questline'; questline: CreateQuestlineInput; } | { action: 'detach_quest_from_questline'; now?: number; questId: number; } | { action: 'dismiss_rumor'; dismissedAt?: number; rumorId: number; } | { action: 'reopen_rumor'; now?: number; rumorId: number; } | ({ action: 'settle_rumor'; rumorId: number; } & SettleRumorInput) | { action: 'update_rumor'; rumorId: number; title?: string; details?: string; now?: number; };",
+		"definition": "type ShapeWorkToolInput = { action: 'attach_quest_to_questline'; now?: number; questId: number; questlineId: number; } | { action: 'create_quest'; now?: number; quest: CreateQuestInput; } | { action: 'create_questline'; now?: number; questline: CreateQuestlineInput; } | { action: 'detach_quest_from_questline'; now?: number; questId: number; } | { action: 'dismiss_rumor'; now?: number; dismissedAt?: number; rumorId: number; } | { action: 'reopen_rumor'; now?: number; rumorId: number; } | ({ action: 'settle_rumor'; now?: number; rumorId: number; } & SettleRumorInput) | { action: 'update_rumor'; rumorId: number; title?: string; details?: string; now?: number; };",
 		"references": {
 			"CreateQuestInput": ".:public.CreateQuestInput",
 			"CreateQuestlineInput": ".:public.CreateQuestlineInput",
@@ -4308,7 +4324,7 @@
 		"kind": "type",
 		"type": "\"quest.due\" | \"quest.overdue\" | \"quest.unblocked\" | \"repeatable.spawned\" | \"rumor.captured\"",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -4896,7 +4912,7 @@
 		"kind": "type",
 		"type": "JsonSchemaType",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -5381,7 +5397,7 @@
 		"kind": "type",
 		"type": "MarkerId",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -5649,7 +5665,7 @@
 		"kind": "type",
 		"type": "MarkerId",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -6486,11 +6502,11 @@
 		"kind": "type",
 		"type": "QuestlogSkillRegistry",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => ArrayIterator<QuestlogSkill>",
 				"optional": false
 			},
-			"__@unscopables@863": {
+			"__@unscopables@864": {
 				"type": "{ readonly [x: number]: boolean | undefined; readonly length?: boolean | undefined; toString?: boolean | undefined; toLocaleString?: boolean | undefined; concat?: boolean | undefined; join?: boolean | undefined; slice?: boolean | undefined; indexOf?: boolean | undefined; lastIndexOf?: boolean | undefined; every?: boolean | undefined; some?: boolean | undefined; forEach?: boolean | undefined; map?: boolean | undefined; filter?: boolean | undefined; reduce?: boolean | undefined; reduceRight?: boolean | undefined; find?: boolean | undefined; findIndex?: boolean | undefined; entries?: boolean | undefined; keys?: boolean | undefined; values?: boolean | undefined; includes?: boolean | undefined; flatMap?: boolean | undefined; flat?: boolean | undefined; at?: boolean | undefined; findLast?: boolean | undefined; findLastIndex?: boolean | undefined; toReversed?: boolean | undefined; toSorted?: boolean | undefined; toSpliced?: boolean | undefined; with?: boolean | undefined; [Symbol.iterator]?: boolean | undefined; readonly [Symbol.unscopables]?: boolean | undefined; }",
 				"optional": false
 			},
@@ -6885,7 +6901,7 @@
 		"kind": "type",
 		"type": "QuestState",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -7604,7 +7620,7 @@
 		"kind": "type",
 		"type": "RumorState",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -8059,11 +8075,11 @@
 		"kind": "type",
 		"type": "QuestlogSkillRegistry",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => ArrayIterator<QuestlogSkill>",
 				"optional": false
 			},
-			"__@unscopables@863": {
+			"__@unscopables@864": {
 				"type": "{ readonly [x: number]: boolean | undefined; readonly length?: boolean | undefined; toString?: boolean | undefined; toLocaleString?: boolean | undefined; concat?: boolean | undefined; join?: boolean | undefined; slice?: boolean | undefined; indexOf?: boolean | undefined; lastIndexOf?: boolean | undefined; every?: boolean | undefined; some?: boolean | undefined; forEach?: boolean | undefined; map?: boolean | undefined; filter?: boolean | undefined; reduce?: boolean | undefined; reduceRight?: boolean | undefined; find?: boolean | undefined; findIndex?: boolean | undefined; entries?: boolean | undefined; keys?: boolean | undefined; values?: boolean | undefined; includes?: boolean | undefined; flatMap?: boolean | undefined; flat?: boolean | undefined; at?: boolean | undefined; findLast?: boolean | undefined; findLastIndex?: boolean | undefined; toReversed?: boolean | undefined; toSorted?: boolean | undefined; toSpliced?: boolean | undefined; with?: boolean | undefined; [Symbol.iterator]?: boolean | undefined; readonly [Symbol.unscopables]?: boolean | undefined; }",
 				"optional": false
 			},
@@ -8415,7 +8431,7 @@
 		"kind": "type",
 		"type": "ToolClarificationCode",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -8630,11 +8646,11 @@
 		"kind": "type",
 		"type": "ToolDefinitionRegistry",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => ArrayIterator<QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>>",
 				"optional": false
 			},
-			"__@unscopables@863": {
+			"__@unscopables@864": {
 				"type": "{ readonly [x: number]: boolean | undefined; readonly length?: boolean | undefined; toString?: boolean | undefined; toLocaleString?: boolean | undefined; concat?: boolean | undefined; join?: boolean | undefined; slice?: boolean | undefined; indexOf?: boolean | undefined; lastIndexOf?: boolean | undefined; every?: boolean | undefined; some?: boolean | undefined; forEach?: boolean | undefined; map?: boolean | undefined; filter?: boolean | undefined; reduce?: boolean | undefined; reduceRight?: boolean | undefined; find?: boolean | undefined; findIndex?: boolean | undefined; entries?: boolean | undefined; keys?: boolean | undefined; values?: boolean | undefined; includes?: boolean | undefined; flatMap?: boolean | undefined; flat?: boolean | undefined; at?: boolean | undefined; findLast?: boolean | undefined; findLastIndex?: boolean | undefined; toReversed?: boolean | undefined; toSorted?: boolean | undefined; toSpliced?: boolean | undefined; with?: boolean | undefined; [Symbol.iterator]?: boolean | undefined; readonly [Symbol.unscopables]?: boolean | undefined; }",
 				"optional": false
 			},
@@ -8769,7 +8785,7 @@
 		"kind": "type",
 		"type": "ToolEntityKind",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -9015,7 +9031,7 @@
 		"kind": "type",
 		"type": "ToolErrorCode",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -9230,7 +9246,7 @@
 		"kind": "type",
 		"type": "ToolErrorKind",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -9746,7 +9762,7 @@
 		"kind": "type",
 		"type": "ToolNextStepHintKind",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -9974,7 +9990,7 @@
 		"kind": "type",
 		"type": "ToolOutcomeKind",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -10189,7 +10205,7 @@
 		"kind": "type",
 		"type": "string",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -10630,7 +10646,7 @@
 		"kind": "type",
 		"type": "JsonSchemaType",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -11106,7 +11122,7 @@
 		"kind": "type",
 		"type": "ToolClarificationCode",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -11324,11 +11340,11 @@
 		"kind": "type",
 		"type": "ToolDefinitionRegistry",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => ArrayIterator<QuestlogToolDefinition<never, ToolResult<unknown> | Promise<ToolResult<unknown>>>>",
 				"optional": false
 			},
-			"__@unscopables@863": {
+			"__@unscopables@864": {
 				"type": "{ readonly [x: number]: boolean | undefined; readonly length?: boolean | undefined; toString?: boolean | undefined; toLocaleString?: boolean | undefined; concat?: boolean | undefined; join?: boolean | undefined; slice?: boolean | undefined; indexOf?: boolean | undefined; lastIndexOf?: boolean | undefined; every?: boolean | undefined; some?: boolean | undefined; forEach?: boolean | undefined; map?: boolean | undefined; filter?: boolean | undefined; reduce?: boolean | undefined; reduceRight?: boolean | undefined; find?: boolean | undefined; findIndex?: boolean | undefined; entries?: boolean | undefined; keys?: boolean | undefined; values?: boolean | undefined; includes?: boolean | undefined; flatMap?: boolean | undefined; flat?: boolean | undefined; at?: boolean | undefined; findLast?: boolean | undefined; findLastIndex?: boolean | undefined; toReversed?: boolean | undefined; toSorted?: boolean | undefined; toSpliced?: boolean | undefined; with?: boolean | undefined; [Symbol.iterator]?: boolean | undefined; readonly [Symbol.unscopables]?: boolean | undefined; }",
 				"optional": false
 			},
@@ -11462,7 +11478,7 @@
 		"kind": "type",
 		"type": "ToolEntityKind",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -11710,7 +11726,7 @@
 		"kind": "type",
 		"type": "ToolErrorCode",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -11928,7 +11944,7 @@
 		"kind": "type",
 		"type": "ToolErrorKind",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -12319,7 +12335,7 @@
 		"kind": "type",
 		"type": "ToolNextStepHintKind",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -12541,7 +12557,7 @@
 		"kind": "type",
 		"type": "ToolOutcomeKind",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -12759,7 +12775,7 @@
 		"kind": "type",
 		"type": "string",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -13016,7 +13032,7 @@
 		"kind": "type",
 		"type": "ToolSideEffects",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -13303,7 +13319,7 @@
 		"kind": "type",
 		"type": "ToolWarningCode",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -13521,7 +13537,7 @@
 		"kind": "type",
 		"type": "ToolSideEffects",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},
@@ -13818,7 +13834,7 @@
 		"kind": "type",
 		"type": "ToolWarningCode",
 		"members": {
-			"__@iterator@843": {
+			"__@iterator@844": {
 				"type": "() => StringIterator<string>",
 				"optional": false
 			},

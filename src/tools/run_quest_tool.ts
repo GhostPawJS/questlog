@@ -24,17 +24,18 @@ import type { ToolEntityRef, ToolResult } from './tool_types.ts';
 import { toolFailure, toolNeedsClarification, toolNoOp, toolSuccess } from './tool_types.ts';
 
 export type RunQuestToolInput =
-	| { action: 'abandon'; outcome: string; questId: number; resolvedAt?: number }
+	| { action: 'abandon'; outcome: string; questId: number; now?: number; resolvedAt?: number }
 	| {
 			action: 'abandon_and_spawn_followups';
 			followups: FollowupQuestInput[];
 			outcome: string;
 			questId: number;
+			now?: number;
 			resolvedAt?: number;
 	  }
-	| { action: 'finish'; outcome: string; questId: number; resolvedAt?: number }
+	| { action: 'finish'; outcome: string; questId: number; now?: number; resolvedAt?: number }
 	| { action: 'log_effort'; effortSeconds: number; now?: number; questId: number }
-	| { action: 'start'; questId: number; startedAt?: number; force?: boolean };
+	| { action: 'start'; questId: number; now?: number; startedAt?: number; force?: boolean };
 
 export interface RunQuestToolData {
 	action: RunQuestToolInput['action'];
@@ -112,7 +113,7 @@ export function runQuestToolHandler(
 						},
 					);
 				}
-				startQuest(db, input.questId, input.startedAt);
+				startQuest(db, input.questId, input.startedAt ?? input.now);
 				const detail = getQuestDetail(db, input.questId);
 				return toolSuccess(
 					`Started quest \`${detail.title}\`.`,
@@ -152,7 +153,7 @@ export function runQuestToolHandler(
 				);
 			}
 			case 'finish': {
-				finishQuest(db, input.questId, input.outcome, input.resolvedAt);
+				finishQuest(db, input.questId, input.outcome, input.resolvedAt ?? input.now);
 				const detail = getQuestDetail(db, input.questId);
 				return toolSuccess(
 					`Finished quest \`${detail.title}\`.`,
@@ -168,7 +169,7 @@ export function runQuestToolHandler(
 				);
 			}
 			case 'abandon': {
-				abandonQuest(db, input.questId, input.outcome, input.resolvedAt);
+				abandonQuest(db, input.questId, input.outcome, input.resolvedAt ?? input.now);
 				const detail = getQuestDetail(db, input.questId);
 				return toolSuccess(
 					`Abandoned quest \`${detail.title}\`.`,
@@ -200,7 +201,7 @@ export function runQuestToolHandler(
 					input.questId,
 					input.outcome,
 					input.followups,
-					input.resolvedAt,
+					input.resolvedAt ?? input.now,
 				);
 				const detail = getQuestDetail(db, input.questId);
 				const followupQuests = result.followupQuests.map((quest) => getQuestDetail(db, quest.id));
@@ -247,7 +248,7 @@ export const runQuestTool = defineQuestlogTool<RunQuestToolInput, RunQuestToolRe
 		startedAt: 'Optional actual start timestamp for the start action.',
 		force: 'Start despite unmet unlock prerequisites. Defaults to false.',
 		effortSeconds: 'Positive active-effort increment in seconds for the log-effort action.',
-		now: 'Optional timestamp for the effort log action.',
+		now: 'Optional epoch milliseconds for any lifecycle action; explicit startedAt or resolvedAt takes precedence.',
 		outcome: 'Terminal outcome text for finish or abandon actions.',
 		resolvedAt: 'Optional terminal timestamp for finish or abandon actions.',
 		followups:
@@ -270,7 +271,7 @@ export const runQuestTool = defineQuestlogTool<RunQuestToolInput, RunQuestToolRe
 			effortSeconds: integerSchema(
 				'Positive active-effort increment in seconds. Required for log_effort.',
 			),
-			now: integerSchema('Optional effort-log timestamp.'),
+			now: integerSchema('Optional epoch milliseconds for any lifecycle action.'),
 			outcome: stringSchema(
 				'Terminal outcome text. Required for finish, abandon, and abandon_and_spawn_followups.',
 			),

@@ -5,6 +5,17 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Added
+
+- Historical quest creation with `createdAt`, tool creation `now`, and CLI `add --created-at`, `start --at`, and `done --at`; lifecycle tools also accept `now` as an event-time fallback.
+- CLI `show kind:id`, including rumors and repeatables; `-q` for quiet output; filtered `list --count` totals and the `rumors.open` view alias.
+
+### Fixed
+
+- Missing `done --outcome` and invalid tool call inputs exit 2 with recovery guidance.
+- `spawn_due` defaults to the current time, matching `preview_due`.
+- Tool timestamp descriptions specify epoch milliseconds; flat shaping and tagging errors show the expected nested input shape. CLI help includes due and tags examples and valid view names.
+
 ## [0.13.0] - 2026-11-05
 
 ### Added
@@ -232,6 +243,7 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 [0.13.0]: https://github.com/GhostPawJS/questlog/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/GhostPawJS/questlog/compare/v0.11.3...v0.12.0
 [0.11.3]: https://github.com/GhostPawJS/questlog/compare/v0.11.2...v0.11.3
+[0.11.2]: https://github.com/GhostPawJS/questlog/compare/v0.11.1...v0.11.2
 [0.11.1]: https://github.com/GhostPawJS/questlog/compare/v0.11.0...v0.11.1
 [0.11.0]: https://github.com/GhostPawJS/questlog/compare/v0.10.1...v0.11.0
 [0.10.1]: https://github.com/GhostPawJS/questlog/compare/v0.10.0...v0.10.1

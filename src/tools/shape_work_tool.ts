@@ -33,12 +33,12 @@ export type ShapeWorkToolInput =
 			questId: number;
 			questlineId: number;
 	  }
-	| { action: 'create_quest'; quest: CreateQuestInput }
-	| { action: 'create_questline'; questline: CreateQuestlineInput }
+	| { action: 'create_quest'; now?: number; quest: CreateQuestInput }
+	| { action: 'create_questline'; now?: number; questline: CreateQuestlineInput }
 	| { action: 'detach_quest_from_questline'; now?: number; questId: number }
-	| { action: 'dismiss_rumor'; dismissedAt?: number; rumorId: number }
+	| { action: 'dismiss_rumor'; now?: number; dismissedAt?: number; rumorId: number }
 	| { action: 'reopen_rumor'; now?: number; rumorId: number }
-	| ({ action: 'settle_rumor'; rumorId: number } & SettleRumorInput)
+	| ({ action: 'settle_rumor'; now?: number; rumorId: number } & SettleRumorInput)
 	| { action: 'update_rumor'; rumorId: number; title?: string; details?: string; now?: number };
 
 export interface ShapeWorkToolData {
@@ -75,7 +75,7 @@ export function shapeWorkToolHandler(
 						},
 					);
 				}
-				const rumor = dismissRumor(db, input.rumorId, input.dismissedAt);
+				const rumor = dismissRumor(db, input.rumorId, input.dismissedAt ?? input.now);
 				return toolSuccess(
 					`Dismissed rumor \`${rumor.title}\`.`,
 					{
@@ -128,7 +128,9 @@ export function shapeWorkToolHandler(
 						['questline', 'quests'],
 					);
 				}
-				const settleInput: SettleRumorInput = {};
+				const settleInput: SettleRumorInput = {
+					...(input.now === undefined ? {} : { settledAt: input.now }),
+				};
 				if (input.questline) {
 					settleInput.questline = input.questline;
 				}
@@ -168,7 +170,10 @@ export function shapeWorkToolHandler(
 				);
 			}
 			case 'create_quest': {
-				const quest = createQuest(db, input.quest);
+				const quest = createQuest(db, {
+					...input.quest,
+					now: input.quest.now ?? input.now ?? Date.now(),
+				});
 				const detail = getQuestDetail(db, quest.id);
 				return toolSuccess(
 					`Created quest \`${detail.title}\`.`,
@@ -185,7 +190,10 @@ export function shapeWorkToolHandler(
 				);
 			}
 			case 'create_questline': {
-				const questline = createQuestline(db, input.questline);
+				const questline = createQuestline(db, {
+					...input.questline,
+					now: input.questline.now ?? input.now ?? Date.now(),
+				});
 				const detail = getQuestlineDetail(db, questline.id);
 				return toolSuccess(
 					`Created questline \`${detail.title}\`.`,
@@ -315,11 +323,11 @@ export const shapeWorkTool = defineQuestlogTool<ShapeWorkToolInput, ShapeWorkToo
 			'Concrete quest creation inputs when settling a rumor into real work. Each quest supports the same fields as the quest property — include timing and tags directly.',
 		settledAt: 'Optional settlement timestamp for rumor settlement.',
 		quest:
-			'Quest creation input when directly creating one concrete quest. Include timing fields (dueAt, scheduledStartAt, etc.), tags, and rewards to create a fully specified quest in one call.',
+			'Quest creation input when directly creating one concrete quest. Include timing fields in epoch milliseconds (dueAt, scheduledStartAt, etc.), optional now or createdAt for historical creation, tags, and rewards to create a fully specified quest in one call.',
 		questId: 'The concrete quest being attached to or detached from a questline.',
 		questlineId: 'The questline that should receive the quest for attach actions.',
 		dismissedAt: 'Optional dismissal timestamp for dismissing a rumor.',
-		now: 'Optional timestamp for reopen, questline membership, or rumor update.',
+		now: 'Optional epoch milliseconds for creation, settlement, dismissal, reopen, membership, or rumor update. Nested creation timestamps and explicit action timestamps take precedence.',
 		title: 'New title for the update_rumor action.',
 		details:
 			'New or enriched context for the update_rumor action. Append evidence as rumors accumulate information across conversations.',
@@ -343,6 +351,10 @@ export const shapeWorkTool = defineQuestlogTool<ShapeWorkToolInput, ShapeWorkToo
 			quest: objectSchema(
 				{
 					title: stringSchema('Title for the new quest.'),
+					createdAt: integerSchema(
+						'Optional creation time in epoch milliseconds; takes precedence over now.',
+					),
+					now: integerSchema('Optional creation timestamp in epoch milliseconds.'),
 					objective: stringSchema('Objective for the new quest.'),
 					questlineId: integerSchema('Optional questline to place the quest in.'),
 					tags: arraySchema(stringSchema('Tag name.'), 'Optional tags to apply at creation.'),
@@ -368,6 +380,7 @@ export const shapeWorkTool = defineQuestlogTool<ShapeWorkToolInput, ShapeWorkToo
 			questline: objectSchema(
 				{
 					title: stringSchema('Questline title.'),
+					now: integerSchema('Optional creation timestamp in epoch milliseconds.'),
 					description: stringSchema('Optional questline description.'),
 				},
 				['title'],
@@ -379,6 +392,8 @@ export const shapeWorkTool = defineQuestlogTool<ShapeWorkToolInput, ShapeWorkToo
 				objectSchema(
 					{
 						title: stringSchema('Title for a created quest.'),
+						createdAt: integerSchema('Optional creation time in epoch milliseconds.'),
+						now: integerSchema('Optional creation timestamp in epoch milliseconds.'),
 						objective: stringSchema('Objective for a created quest.'),
 						tags: arraySchema(stringSchema('Tag name.'), 'Optional tags to apply at creation.'),
 						rewards: arraySchema(
@@ -402,7 +417,9 @@ export const shapeWorkTool = defineQuestlogTool<ShapeWorkToolInput, ShapeWorkToo
 				),
 				'Quests to create during rumor settlement. Include timing and tags directly.',
 			),
-			now: integerSchema('Optional timestamp for membership, reopen, or rumor update.'),
+			now: integerSchema(
+				'Optional epoch milliseconds for creation, settlement, dismissal, membership, reopen, or rumor update.',
+			),
 			title: stringSchema('New title for the update_rumor action.'),
 			details: stringSchema('New or enriched context text for the update_rumor action.'),
 		},

@@ -129,13 +129,18 @@ test('CLI JSON args and stdin, errors, clarification and usage exit codes', asyn
 		assert.equal((await invoke(args, '{"someValue":1}')).code, 0);
 	assert.equal((await invoke(['call', 'test_tool', '{"someValue":0}'])).code, 1);
 	assert.equal((await invoke(['call', 'test_tool', '{"someValue":3}'])).code, 3);
-	for (const value of ['[]', '{}', '{"someValue":"wrong"}', '{']) {
+	for (const value of ['[]', '{}', '{"someValue":"wrong"}']) {
 		const result = await invoke(['call', 'test_tool', value]);
-		assert.equal(result.code, 1);
+		assert.equal(result.code, 2);
 		assert.equal(result.opens, 0);
 		assert.ok(result.err);
-		assert.equal(result.out, '');
+		assert.equal(JSON.parse(result.out).error.code, 'invalid_input');
 	}
+	const malformed = await invoke(['call', 'test_tool', '{']);
+	assert.equal(malformed.code, 1);
+	assert.equal(malformed.opens, 0);
+	assert.ok(malformed.err);
+	assert.equal(malformed.out, '');
 	for (const args of [
 		['unknown'],
 		['--db'],

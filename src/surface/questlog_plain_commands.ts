@@ -2,7 +2,8 @@ import type { QuestlogDb } from '../database.ts';
 import { validateTimeZone } from '../repeatable_quests/time_zone.ts';
 import type { PlainCliCommand } from '../surfaces/cli.ts';
 import type { CliArgument } from '../surfaces/cli_args.ts';
-import { CliUsageError } from '../surfaces/cli_args.ts';
+import { CliUsageError, parseCliArgs } from '../surfaces/cli_args.ts';
+import { inspectQuestlogItemTool } from '../tools/inspect_questlog_item_tool.ts';
 import { reviewQuestlogTool } from '../tools/review_questlog_tool.ts';
 import { formatPlainDate, parsePlainDue } from './plain_dates.ts';
 import { renderQuestlogPlainResult } from './render_questlog_plain_result.ts';
@@ -19,6 +20,20 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 		description: 'Maximum displayed items or search matches.',
 	};
 	const id: CliArgument = { name: 'id', type: 'integer', required: true };
+	const timestamp = (raw: unknown): number => {
+		const text = String(raw);
+		const value = /^-?\d+$/.test(text) ? Number(text) : Date.parse(text);
+		if (!Number.isSafeInteger(value) || value < 1e12)
+			throw new CliUsageError(
+				'Pass an ISO timestamp or integer epoch milliseconds (at least 1e12), not seconds.',
+			);
+		return value;
+	};
+	const at: CliArgument = {
+		name: 'at',
+		type: 'string',
+		description: 'Actual event time: ISO or epoch milliseconds.',
+	};
 	const views = reviewQuestlogTool.inputSchema.properties?.view?.enum ?? [];
 	const commands: PlainCliCommand<QuestlogDb>[] = [
 		{
@@ -184,7 +199,7 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 			spec: {
 				command: 'add',
 				description:
-					'Create a quest: add "My title" or add --title "My title". Objective defaults to the title.',
+					'Create a quest: add "My title" or add --title "My title". Objective defaults to the title. Example: questlog add "Review report" --due tomorrow --tag work --tag review.',
 				positionals: [{ name: 'positionalTitle', type: 'string' }],
 				flags: [
 					{ name: 'title', type: 'string' },
@@ -201,6 +216,11 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 						description: 'Local date, today, tomorrow, +3d, ISO date-time or epoch milliseconds.',
 					},
 					{ name: 'questline', type: 'integer' },
+					{
+						name: 'created-at',
+						type: 'string',
+						description: 'Historical creation time: ISO or epoch milliseconds.',
+					},
 				],
 			},
 			tool: 'shape_work',
@@ -225,6 +245,7 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 							.map((part) => part.trim())
 							.filter(Boolean),
 					);
+				if (v.createdAt !== undefined) quest.createdAt = timestamp(v.createdAt);
 				if (v.questline !== undefined) quest.questlineId = v.questline;
 				if (v.due !== undefined) {
 					quest.dueAt = parsePlainDue(String(v.due));
@@ -238,7 +259,12 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 				command: 'list',
 				description: 'Review quests and other work. Limit and offset apply to text and JSON.',
 				flags: [
-					{ name: 'view', type: 'string', enum: ['available', ...views] },
+					{ name: 'view', type: 'string', enum: ['available', 'rumors.open', ...views] },
+					{
+						name: 'count',
+						type: 'boolean',
+						description: 'Print the filtered total before pagination; JSON: {total}.',
+					},
 					{ name: 'count-by', type: 'string', enum: ['tag', 'prefix'] },
 					{ name: 'tag', type: 'array', description: 'Require every tag (repeatable; AND).' },
 					limit,
@@ -253,6 +279,7 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 				);
 				if (!key) return result;
 				const items = r.data[key] as unknown[];
+				if (values.count) return { total: items.length };
 				const offset = Number(values.offset ?? 0);
 				const limit = Number(values.limit ?? items.length);
 				return {
@@ -270,15 +297,19 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 			tool: 'review_questlog',
 			input: (v) => {
 				const view = !v.view || v.view === 'available' ? 'quests.available' : String(v.view);
+				if (v.count && v.countBy) throw new CliUsageError('Use --count or --count-by separately');
 				if (v.tag !== undefined && !view.startsWith('quests.'))
 					throw new CliUsageError('--tag requires a quest view');
 				return {
-					view,
+					view: view === 'rumors.open' ? 'rumors' : view,
 					...(v.countBy === undefined ? {} : { countBy: v.countBy }),
 					...(v.tag === undefined ? {} : { filters: { tagNames: v.tag } }),
 				};
 			},
-			render: renderQuestlogPlainResult,
+			render: (result, db, values) =>
+				values.count && 'total' in (result as object)
+					? `${(result as { total: number }).total}\n`
+					: renderQuestlogPlainResult(result, db, values),
 		},
 		{
 			spec: {
@@ -286,16 +317,18 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 				description: 'Finish a quest with its outcome.',
 				positionals: [id],
 				flags: [
+					at,
 					{
 						name: 'outcome',
 						type: 'string',
-						description: 'What the finished quest produced; asked for when omitted.',
+						description: "Required outcome. Example: --outcome 'Report sent'.",
 					},
 				],
 			},
 			tool: 'run_quest',
 			input: (v) => ({
 				action: 'finish',
+				...(v.at === undefined ? {} : { resolvedAt: timestamp(v.at) }),
 				questId: v.id,
 				...(v.outcome === undefined ? {} : { outcome: v.outcome }),
 			}),
@@ -317,9 +350,26 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 			render: renderQuestlogPlainResult,
 		},
 		{
-			spec: { command: 'show', description: 'Inspect a quest by id.', positionals: [id] },
+			spec: {
+				command: 'show',
+				description:
+					'Inspect a quest id or kind:id using inspect_questlog_item. Kinds: quest, rumor, questline, repeatable_quest (alias repeatable). Example: show rumor:1.',
+				positionals: [{ ...id, type: 'string' }],
+			},
 			tool: 'inspect_questlog_item',
-			input: (v) => ({ target: { kind: 'quest', id: v.id }, detailLevel: 'full' }),
+			input: (v) => {
+				const parts = String(v.id).split(':');
+				const kind =
+					parts.length === 1 ? 'quest' : parts[0] === 'repeatable' ? 'repeatable_quest' : parts[0];
+				if (!inspectQuestlogItemTool.targetKinds.includes(String(kind)))
+					throw new CliUsageError(
+						`Unknown kind ${kind}; valid kinds: ${inspectQuestlogItemTool.targetKinds.join(', ')}, repeatable. Use inspect_questlog_item.`,
+					);
+				const value = parts.at(-1) ?? '';
+				if (parts.length > 2) throw new CliUsageError(`Expected integer for id: ${v.id}`);
+				const parsed = parseCliArgs([value], { command: 'show', positionals: [id] });
+				return { target: { kind, id: parsed.id }, detailLevel: 'full' };
+			},
 			render: renderQuestlogPlainResult,
 		},
 		{
@@ -328,6 +378,7 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 				description: 'Start a quest.',
 				positionals: [id],
 				flags: [
+					at,
 					{ name: 'force', type: 'boolean', description: 'Start despite unmet prerequisites.' },
 				],
 			},
@@ -335,6 +386,7 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 			input: (v) => ({
 				action: 'start',
 				questId: v.id,
+				...(v.at === undefined ? {} : { startedAt: timestamp(v.at) }),
 				...(v.force === undefined ? {} : { force: v.force }),
 			}),
 			render: renderQuestlogPlainResult,

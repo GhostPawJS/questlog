@@ -34,6 +34,8 @@ export interface Quest {
  * Input for creating a concrete quest.
  */
 export interface CreateQuestInput {
+	/** Creation time in epoch milliseconds; takes precedence over now. */
+	createdAt?: number;
 	title: string;
 	objective: string;
 	questlineId?: number | null;

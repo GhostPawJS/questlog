@@ -27,7 +27,8 @@ export const questlogCliOptions: ToolCliOptions<QuestlogDb> = {
 	bin: 'ghostpaw-questlog',
 	version: questlogVersion,
 	versionLine: (args) => cliVersion(questlogVersion, { args }),
-	description: 'Local task and calendar library',
+	description:
+		'Local task and calendar library\nExamples: questlog add "Review report" --due tomorrow --tag work --tag review; questlog show rumor:1; questlog list --view rumors.open',
 	tools: questlogSurfaceTools,
 	describeDb: (options) =>
 		`Database: ${selectedDbPath(options)}\nUse --db <path> or GHOSTPAW_QUESTLOG_DB to override the default ~/.ghostpaw/questlog.db.`,

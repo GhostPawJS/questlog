@@ -28,20 +28,20 @@ Run tools as `ghostpaw-questlog ...`; use `~/.local/bin/ghostpaw-questlog` if it
 `questlog` and `ghostpaw-questlog` are the same binary.
 
 - `questlog search <words>` before `add` to avoid duplicates.
-- `ghostpaw-questlog add "Write the report" --tag work --due tomorrow`
+- `ghostpaw-questlog add "Write the report" --tag work --due tomorrow`; `questlog add "Review report" --due tomorrow --tag work --tag review` creates timing and tags together.
 - `questlog list [--view <view>]`: deliveries, questlines, quests.active, quests.available, quests.blocked, quests.deferred, quests.due_soon, quests.in_progress, quests.missed_scheduled, quests.duplicates, quests.open, quests.overdue, quests.resolved, quests.scheduled_for_day, quests.scheduled_now, repeatables.due_anchors, rumors.
-- `questlog start 12 [--force]` starts a quest.
+- `questlog start 12 [--force]` starts a quest. Backfill with `questlog add "Past work" --created-at 2026-10-01T00:00:00Z`, `start <id> --at 2026-10-02T00:00:00Z`, then `done <id> --at 2026-10-05T00:00:00Z --outcome "Completed"`. Library: createQuest input now or createdAt; tool: shape_work now or quest.createdAt. Explicit timestamps take precedence over now. createdAt requires integer epoch milliseconds >= 1e12; future values are accepted.
 - `questlog done 12 --outcome "Report sent"`
 - `questlog search "release"`
-- `questlog show 12`
+- `questlog show 12` or `questlog show rumor:1`; kind:id supports quest, rumor, questline, repeatable_quest (alias repeatable), via inspect_questlog_item.
 - `questlog list --view quests.available`
 - `questlog quest revise <id> --title "New title"`: revise a quest title.
-- `questlog list --count-by tag|prefix`: count filtered quests.
+- `questlog list --count-by tag|prefix`: count filtered quests. `questlog list --count [--tag work]` prints a filtered total before pagination; with --json it prints {total}. Rumor views: rumors or its CLI alias rumors.open.
 - `questlog list --view quests.duplicates`: review open quests with similar titles.
 - Use `--json` on any plain command, or set `GHOSTPAW_OUTPUT=json`. `list --limit N --offset M` paginates both formats; JSON data includes total, offset, limit, hasMore.
 - Repeatables: `repeatable create --title TITLE --objective OBJECTIVE --rrule FREQ=DAILY --anchor-at ISO --tz Europe/Berlin`; `repeatable revise <id> --tz <zone|none>`. Facade create uses `repeatableQuest.tz`; update/revise uses `tz` (null clears). Zoned recurrence keeps wall-clock time across DST; no tz keeps UTC behavior.
-- Exit codes: 0 ok / 1 error / 2 usage / 3 needs input or item not found.
-- Database: `~/.ghostpaw/questlog.db`; override with `--db` or `GHOSTPAW_QUESTLOG_DB`. Default opens print `using default db <path>` to stderr; suppress with `--quiet` or `GHOSTPAW_QUIET=1`. Use one database per project.
+- Exit codes: 0 ok / 1 error / 2 usage (including missing done --outcome and invalid call input) / 3 needs input or item not found.
+- Database: `~/.ghostpaw/questlog.db`; override with `--db` or `GHOSTPAW_QUESTLOG_DB`. Default opens print `using default db <path>` to stderr; suppress with `-q` or `--quiet` or `GHOSTPAW_QUIET=1`. Use one database per project.
 - `questlog --version` prints the installed version; `questlog skill --short` prints this cheat sheet.
 - `questlog skill --list` lists guides; `questlog skill webhooks` reads one.
 - Webhooks: `questlog hook add <url>`, `questlog tick --dry-run`, `questlog watch`. Read `questlog skill webhooks` for events, signing, verification, and cron setup.
@@ -123,8 +123,8 @@ Read-only.
 | filters.questlineId | integer | no | Optional questline id used by quest views. |
 | filters.tagNames | array | no | Optional tag names used by quest views. |
 | filters.includeDeleted | boolean | no | Whether deleted quests should be included in quest views. |
-| filters.dayAt | integer | no | UTC timestamp within the day to review for scheduled-for-day. |
-| now | integer | no | Optional evaluation timestamp for time-sensitive views. |
+| filters.dayAt | integer | no | UTC timestamp within the day to review for scheduled-for-day. Unit: epoch milliseconds. |
+| now | integer | no | Optional evaluation timestamp for time-sensitive views. Unit: epoch milliseconds. |
 
 ```sh
 ghostpaw-questlog call review_questlog '{"view":"deliveries"}'
@@ -146,7 +146,7 @@ Read-only.
 | target.kind | string | yes | quest, questline, repeatable_quest, rumor. The kind of item to inspect. |
 | target.id | integer | yes | The numeric id of the item to inspect. |
 | detailLevel | string | no | compact, full. How much detail to return. |
-| now | integer | no | Optional evaluation timestamp for time-sensitive detail. |
+| now | integer | no | Optional evaluation timestamp for time-sensitive detail. Unit: epoch milliseconds. |
 
 ```sh
 ghostpaw-questlog call inspect_questlog_item '{"target":{"kind":"quest","id":1}}'
@@ -166,7 +166,7 @@ Writes: writes_state.
 | --- | --- | --- | --- |
 | title | string | yes | Short rumor title describing the incoming signal or possible work. |
 | details | string | no | Optional supporting context that explains why the rumor might matter. |
-| now | integer | no | Optional creation timestamp for the rumor. |
+| now | integer | no | Optional creation timestamp for the rumor. Unit: epoch milliseconds. |
 
 ```sh
 ghostpaw-questlog call capture_rumor '{"title":"Review release notes"}'
@@ -187,40 +187,45 @@ Writes: writes_state.
 | action | string | yes | attach_quest_to_questline, create_quest, create_questline, detach_quest_from_questline, dismiss_rumor, reopen_rumor, settle_rumor, update_rumor. Action to perform. |
 | questId | integer | no | Quest to attach or detach. |
 | questlineId | integer | no | Questline that should receive the quest. |
-| quest | object | no | Object: title (required), objective (required), questlineId, tags, rewards, dueAt, notBeforeAt, scheduledStartAt, scheduledEndAt, allDay, estimateSeconds |
+| quest | object | no | Object: title (required), createdAt, now, objective (required), questlineId, tags, rewards, dueAt, notBeforeAt, scheduledStartAt, scheduledEndAt, allDay, estimateSeconds |
 | quest.title | string | yes | Title for the new quest. |
+| quest.createdAt | integer | no | Optional creation time in epoch milliseconds; takes precedence over now. Unit: epoch milliseconds. |
+| quest.now | integer | no | Optional creation timestamp in epoch milliseconds. Unit: epoch milliseconds. |
 | quest.objective | string | yes | Objective for the new quest. |
 | quest.questlineId | integer | no | Optional questline to place the quest in. |
 | quest.tags | array | no | Optional tags to apply at creation. |
 | quest.rewards | array | no | Optional rewards to attach at creation. |
 | quest.rewards[].kind | string | yes | Reward kind. |
 | quest.rewards[].name | string | yes | Reward name. |
-| quest.dueAt | integer | no | Optional latest acceptable completion timestamp. |
-| quest.notBeforeAt | integer | no | Optional earliest actionable timestamp. |
-| quest.scheduledStartAt | integer | no | Optional planned schedule window start. |
-| quest.scheduledEndAt | integer | no | Optional planned schedule window end. |
+| quest.dueAt | integer | no | Optional latest acceptable completion timestamp. Unit: epoch milliseconds. |
+| quest.notBeforeAt | integer | no | Optional earliest actionable timestamp. Unit: epoch milliseconds. |
+| quest.scheduledStartAt | integer | no | Optional planned schedule window start. Unit: epoch milliseconds. |
+| quest.scheduledEndAt | integer | no | Optional planned schedule window end. Unit: epoch milliseconds. |
 | quest.allDay | boolean | no | Whether the scheduled window is all-day. |
 | quest.estimateSeconds | integer | no | Optional active-effort estimate in seconds. |
-| questline | object | no | Object: title (required), description |
+| questline | object | no | Object: title (required), now, description |
 | questline.title | string | yes | Questline title. |
+| questline.now | integer | no | Optional creation timestamp in epoch milliseconds. Unit: epoch milliseconds. |
 | questline.description | string | no | Optional questline description. |
 | rumorId | integer | no | Rumor to settle, dismiss, or reopen. |
-| dismissedAt | integer | no | Optional dismissal timestamp. |
-| settledAt | integer | no | Optional settlement timestamp. |
+| dismissedAt | integer | no | Optional dismissal timestamp. Unit: epoch milliseconds. |
+| settledAt | integer | no | Optional settlement timestamp. Unit: epoch milliseconds. |
 | quests | array | no | Quests to create during rumor settlement. Include timing and tags directly. |
 | quests[].title | string | yes | Title for a created quest. |
+| quests[].createdAt | integer | no | Optional creation time in epoch milliseconds. Unit: epoch milliseconds. |
+| quests[].now | integer | no | Optional creation timestamp in epoch milliseconds. Unit: epoch milliseconds. |
 | quests[].objective | string | yes | Objective for a created quest. |
 | quests[].tags | array | no | Optional tags to apply at creation. |
 | quests[].rewards | array | no | Optional rewards to attach at creation. |
 | quests[].rewards[].kind | string | yes | Reward kind. |
 | quests[].rewards[].name | string | yes | Reward name. |
-| quests[].dueAt | integer | no | Optional latest acceptable completion timestamp. |
-| quests[].notBeforeAt | integer | no | Optional earliest actionable timestamp. |
-| quests[].scheduledStartAt | integer | no | Optional planned schedule window start. |
-| quests[].scheduledEndAt | integer | no | Optional planned schedule window end. |
+| quests[].dueAt | integer | no | Optional latest acceptable completion timestamp. Unit: epoch milliseconds. |
+| quests[].notBeforeAt | integer | no | Optional earliest actionable timestamp. Unit: epoch milliseconds. |
+| quests[].scheduledStartAt | integer | no | Optional planned schedule window start. Unit: epoch milliseconds. |
+| quests[].scheduledEndAt | integer | no | Optional planned schedule window end. Unit: epoch milliseconds. |
 | quests[].allDay | boolean | no | Whether the scheduled window is all-day. |
 | quests[].estimateSeconds | integer | no | Optional active-effort estimate in seconds. |
-| now | integer | no | Optional timestamp for membership, reopen, or rumor update. |
+| now | integer | no | Optional epoch milliseconds for creation, settlement, dismissal, membership, reopen, or rumor update. Unit: epoch milliseconds. |
 | title | string | no | New title for the update_rumor action. |
 | details | string | no | New or enriched context text for the update_rumor action. |
 
@@ -246,13 +251,13 @@ Writes: writes_state.
 | questId | integer | yes | The quest to refine. |
 | title | string | no | New title. Required for revise_title. |
 | objective | string | no | The new quest objective text. Required for revise_objective. |
-| notBeforeAt | integer | no | Optional earliest actionable timestamp. |
-| dueAt | integer | no | Optional latest acceptable completion timestamp. |
-| scheduledStartAt | integer | no | Optional planned schedule window start. |
-| scheduledEndAt | integer | no | Optional planned schedule window end. |
+| notBeforeAt | integer | no | Optional earliest actionable timestamp. Unit: epoch milliseconds. |
+| dueAt | integer | no | Optional latest acceptable completion timestamp. Unit: epoch milliseconds. |
+| scheduledStartAt | integer | no | Optional planned schedule window start. Unit: epoch milliseconds. |
+| scheduledEndAt | integer | no | Optional planned schedule window end. Unit: epoch milliseconds. |
 | allDay | boolean | no | Whether the planned schedule window is all-day. |
 | estimateSeconds | integer | no | Optional active-effort estimate in seconds. |
-| now | integer | no | Optional update timestamp. |
+| now | integer | no | Optional update timestamp. Unit: epoch milliseconds. |
 
 ```sh
 ghostpaw-questlog call plan_quest '{"action":"revise_objective","questId":1,"objective":"Check changes against the release"}'
@@ -274,12 +279,12 @@ Writes: writes_state.
 | --- | --- | --- | --- |
 | action | string | yes | start, log_effort, finish, abandon, abandon_and_spawn_followups. Action to perform. |
 | questId | integer | yes | Quest whose execution state should change. |
-| startedAt | integer | no | Optional start timestamp for the start action. |
+| startedAt | integer | no | Optional start timestamp for the start action. Unit: epoch milliseconds. |
 | force | boolean | no | Start despite unmet unlock prerequisites. Defaults to false. |
 | effortSeconds | integer | no | Positive active-effort increment in seconds. Required for log_effort. |
-| now | integer | no | Optional effort-log timestamp. |
+| now | integer | no | Optional epoch milliseconds for any lifecycle action. Unit: epoch milliseconds. |
 | outcome | string | no | Terminal outcome text. Required for finish, abandon, and abandon_and_spawn_followups. |
-| resolvedAt | integer | no | Optional resolved timestamp for finish or abandon actions. |
+| resolvedAt | integer | no | Optional resolved timestamp for finish or abandon actions. Unit: epoch milliseconds. |
 | followups | array | no | Follow-up quests to create atomically. Required for abandon_and_spawn_followups. |
 | followups[].title | string | yes | Title for a follow-up quest. |
 | followups[].objective | string | yes | Objective for a follow-up quest. |
@@ -306,13 +311,13 @@ Writes: writes_state.
 | questlineId | integer | no | Questline to update or archive. |
 | title | string | no | Optional new questline title. |
 | description | string | no | Optional new questline description. |
-| startsAt | integer | no | Optional questline start timestamp. |
-| dueAt | integer | no | Optional questline due timestamp. |
-| archivedAt | integer | no | Optional archive timestamp. |
+| startsAt | integer | no | Optional questline start timestamp. Unit: epoch milliseconds. |
+| dueAt | integer | no | Optional questline due timestamp. Unit: epoch milliseconds. |
+| archivedAt | integer | no | Optional archive timestamp. Unit: epoch milliseconds. |
 | toQuestId | integer | no | Quest whose blockers should change. |
 | fromQuestId | integer | no | Prerequisite quest id. |
 | fromQuestIds | array | no | Full prerequisite quest id set. |
-| now | integer | no | Optional timestamp. |
+| now | integer | no | Optional timestamp. Unit: epoch milliseconds. |
 
 ```sh
 ghostpaw-questlog call organize_work '{"action":"add_unlock","fromQuestId":1,"toQuestId":2}'
@@ -339,21 +344,21 @@ Writes: writes_state.
 | repeatableQuest.objective | string | yes | Objective for the new repeatable quest. |
 | repeatableQuest.tz | oneOf | no | IANA time zone for wall-clock recurrence; null uses UTC. |
 | repeatableQuest.rrule | string | yes | RRULE describing recurrence. |
-| repeatableQuest.anchorAt | integer | yes | Recurrence anchor timestamp. |
+| repeatableQuest.anchorAt | integer | yes | Recurrence anchor timestamp. Unit: epoch milliseconds. |
 | title | string | no | Optional new title for the update action. |
 | objective | string | no | Optional new objective for the update action. |
 | questlineId | integer | no | Optional new questline id. |
 | tz | oneOf | no | IANA time zone; null clears it (update or revise). |
 | rrule | string | no | Optional new RRULE. |
-| anchorAt | integer | no | Optional new recurrence anchor timestamp. |
+| anchorAt | integer | no | Optional new recurrence anchor timestamp. Unit: epoch milliseconds. |
 | notBeforeOffsetSeconds | integer | no | Optional new not-before offset in seconds. |
 | dueOffsetSeconds | integer | no | Optional new due offset in seconds. |
 | scheduledStartOffsetSeconds | integer | no | Optional new scheduled-start offset in seconds. |
 | scheduledEndOffsetSeconds | integer | no | Optional new scheduled-end offset in seconds. |
 | allDay | boolean | no | Whether future schedules are all-day. |
 | estimateSeconds | integer | no | Optional new effort estimate. |
-| archivedAt | integer | no | Optional archive timestamp. |
-| now | integer | no | Evaluation or update timestamp. |
+| archivedAt | integer | no | Optional archive timestamp. Unit: epoch milliseconds. |
+| now | integer | no | Evaluation or update timestamp. Unit: epoch milliseconds. |
 
 ```sh
 ghostpaw-questlog call manage_repeatable '{"action":"archive","repeatableQuestId":1}'
@@ -378,7 +383,7 @@ Writes: writes_state.
 | target.id | integer | yes | Target entity id. |
 | target.kind | string | yes | quest, repeatable_quest. Target kind. |
 | tagNames | array | yes | Tag names to add, remove, or replace. |
-| now | integer | no | Optional timestamp for the tag mutation. |
+| now | integer | no | Optional timestamp for the tag mutation. Unit: epoch milliseconds. |
 
 ```sh
 ghostpaw-questlog call tag_work '{"action":"add","target":{"id":1,"kind":"quest"},"tagNames":["release"]}'
@@ -405,12 +410,12 @@ Writes: writes_state.
 | reward | object | no | Object: kind (required), name (required), now |
 | reward.kind | string | yes | Reward kind. |
 | reward.name | string | yes | Reward name. |
-| reward.now | integer | no | Optional update timestamp for the update action. |
+| reward.now | integer | no | Optional update timestamp for the update action. Unit: epoch milliseconds. |
 | rewards | array | no | Full future reward template set. Required for replace_repeatable_template. |
 | rewards[].kind | string | yes | Reward kind. |
 | rewards[].name | string | yes | Reward name. |
-| claimedAt | integer | no | Optional claim timestamp. |
-| now | integer | no | Optional timestamp for removal or template replacement. |
+| claimedAt | integer | no | Optional claim timestamp. Unit: epoch milliseconds. |
+| now | integer | no | Optional timestamp for removal or template replacement. Unit: epoch milliseconds. |
 
 ```sh
 ghostpaw-questlog call reward_work '{"action":"add","target":{"id":1,"kind":"quest"},"reward":{"kind":"release","name":"release"}}'
@@ -434,7 +439,7 @@ Writes: writes_state.
 | target | object | yes | The target to hide. |
 | target.kind | string | yes | quest, questline, repeatable_quest, rumor. The kind of item to hide. |
 | target.id | integer | yes | The numeric id of the item to hide. |
-| deletedAt | integer | no | Optional timestamp to record when the item became hidden. |
+| deletedAt | integer | no | Optional timestamp to record when the item became hidden. Unit: epoch milliseconds. |
 
 ```sh
 ghostpaw-questlog call retire_work '{"action":"hide","target":{"kind":"quest","id":1}}'

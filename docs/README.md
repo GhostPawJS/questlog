@@ -330,3 +330,6 @@ CLI titles are literal, including leading `@`. File input is opt-in for
 start with dashes, including multiline `---` frontmatter and negative numbers;
 use `--flag=value` for values that look like another flag, or `--` before a
 dash-leading positional title.
+
+Historical lifecycle timestamps, kind:id inspection, quiet aliases, and filtered
+count examples are documented in the [CLI guide](../README.md#historical-work-and-cli-preflights).

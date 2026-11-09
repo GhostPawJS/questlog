@@ -111,7 +111,7 @@ test('CLI and MCP validation name the missing nested path and supply a valid sha
 			throw new Error('invalid calls must not open a database');
 		},
 	});
-	assert.equal(code, 1);
+	assert.equal(code, 2);
 	assert.match(output, /quest.title: required/);
 	assert.match(output, /pass {"action":"create_quest","quest":/);
 	const server = createMcpServer({

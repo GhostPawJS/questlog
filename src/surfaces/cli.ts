@@ -64,7 +64,7 @@ export async function runToolCli<TCtx>(
 			db = args[i + 1];
 			args.splice(i, 2);
 			i--;
-		} else if (args[i] === '--quiet') {
+		} else if (args[i] === '--quiet' || args[i] === '-q') {
 			quiet = true;
 			args.splice(i--, 1);
 		} else if (args[i] === '--compact') {
@@ -90,7 +90,7 @@ export async function runToolCli<TCtx>(
 				.map((name) => `${name}, `)
 				.join(
 					'',
-				)}tools [--json], describe <tool>, call <tool> [JSON|-], <tool> --parameter value, mcp, skill\nOutput: --json or GHOSTPAW_OUTPUT=json\nOptions: --help, --version, --compact, --quiet (or GHOSTPAW_QUIET=1), --db <path>\nVersion formats: --version --short, --version --json\n${options.describeDb ? `${options.describeDb(ctxOptions)}\n` : ''}\n${options.tools.map((tool) => `${tool.name}  ${tool.description}`).join('\n')}\n`,
+				)}tools [--json], describe <tool>, call <tool> [JSON|-], <tool> --parameter value, mcp, skill\nOutput: --json or GHOSTPAW_OUTPUT=json\nOptions: --help, --version, --compact, -q, --quiet (or GHOSTPAW_QUIET=1), --db <path>\nVersion formats: --version --short, --version --json\n${options.describeDb ? `${options.describeDb(ctxOptions)}\n` : ''}\n${options.tools.map((tool) => `${tool.name}  ${tool.description}`).join('\n')}\n`,
 		);
 		return 0;
 	}
@@ -168,7 +168,7 @@ export async function runToolCli<TCtx>(
 						...(plain.spec.flags ?? []),
 						{ name: 'db', type: 'string' },
 						{ name: 'compact', type: 'boolean' },
-						{ name: 'quiet', type: 'boolean' },
+						{ name: 'quiet', short: 'q', type: 'boolean' },
 					],
 				}),
 			);
@@ -278,11 +278,19 @@ export async function runToolCli<TCtx>(
 		return fail(`Invalid input: ${cause instanceof Error ? cause.message : String(cause)}`, 1);
 	}
 	const errors = validateInput(tool.inputSchema, input);
-	if (errors.length)
-		return fail(
-			`${errors.join('\n')}; pass ${JSON.stringify(minimalInput(tool.inputSchema, (input as Record<string, unknown> | null)?.action))}`,
-			1,
+	if (errors.length) {
+		const example = JSON.stringify(
+			minimalInput(tool.inputSchema, (input as Record<string, unknown> | null)?.action),
 		);
+		const message = `${errors.join('; ')}${['shape_work', 'tag_work'].includes(tool.name) ? `; expected nested input shape: ${example}` : ''}; pass ${example}`;
+		if (command === 'call') {
+			stdout.write(
+				`${JSON.stringify({ ok: false, outcome: 'error', summary: message, entities: [], error: { kind: 'protocol', code: 'invalid_input', message, recovery: message } }, null, compact ? undefined : 2)}\n`,
+			);
+			return fail(message, 2);
+		}
+		return fail(message, 1);
+	}
 	let context: TCtx;
 	try {
 		context = await options.openContext(ctxOptions);
@@ -302,16 +310,25 @@ export async function runToolCli<TCtx>(
 				? plain.render(result, context, plainValues)
 				: `${JSON.stringify(plain ? enrichPlainJson(result) : result, null, compact ? undefined : 2)}\n`,
 		);
+		if (command === 'done' && plainValues.outcome === undefined) {
+			stderr.write("Usage: questlog done <id> --outcome '...'\n");
+			return 2;
+		}
 		if (
 			typeof result === 'object' &&
 			result !== null &&
 			'outcome' in result &&
 			result.outcome === 'needs_clarification'
-		)
+		) {
 			return 3;
+		}
 		if (isErrorResult(result)) {
 			const error = (result as { error?: { code?: string; message?: string } }).error;
-			if (error?.message?.startsWith('Invalid time zone:')) return 2;
+			if (
+				(command === 'call' && error?.code === 'invalid_input') ||
+				error?.message?.startsWith('Invalid time zone:')
+			)
+				return 2;
 			if (
 				tool.name === 'search_questlog' &&
 				(input as Record<string, unknown>).fts &&

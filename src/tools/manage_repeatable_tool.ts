@@ -29,7 +29,7 @@ export type ManageRepeatableToolInput =
 	| { action: 'archive'; archivedAt?: number; repeatableQuestId: number }
 	| { action: 'create'; repeatableQuest: CreateRepeatableQuestInput }
 	| { action: 'preview_due'; now?: number }
-	| { action: 'spawn_due'; now: number }
+	| { action: 'spawn_due'; now?: number }
 	| ({ action: 'update' | 'revise'; repeatableQuestId: number } & UpdateRepeatableQuestInput);
 
 export interface ManageRepeatableToolData {
@@ -84,7 +84,7 @@ export function manageRepeatableToolHandler(
 				);
 			}
 			case 'spawn_due': {
-				const spawned = spawnDueRepeatableQuests(db, input.now);
+				const spawned = spawnDueRepeatableQuests(db, input.now ?? Date.now());
 				if (spawned.length === 0) {
 					return toolNoOp(
 						'No repeatable quest anchors were due to spawn.',
@@ -218,7 +218,7 @@ export const manageRepeatableTool = defineQuestlogTool<
 		objective: 'Optional new repeatable quest objective.',
 		questlineId: 'Optional questline that should own the repeatable quest.',
 		archivedAt: 'Optional archive timestamp for the archive action.',
-		now: 'Evaluation or spawn timestamp for previewing or materializing due anchors.',
+		now: 'Evaluation or spawn timestamp for previewing or materializing due anchors; defaults to the current time.',
 	},
 	outputDescription:
 		'Returns the changed repeatable quest, due anchor preview items, or spawned quest details for the selected recurrence action. Empty previews and empty spawns return structured success or no-op results, and repeatable hiding is now intentionally routed through `retire_work`.',

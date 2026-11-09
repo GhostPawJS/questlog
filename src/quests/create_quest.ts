@@ -14,7 +14,14 @@ import type { CreateQuestInput, Quest } from './types.ts';
  */
 export function createQuest(db: QuestlogDb, input: CreateQuestInput): Quest {
 	return withTransaction(db, () => {
-		const now = resolveNow(input.now);
+		if (
+			input.createdAt !== undefined &&
+			(!Number.isSafeInteger(input.createdAt) || input.createdAt < 1e12)
+		)
+			throw new Error(
+				'createdAt must be an integer in epoch milliseconds (at least 1e12); pass milliseconds, not seconds.',
+			);
+		const now = resolveNow(input.createdAt ?? input.now);
 		const title = assertNonEmpty(input.title, 'Quest title');
 		const objective = assertNonEmpty(input.objective, 'Quest objective');
 

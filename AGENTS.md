@@ -55,6 +55,7 @@ Run the full gate after changes:
 
 ```sh
 export PATH=/opt/node24/bin:$PATH
+npm run lint && npm run typecheck && npm test && npm run build
 npm run check
 ```
 
