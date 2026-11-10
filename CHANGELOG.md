@@ -5,6 +5,10 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Changed
+
+- Document writable database roots for sandboxed agent harnesses in the README and generated agent skill.
+
 - Accept calendar strings and zones for planning inputs, reject numeric seconds, and show typed nested quest creation shapes.
 
 ## [0.14.0] - 2026-11-09
