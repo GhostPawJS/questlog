@@ -2469,8 +2469,9 @@
 	},
 	".:public.getQuestlogToolByName": {
 		"kind": "value",
-		"type": "(name: string) => QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<DueInput, ToolFailure | ToolSuccess<{ items: DueItem[]; hasMore: boolean; released?: boolean; }>> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; claim?: string; within?: string; }, Promise<ToolResult<unknown>>> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult> | null",
+		"type": "(name: string) => QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<DueInput, ToolFailure | ToolSuccess<{ items: DueItem[]; hasMore: boolean; released?: boolean; }>> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; claim?: string; within?: string; }, Promise<ToolResult<unknown>>> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<CalendarInputs<OrganizeWorkToolInput>, OrganizeWorkToolResult> | QuestlogToolDefinition<CalendarInputs<PlanQuestToolInput>, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<CalendarInputs<ShapeWorkToolInput>, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult> | null",
 		"references": {
+			"CalendarInputs": ".:public.getQuestlogToolByName.types.CalendarInputs",
 			"CaptureRumorInput": ".:public.CaptureRumorInput",
 			"CaptureRumorToolResult": ".:public.captureRumorTool.types.CaptureRumorToolResult",
 			"DueInput": ".:public.DueInput",
@@ -2502,6 +2503,32 @@
 			"ToolResult": ".:public.ToolResult",
 			"ToolSuccess": ".:public.ToolSuccess"
 		}
+	},
+	".:public.getQuestlogToolByName.types.CalendarInputs": {
+		"kind": "type",
+		"type": "CalendarInputs<T>",
+		"members": {},
+		"definition": "type CalendarInputs<T> = T extends readonly (infer U)[] ? CalendarInputs<U>[] : T extends object ? { [K in keyof T]: K extends 'dueAt' | 'scheduledStartAt' | 'scheduledEndAt' ? T[K] | string : CalendarInputs<T[K]>; } & { tz?: string; } : T;",
+		"references": {
+			"K": ".:public.getQuestlogToolByName.types.CalendarInputs.types.K",
+			"T": ".:public.getQuestlogToolByName.types.CalendarInputs.types.K.types.T",
+			"U": ".:public.getQuestlogToolByName.types.CalendarInputs.types.U"
+		}
+	},
+	".:public.getQuestlogToolByName.types.CalendarInputs.types.K": {
+		"kind": "value",
+		"type": "any",
+		"references": {
+			"T": ".:public.getQuestlogToolByName.types.CalendarInputs.types.K.types.T"
+		}
+	},
+	".:public.getQuestlogToolByName.types.CalendarInputs.types.K.types.T": {
+		"kind": "value",
+		"type": "any"
+	},
+	".:public.getQuestlogToolByName.types.CalendarInputs.types.U": {
+		"kind": "value",
+		"type": "any"
 	},
 	".:public.getQuestlogToolByName.types.InspectQuestlogItemToolInput": {
 		"kind": "type",
@@ -5226,8 +5253,9 @@
 	},
 	".:public.listQuestlogToolDefinitions": {
 		"kind": "value",
-		"type": "() => (QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<DueInput, ToolFailure | ToolSuccess<{ items: DueItem[]; hasMore: boolean; released?: boolean; }>> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; claim?: string; within?: string; }, Promise<ToolResult<unknown>>> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult>)[]",
+		"type": "() => (QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<DueInput, ToolFailure | ToolSuccess<{ items: DueItem[]; hasMore: boolean; released?: boolean; }>> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; claim?: string; within?: string; }, Promise<ToolResult<unknown>>> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<CalendarInputs<OrganizeWorkToolInput>, OrganizeWorkToolResult> | QuestlogToolDefinition<CalendarInputs<PlanQuestToolInput>, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<CalendarInputs<ShapeWorkToolInput>, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult>)[]",
 		"references": {
+			"CalendarInputs": ".:public.getQuestlogToolByName.types.CalendarInputs",
 			"CaptureRumorInput": ".:public.CaptureRumorInput",
 			"CaptureRumorToolResult": ".:public.captureRumorTool.types.CaptureRumorToolResult",
 			"DueInput": ".:public.DueInput",
@@ -5913,8 +5941,9 @@
 	},
 	".:public.organizeWorkTool": {
 		"kind": "value",
-		"type": "QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult>",
+		"type": "QuestlogToolDefinition<({ action: \"add_unlock\"; fromQuestId: number; now?: number | undefined; toQuestId: number; } & { tz?: string; }) | ({ action: \"archive_questline\"; archivedAt?: number | undefined; questlineId: number; } & { tz?: string; }) | ({ action: \"remove_unlock\"; fromQuestId: number; now?: number | undefined; toQuestId: number; } & { tz?: string; }) | ({ action: \"replace_unlocks\"; fromQuestIds: number[]; now?: number | undefined; toQuestId: number; } & { tz?: string; }) | ({ action: \"set_questline_fields\"; questlineId: number; title?: string | undefined; description?: string | null | undefined; startsAt?: number | null | undefined; dueAt?: string | number | null | undefined; archivedAt?: number | null | undefined; now?: number | undefined; } & { tz?: string; }), OrganizeWorkToolResult>",
 		"references": {
+			"CalendarInputs": ".:public.getQuestlogToolByName.types.CalendarInputs",
 			"OrganizeWorkToolInput": ".:public.getQuestlogToolByName.types.OrganizeWorkToolInput",
 			"OrganizeWorkToolResult": ".:public.getQuestlogToolByName.types.OrganizeWorkToolResult",
 			"QuestlogToolDefinition": ".:public.QuestlogToolDefinition"
@@ -5922,8 +5951,9 @@
 	},
 	".:public.organizeWorkToolHandler": {
 		"kind": "value",
-		"type": "(db: Parameters<typeof getQuestlineDetail>[0], input: OrganizeWorkToolInput) => OrganizeWorkToolResult",
+		"type": "(db: Parameters<typeof getQuestlineDetail>[0], rawInput: CalendarInputs<OrganizeWorkToolInput>) => OrganizeWorkToolResult",
 		"references": {
+			"CalendarInputs": ".:public.getQuestlogToolByName.types.CalendarInputs",
 			"OrganizeWorkToolInput": ".:public.getQuestlogToolByName.types.OrganizeWorkToolInput",
 			"OrganizeWorkToolResult": ".:public.getQuestlogToolByName.types.OrganizeWorkToolResult"
 		}
@@ -5978,8 +6008,9 @@
 	},
 	".:public.planQuestTool": {
 		"kind": "value",
-		"type": "QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult>",
+		"type": "QuestlogToolDefinition<({ action: \"revise_title\"; now?: number | undefined; title: string; questId: number; } & { tz?: string; }) | ({ action: \"revise_objective\"; now?: number | undefined; objective: string; questId: number; } & { tz?: string; }) | ({ action: \"set_time\"; questId: number; notBeforeAt?: number | null | undefined; dueAt?: string | number | null | undefined; scheduledStartAt?: string | number | null | undefined; scheduledEndAt?: string | number | null | undefined; allDay?: boolean | undefined; estimateSeconds?: number | null | undefined; now?: number | undefined; } & { tz?: string; }), PlanQuestToolResult>",
 		"references": {
+			"CalendarInputs": ".:public.getQuestlogToolByName.types.CalendarInputs",
 			"PlanQuestToolInput": ".:public.getQuestlogToolByName.types.PlanQuestToolInput",
 			"PlanQuestToolResult": ".:public.getQuestlogToolByName.types.PlanQuestToolResult",
 			"QuestlogToolDefinition": ".:public.QuestlogToolDefinition"
@@ -5987,8 +6018,9 @@
 	},
 	".:public.planQuestToolHandler": {
 		"kind": "value",
-		"type": "(db: Parameters<typeof getQuestDetail>[0], input: PlanQuestToolInput) => PlanQuestToolResult",
+		"type": "(db: Parameters<typeof getQuestDetail>[0], rawInput: CalendarInputs<PlanQuestToolInput>) => PlanQuestToolResult",
 		"references": {
+			"CalendarInputs": ".:public.getQuestlogToolByName.types.CalendarInputs",
 			"PlanQuestToolInput": ".:public.getQuestlogToolByName.types.PlanQuestToolInput",
 			"PlanQuestToolResult": ".:public.getQuestlogToolByName.types.PlanQuestToolResult"
 		}
@@ -6793,8 +6825,9 @@
 	},
 	".:public.questlogTools": {
 		"kind": "value",
-		"type": "(QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult> | QuestlogToolDefinition<DueInput, ToolFailure | ToolSuccess<{ items: DueItem[]; hasMore: boolean; released?: boolean; }>> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; claim?: string; within?: string; }, Promise<ToolResult<unknown>>>)[]",
+		"type": "(QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<({ action: \"add_unlock\"; fromQuestId: number; now?: number | undefined; toQuestId: number; } & { tz?: string; }) | ({ action: \"archive_questline\"; archivedAt?: number | undefined; questlineId: number; } & { tz?: string; }) | ({ action: \"remove_unlock\"; fromQuestId: number; now?: number | undefined; toQuestId: number; } & { tz?: string; }) | ({ action: \"replace_unlocks\"; fromQuestIds: number[]; now?: number | undefined; toQuestId: number; } & { tz?: string; }) | ({ action: \"set_questline_fields\"; questlineId: number; title?: string | undefined; description?: string | null | undefined; startsAt?: number | null | undefined; dueAt?: string | number | null | undefined; archivedAt?: number | null | undefined; now?: number | undefined; } & { tz?: string; }), OrganizeWorkToolResult> | QuestlogToolDefinition<({ action: \"revise_title\"; now?: number | undefined; title: string; questId: number; } & { tz?: string; }) | ({ action: \"revise_objective\"; now?: number | undefined; objective: string; questId: number; } & { tz?: string; }) | ({ action: \"set_time\"; questId: number; notBeforeAt?: number | null | undefined; dueAt?: string | number | null | undefined; scheduledStartAt?: string | number | null | undefined; scheduledEndAt?: string | number | null | undefined; allDay?: boolean | undefined; estimateSeconds?: number | null | undefined; now?: number | undefined; } & { tz?: string; }), PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<({ action: \"attach_quest_to_questline\"; now?: number | undefined; questId: number; questlineId: number; } & { tz?: string; }) | ({ action: \"create_quest\"; now?: number | undefined; quest: { createdAt?: number | undefined; title: string; objective: string; questlineId?: number | null | undefined; sourceRumorId?: number | null | undefined; spawnedByQuestId?: number | null | undefined; spawnedFromRepeatableId?: number | null | undefined; spawnedForAt?: number | null | undefined; estimateSeconds?: number | null | undefined; notBeforeAt?: number | null | undefined; dueAt?: string | number | null | undefined; scheduledStartAt?: string | number | null | undefined; scheduledEndAt?: string | number | null | undefined; allDay?: boolean | undefined; tags?: string[] | undefined; rewards?: ({ kind: string; name: string; description?: string | null | undefined; quantity?: number | null | undefined; now?: number | undefined; } & { tz?: string; })[] | undefined; now?: number | undefined; } & { tz?: string; }; } & { tz?: string; }) | ({ action: \"create_questline\"; now?: number | undefined; questline: { title: string; description?: string | null | undefined; startsAt?: number | null | undefined; dueAt?: string | number | null | undefined; sourceRumorId?: number | null | undefined; now?: number | undefined; } & { tz?: string; }; } & { tz?: string; }) | ({ action: \"detach_quest_from_questline\"; now?: number | undefined; questId: number; } & { tz?: string; }) | ({ action: \"dismiss_rumor\"; now?: number | undefined; dismissedAt?: number | undefined; rumorId: number; } & { tz?: string; }) | ({ action: \"reopen_rumor\"; now?: number | undefined; rumorId: number; } & { tz?: string; }) | ({ action: \"settle_rumor\"; now?: number | undefined; rumorId: number; questline?: ({ title: string; description?: string | null | undefined; startsAt?: number | null | undefined; dueAt?: string | number | null | undefined; sourceRumorId?: number | null | undefined; now?: number | undefined; } & { tz?: string; }) | undefined; quests?: ({ createdAt?: number | undefined; title: string; objective: string; questlineId?: number | null | undefined; sourceRumorId?: number | null | undefined; spawnedByQuestId?: number | null | undefined; spawnedFromRepeatableId?: number | null | undefined; spawnedForAt?: number | null | undefined; estimateSeconds?: number | null | undefined; notBeforeAt?: number | null | undefined; dueAt?: string | number | null | undefined; scheduledStartAt?: string | number | null | undefined; scheduledEndAt?: string | number | null | undefined; allDay?: boolean | undefined; tags?: string[] | undefined; rewards?: ({ kind: string; name: string; description?: string | null | undefined; quantity?: number | null | undefined; now?: number | undefined; } & { tz?: string; })[] | undefined; now?: number | undefined; } & { tz?: string; })[] | undefined; settledAt?: number | undefined; } & { tz?: string; }) | ({ action: \"update_rumor\"; rumorId: number; title?: string | undefined; details?: string | undefined; now?: number | undefined; } & { tz?: string; }), ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult> | QuestlogToolDefinition<DueInput, ToolFailure | ToolSuccess<{ items: DueItem[]; hasMore: boolean; released?: boolean; }>> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; claim?: string; within?: string; }, Promise<ToolResult<unknown>>>)[]",
 		"references": {
+			"CalendarInputs": ".:public.getQuestlogToolByName.types.CalendarInputs",
 			"CaptureRumorInput": ".:public.CaptureRumorInput",
 			"CaptureRumorToolResult": ".:public.captureRumorTool.types.CaptureRumorToolResult",
 			"DueInput": ".:public.DueInput",
@@ -7951,8 +7984,9 @@
 	},
 	".:public.shapeWorkTool": {
 		"kind": "value",
-		"type": "QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult>",
+		"type": "QuestlogToolDefinition<({ action: \"attach_quest_to_questline\"; now?: number | undefined; questId: number; questlineId: number; } & { tz?: string; }) | ({ action: \"create_quest\"; now?: number | undefined; quest: { createdAt?: number | undefined; title: string; objective: string; questlineId?: number | null | undefined; sourceRumorId?: number | null | undefined; spawnedByQuestId?: number | null | undefined; spawnedFromRepeatableId?: number | null | undefined; spawnedForAt?: number | null | undefined; estimateSeconds?: number | null | undefined; notBeforeAt?: number | null | undefined; dueAt?: string | number | null | undefined; scheduledStartAt?: string | number | null | undefined; scheduledEndAt?: string | number | null | undefined; allDay?: boolean | undefined; tags?: string[] | undefined; rewards?: ({ kind: string; name: string; description?: string | null | undefined; quantity?: number | null | undefined; now?: number | undefined; } & { tz?: string; })[] | undefined; now?: number | undefined; } & { tz?: string; }; } & { tz?: string; }) | ({ action: \"create_questline\"; now?: number | undefined; questline: { title: string; description?: string | null | undefined; startsAt?: number | null | undefined; dueAt?: string | number | null | undefined; sourceRumorId?: number | null | undefined; now?: number | undefined; } & { tz?: string; }; } & { tz?: string; }) | ({ action: \"detach_quest_from_questline\"; now?: number | undefined; questId: number; } & { tz?: string; }) | ({ action: \"dismiss_rumor\"; now?: number | undefined; dismissedAt?: number | undefined; rumorId: number; } & { tz?: string; }) | ({ action: \"reopen_rumor\"; now?: number | undefined; rumorId: number; } & { tz?: string; }) | ({ action: \"settle_rumor\"; now?: number | undefined; rumorId: number; questline?: ({ title: string; description?: string | null | undefined; startsAt?: number | null | undefined; dueAt?: string | number | null | undefined; sourceRumorId?: number | null | undefined; now?: number | undefined; } & { tz?: string; }) | undefined; quests?: ({ createdAt?: number | undefined; title: string; objective: string; questlineId?: number | null | undefined; sourceRumorId?: number | null | undefined; spawnedByQuestId?: number | null | undefined; spawnedFromRepeatableId?: number | null | undefined; spawnedForAt?: number | null | undefined; estimateSeconds?: number | null | undefined; notBeforeAt?: number | null | undefined; dueAt?: string | number | null | undefined; scheduledStartAt?: string | number | null | undefined; scheduledEndAt?: string | number | null | undefined; allDay?: boolean | undefined; tags?: string[] | undefined; rewards?: ({ kind: string; name: string; description?: string | null | undefined; quantity?: number | null | undefined; now?: number | undefined; } & { tz?: string; })[] | undefined; now?: number | undefined; } & { tz?: string; })[] | undefined; settledAt?: number | undefined; } & { tz?: string; }) | ({ action: \"update_rumor\"; rumorId: number; title?: string | undefined; details?: string | undefined; now?: number | undefined; } & { tz?: string; }), ShapeWorkToolResult>",
 		"references": {
+			"CalendarInputs": ".:public.getQuestlogToolByName.types.CalendarInputs",
 			"QuestlogToolDefinition": ".:public.QuestlogToolDefinition",
 			"ShapeWorkToolInput": ".:public.getQuestlogToolByName.types.ShapeWorkToolInput",
 			"ShapeWorkToolResult": ".:public.getQuestlogToolByName.types.ShapeWorkToolResult"
@@ -7960,8 +7994,9 @@
 	},
 	".:public.shapeWorkToolHandler": {
 		"kind": "value",
-		"type": "(db: Parameters<typeof createQuest>[0], input: ShapeWorkToolInput) => ShapeWorkToolResult",
+		"type": "(db: Parameters<typeof createQuest>[0], rawInput: CalendarInputs<ShapeWorkToolInput>) => ShapeWorkToolResult",
 		"references": {
+			"CalendarInputs": ".:public.getQuestlogToolByName.types.CalendarInputs",
 			"ShapeWorkToolInput": ".:public.getQuestlogToolByName.types.ShapeWorkToolInput",
 			"ShapeWorkToolResult": ".:public.getQuestlogToolByName.types.ShapeWorkToolResult"
 		}
@@ -10574,7 +10609,7 @@
 	},
 	".:public.tools.getQuestlogToolByName": {
 		"kind": "value",
-		"type": "(name: string) => QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<DueInput, ToolFailure | ToolSuccess<{ items: DueItem[]; hasMore: boolean; released?: boolean; }>> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; claim?: string; within?: string; }, Promise<ToolResult<unknown>>> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult> | null"
+		"type": "(name: string) => QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<DueInput, ToolFailure | ToolSuccess<{ items: DueItem[]; hasMore: boolean; released?: boolean; }>> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; claim?: string; within?: string; }, Promise<ToolResult<unknown>>> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<CalendarInputs<OrganizeWorkToolInput>, OrganizeWorkToolResult> | QuestlogToolDefinition<CalendarInputs<PlanQuestToolInput>, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<CalendarInputs<ShapeWorkToolInput>, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult> | null"
 	},
 	".:public.tools.inspectQuestlogItemTool": {
 		"kind": "value",
@@ -10862,7 +10897,7 @@
 	},
 	".:public.tools.listQuestlogToolDefinitions": {
 		"kind": "value",
-		"type": "() => (QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<DueInput, ToolFailure | ToolSuccess<{ items: DueItem[]; hasMore: boolean; released?: boolean; }>> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; claim?: string; within?: string; }, Promise<ToolResult<unknown>>> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult>)[]"
+		"type": "() => (QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<DueInput, ToolFailure | ToolSuccess<{ items: DueItem[]; hasMore: boolean; released?: boolean; }>> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; claim?: string; within?: string; }, Promise<ToolResult<unknown>>> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<CalendarInputs<OrganizeWorkToolInput>, OrganizeWorkToolResult> | QuestlogToolDefinition<CalendarInputs<PlanQuestToolInput>, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<CalendarInputs<ShapeWorkToolInput>, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult>)[]"
 	},
 	".:public.tools.literalSchema": {
 		"kind": "value",
@@ -10902,11 +10937,11 @@
 	},
 	".:public.tools.organizeWorkTool": {
 		"kind": "value",
-		"type": "QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult>"
+		"type": "QuestlogToolDefinition<({ action: \"add_unlock\"; fromQuestId: number; now?: number | undefined; toQuestId: number; } & { tz?: string; }) | ({ action: \"archive_questline\"; archivedAt?: number | undefined; questlineId: number; } & { tz?: string; }) | ({ action: \"remove_unlock\"; fromQuestId: number; now?: number | undefined; toQuestId: number; } & { tz?: string; }) | ({ action: \"replace_unlocks\"; fromQuestIds: number[]; now?: number | undefined; toQuestId: number; } & { tz?: string; }) | ({ action: \"set_questline_fields\"; questlineId: number; title?: string | undefined; description?: string | null | undefined; startsAt?: number | null | undefined; dueAt?: string | number | null | undefined; archivedAt?: number | null | undefined; now?: number | undefined; } & { tz?: string; }), OrganizeWorkToolResult>"
 	},
 	".:public.tools.organizeWorkToolHandler": {
 		"kind": "value",
-		"type": "(db: Parameters<typeof getQuestlineDetail>[0], input: OrganizeWorkToolInput) => OrganizeWorkToolResult"
+		"type": "(db: Parameters<typeof getQuestlineDetail>[0], rawInput: CalendarInputs<OrganizeWorkToolInput>) => OrganizeWorkToolResult"
 	},
 	".:public.tools.organizeWorkToolName": {
 		"kind": "value",
@@ -10914,11 +10949,11 @@
 	},
 	".:public.tools.planQuestTool": {
 		"kind": "value",
-		"type": "QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult>"
+		"type": "QuestlogToolDefinition<({ action: \"revise_title\"; now?: number | undefined; title: string; questId: number; } & { tz?: string; }) | ({ action: \"revise_objective\"; now?: number | undefined; objective: string; questId: number; } & { tz?: string; }) | ({ action: \"set_time\"; questId: number; notBeforeAt?: number | null | undefined; dueAt?: string | number | null | undefined; scheduledStartAt?: string | number | null | undefined; scheduledEndAt?: string | number | null | undefined; allDay?: boolean | undefined; estimateSeconds?: number | null | undefined; now?: number | undefined; } & { tz?: string; }), PlanQuestToolResult>"
 	},
 	".:public.tools.planQuestToolHandler": {
 		"kind": "value",
-		"type": "(db: Parameters<typeof getQuestDetail>[0], input: PlanQuestToolInput) => PlanQuestToolResult"
+		"type": "(db: Parameters<typeof getQuestDetail>[0], rawInput: CalendarInputs<PlanQuestToolInput>) => PlanQuestToolResult"
 	},
 	".:public.tools.planQuestToolName": {
 		"kind": "value",
@@ -11028,7 +11063,7 @@
 	},
 	".:public.tools.questlogTools": {
 		"kind": "value",
-		"type": "(QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<OrganizeWorkToolInput, OrganizeWorkToolResult> | QuestlogToolDefinition<PlanQuestToolInput, PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult> | QuestlogToolDefinition<DueInput, ToolFailure | ToolSuccess<{ items: DueItem[]; hasMore: boolean; released?: boolean; }>> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; claim?: string; within?: string; }, Promise<ToolResult<unknown>>>)[]"
+		"type": "(QuestlogToolDefinition<CaptureRumorInput, CaptureRumorToolResult> | QuestlogToolDefinition<InspectQuestlogItemToolInput, InspectQuestlogItemToolResult> | QuestlogToolDefinition<ManageRepeatableToolInput, ManageRepeatableToolResult> | QuestlogToolDefinition<({ action: \"add_unlock\"; fromQuestId: number; now?: number | undefined; toQuestId: number; } & { tz?: string; }) | ({ action: \"archive_questline\"; archivedAt?: number | undefined; questlineId: number; } & { tz?: string; }) | ({ action: \"remove_unlock\"; fromQuestId: number; now?: number | undefined; toQuestId: number; } & { tz?: string; }) | ({ action: \"replace_unlocks\"; fromQuestIds: number[]; now?: number | undefined; toQuestId: number; } & { tz?: string; }) | ({ action: \"set_questline_fields\"; questlineId: number; title?: string | undefined; description?: string | null | undefined; startsAt?: number | null | undefined; dueAt?: string | number | null | undefined; archivedAt?: number | null | undefined; now?: number | undefined; } & { tz?: string; }), OrganizeWorkToolResult> | QuestlogToolDefinition<({ action: \"revise_title\"; now?: number | undefined; title: string; questId: number; } & { tz?: string; }) | ({ action: \"revise_objective\"; now?: number | undefined; objective: string; questId: number; } & { tz?: string; }) | ({ action: \"set_time\"; questId: number; notBeforeAt?: number | null | undefined; dueAt?: string | number | null | undefined; scheduledStartAt?: string | number | null | undefined; scheduledEndAt?: string | number | null | undefined; allDay?: boolean | undefined; estimateSeconds?: number | null | undefined; now?: number | undefined; } & { tz?: string; }), PlanQuestToolResult> | QuestlogToolDefinition<RetireWorkToolInput, RetireWorkToolResult> | QuestlogToolDefinition<ReviewQuestlogToolInput, ReviewQuestlogToolResult> | QuestlogToolDefinition<RewardWorkToolInput, RewardWorkToolResult> | QuestlogToolDefinition<RunQuestToolInput, RunQuestToolResult> | QuestlogToolDefinition<SearchQuestlogToolInput, SearchQuestlogToolResult> | QuestlogToolDefinition<({ action: \"attach_quest_to_questline\"; now?: number | undefined; questId: number; questlineId: number; } & { tz?: string; }) | ({ action: \"create_quest\"; now?: number | undefined; quest: { createdAt?: number | undefined; title: string; objective: string; questlineId?: number | null | undefined; sourceRumorId?: number | null | undefined; spawnedByQuestId?: number | null | undefined; spawnedFromRepeatableId?: number | null | undefined; spawnedForAt?: number | null | undefined; estimateSeconds?: number | null | undefined; notBeforeAt?: number | null | undefined; dueAt?: string | number | null | undefined; scheduledStartAt?: string | number | null | undefined; scheduledEndAt?: string | number | null | undefined; allDay?: boolean | undefined; tags?: string[] | undefined; rewards?: ({ kind: string; name: string; description?: string | null | undefined; quantity?: number | null | undefined; now?: number | undefined; } & { tz?: string; })[] | undefined; now?: number | undefined; } & { tz?: string; }; } & { tz?: string; }) | ({ action: \"create_questline\"; now?: number | undefined; questline: { title: string; description?: string | null | undefined; startsAt?: number | null | undefined; dueAt?: string | number | null | undefined; sourceRumorId?: number | null | undefined; now?: number | undefined; } & { tz?: string; }; } & { tz?: string; }) | ({ action: \"detach_quest_from_questline\"; now?: number | undefined; questId: number; } & { tz?: string; }) | ({ action: \"dismiss_rumor\"; now?: number | undefined; dismissedAt?: number | undefined; rumorId: number; } & { tz?: string; }) | ({ action: \"reopen_rumor\"; now?: number | undefined; rumorId: number; } & { tz?: string; }) | ({ action: \"settle_rumor\"; now?: number | undefined; rumorId: number; questline?: ({ title: string; description?: string | null | undefined; startsAt?: number | null | undefined; dueAt?: string | number | null | undefined; sourceRumorId?: number | null | undefined; now?: number | undefined; } & { tz?: string; }) | undefined; quests?: ({ createdAt?: number | undefined; title: string; objective: string; questlineId?: number | null | undefined; sourceRumorId?: number | null | undefined; spawnedByQuestId?: number | null | undefined; spawnedFromRepeatableId?: number | null | undefined; spawnedForAt?: number | null | undefined; estimateSeconds?: number | null | undefined; notBeforeAt?: number | null | undefined; dueAt?: string | number | null | undefined; scheduledStartAt?: string | number | null | undefined; scheduledEndAt?: string | number | null | undefined; allDay?: boolean | undefined; tags?: string[] | undefined; rewards?: ({ kind: string; name: string; description?: string | null | undefined; quantity?: number | null | undefined; now?: number | undefined; } & { tz?: string; })[] | undefined; now?: number | undefined; } & { tz?: string; })[] | undefined; settledAt?: number | undefined; } & { tz?: string; }) | ({ action: \"update_rumor\"; rumorId: number; title?: string | undefined; details?: string | undefined; now?: number | undefined; } & { tz?: string; }), ShapeWorkToolResult> | QuestlogToolDefinition<TagWorkToolInput, TagWorkToolResult> | QuestlogToolDefinition<DueInput, ToolFailure | ToolSuccess<{ items: DueItem[]; hasMore: boolean; released?: boolean; }>> | QuestlogToolDefinition<{ action: \"list\" | \"remove\" | \"tick\" | \"deliveries\"; id?: number; dry_run?: boolean; claim?: string; within?: string; }, Promise<ToolResult<unknown>>>)[]"
 	},
 	".:public.tools.retireWorkTool": {
 		"kind": "value",
@@ -11092,11 +11127,11 @@
 	},
 	".:public.tools.shapeWorkTool": {
 		"kind": "value",
-		"type": "QuestlogToolDefinition<ShapeWorkToolInput, ShapeWorkToolResult>"
+		"type": "QuestlogToolDefinition<({ action: \"attach_quest_to_questline\"; now?: number | undefined; questId: number; questlineId: number; } & { tz?: string; }) | ({ action: \"create_quest\"; now?: number | undefined; quest: { createdAt?: number | undefined; title: string; objective: string; questlineId?: number | null | undefined; sourceRumorId?: number | null | undefined; spawnedByQuestId?: number | null | undefined; spawnedFromRepeatableId?: number | null | undefined; spawnedForAt?: number | null | undefined; estimateSeconds?: number | null | undefined; notBeforeAt?: number | null | undefined; dueAt?: string | number | null | undefined; scheduledStartAt?: string | number | null | undefined; scheduledEndAt?: string | number | null | undefined; allDay?: boolean | undefined; tags?: string[] | undefined; rewards?: ({ kind: string; name: string; description?: string | null | undefined; quantity?: number | null | undefined; now?: number | undefined; } & { tz?: string; })[] | undefined; now?: number | undefined; } & { tz?: string; }; } & { tz?: string; }) | ({ action: \"create_questline\"; now?: number | undefined; questline: { title: string; description?: string | null | undefined; startsAt?: number | null | undefined; dueAt?: string | number | null | undefined; sourceRumorId?: number | null | undefined; now?: number | undefined; } & { tz?: string; }; } & { tz?: string; }) | ({ action: \"detach_quest_from_questline\"; now?: number | undefined; questId: number; } & { tz?: string; }) | ({ action: \"dismiss_rumor\"; now?: number | undefined; dismissedAt?: number | undefined; rumorId: number; } & { tz?: string; }) | ({ action: \"reopen_rumor\"; now?: number | undefined; rumorId: number; } & { tz?: string; }) | ({ action: \"settle_rumor\"; now?: number | undefined; rumorId: number; questline?: ({ title: string; description?: string | null | undefined; startsAt?: number | null | undefined; dueAt?: string | number | null | undefined; sourceRumorId?: number | null | undefined; now?: number | undefined; } & { tz?: string; }) | undefined; quests?: ({ createdAt?: number | undefined; title: string; objective: string; questlineId?: number | null | undefined; sourceRumorId?: number | null | undefined; spawnedByQuestId?: number | null | undefined; spawnedFromRepeatableId?: number | null | undefined; spawnedForAt?: number | null | undefined; estimateSeconds?: number | null | undefined; notBeforeAt?: number | null | undefined; dueAt?: string | number | null | undefined; scheduledStartAt?: string | number | null | undefined; scheduledEndAt?: string | number | null | undefined; allDay?: boolean | undefined; tags?: string[] | undefined; rewards?: ({ kind: string; name: string; description?: string | null | undefined; quantity?: number | null | undefined; now?: number | undefined; } & { tz?: string; })[] | undefined; now?: number | undefined; } & { tz?: string; })[] | undefined; settledAt?: number | undefined; } & { tz?: string; }) | ({ action: \"update_rumor\"; rumorId: number; title?: string | undefined; details?: string | undefined; now?: number | undefined; } & { tz?: string; }), ShapeWorkToolResult>"
 	},
 	".:public.tools.shapeWorkToolHandler": {
 		"kind": "value",
-		"type": "(db: Parameters<typeof createQuest>[0], input: ShapeWorkToolInput) => ShapeWorkToolResult"
+		"type": "(db: Parameters<typeof createQuest>[0], rawInput: CalendarInputs<ShapeWorkToolInput>) => ShapeWorkToolResult"
 	},
 	".:public.tools.shapeWorkToolName": {
 		"kind": "value",

@@ -4,6 +4,7 @@ import type { PlainCliCommand } from '../surfaces/cli.ts';
 import type { CliArgument } from '../surfaces/cli_args.ts';
 import { CliUsageError, parseCliArgs } from '../surfaces/cli_args.ts';
 import { inspectQuestlogItemTool } from '../tools/inspect_questlog_item_tool.ts';
+import { parseCalendarTime } from '../tools/parse_calendar_time.ts';
 import { reviewQuestlogTool } from '../tools/review_questlog_tool.ts';
 import { formatPlainDate, parsePlainDue } from './plain_dates.ts';
 import { renderQuestlogPlainResult } from './render_questlog_plain_result.ts';
@@ -202,6 +203,7 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 					'Create a quest: add "My title" or add --title "My title". Objective defaults to the title. Example: questlog add "Review report" --due tomorrow --tag work --tag review.',
 				positionals: [{ name: 'positionalTitle', type: 'string' }],
 				flags: [
+					{ name: 'tz', type: 'string', description: 'IANA time zone for relative dates.' },
 					{ name: 'title', type: 'string' },
 					{ name: 'tag', type: 'array' },
 					{
@@ -248,9 +250,18 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 				if (v.createdAt !== undefined) quest.createdAt = timestamp(v.createdAt);
 				if (v.questline !== undefined) quest.questlineId = v.questline;
 				if (v.due !== undefined) {
-					quest.dueAt = parsePlainDue(String(v.due));
+					const raw = String(v.due);
+					try {
+						if (/^-?\d+$/.test(raw)) quest.dueAt = parseCalendarTime(raw, 'dueAt').timestamp;
+						else if (v.tz !== undefined || /^[+-]\d+h$/.test(raw)) {
+							parseCalendarTime(raw, 'dueAt', Date.now(), v.tz as string | undefined);
+							quest.dueAt = raw;
+						} else quest.dueAt = new Date(parsePlainDue(raw)).toISOString();
+					} catch (error) {
+						throw new CliUsageError((error as Error).message);
+					}
 				}
-				return { action: 'create_quest', quest };
+				return { action: 'create_quest', quest, ...(v.tz === undefined ? {} : { tz: v.tz }) };
 			},
 			render: renderQuestlogPlainResult,
 		},

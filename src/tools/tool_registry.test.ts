@@ -166,6 +166,7 @@ describe('tool registry', () => {
 	it('multi-action tools list all variant properties at the root level', () => {
 		const expectedProperties: Record<string, string[]> = {
 			plan_quest: [
+				'tz',
 				'title',
 				'action',
 				'questId',
@@ -190,6 +191,7 @@ describe('tool registry', () => {
 				'followups',
 			],
 			shape_work: [
+				'tz',
 				'action',
 				'questId',
 				'questlineId',
@@ -204,6 +206,7 @@ describe('tool registry', () => {
 				'details',
 			],
 			organize_work: [
+				'tz',
 				'action',
 				'questlineId',
 				'title',

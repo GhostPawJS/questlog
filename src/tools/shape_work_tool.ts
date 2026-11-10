@@ -10,6 +10,7 @@ import type { CreateQuestInput } from '../quests/types.ts';
 import { getRumorDetail } from '../rumors/get_rumor_detail.ts';
 import { dismissRumor, reopenRumor, settleRumor, updateRumor } from '../rumors/index.ts';
 import type { SettleRumorInput } from '../rumors/types.ts';
+import { type CalendarInputs, normalizeCalendarInputs } from './calendar_inputs.ts';
 import { translateToolError } from './tool_errors.ts';
 import {
 	arraySchema,
@@ -56,9 +57,10 @@ export type ShapeWorkToolResult = ToolResult<ShapeWorkToolData>;
 
 export function shapeWorkToolHandler(
 	db: Parameters<typeof createQuest>[0],
-	input: ShapeWorkToolInput,
+	rawInput: CalendarInputs<ShapeWorkToolInput>,
 ): ShapeWorkToolResult {
 	try {
+		const input = normalizeCalendarInputs(rawInput) as ShapeWorkToolInput;
 		switch (input.action) {
 			case 'dismiss_rumor': {
 				const current = getRumorDetail(db, input.rumorId);
@@ -296,12 +298,15 @@ export function shapeWorkToolHandler(
 		}
 	} catch (error) {
 		return translateToolError(error, {
-			summary: `Could not complete shape-work action \`${input.action}\`.`,
+			summary: `Could not complete shape-work action \`${rawInput.action}\`.`,
 		});
 	}
 }
 
-export const shapeWorkTool = defineQuestlogTool<ShapeWorkToolInput, ShapeWorkToolResult>({
+export const shapeWorkTool = defineQuestlogTool<
+	CalendarInputs<ShapeWorkToolInput>,
+	ShapeWorkToolResult
+>({
 	name: shapeWorkToolName,
 	description:
 		'Create a quest (with timing, tags, and objective in one call), create a questline, settle a rumor into concrete work, or manage quest-questline membership. Use create_quest for clear commitments — include tags and timing directly to avoid follow-up calls.',
@@ -323,7 +328,7 @@ export const shapeWorkTool = defineQuestlogTool<ShapeWorkToolInput, ShapeWorkToo
 			'Concrete quest creation inputs when settling a rumor into real work. Each quest supports the same fields as the quest property — include timing and tags directly.',
 		settledAt: 'Optional settlement timestamp for rumor settlement.',
 		quest:
-			'Quest creation input when directly creating one concrete quest. Include timing fields in epoch milliseconds (dueAt, scheduledStartAt, etc.), optional now or createdAt for historical creation, tags, and rewards to create a fully specified quest in one call.',
+			'Quest creation input when directly creating one concrete quest. Include dueAt/scheduledStartAt/scheduledEndAt as epoch milliseconds (>= 1e12), ISO datetime, YYYY-MM-DD, today, tomorrow or +Nd/+Nh, optional now or createdAt for historical creation, tags, and rewards to create a fully specified quest in one call.',
 		questId: 'The concrete quest being attached to or detached from a questline.',
 		questlineId: 'The questline that should receive the quest for attach actions.',
 		dismissedAt: 'Optional dismissal timestamp for dismissing a rumor.',

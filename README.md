@@ -722,8 +722,7 @@ future values are accepted. Creation, start, and resolution timestamps must
 remain chronological. `shape_work` accepts top-level `now` for creation,
 settlement, and dismissal; nested creation times and explicit event times take
 precedence. `run_quest` accepts `now` as a fallback for `startedAt` and
-`resolvedAt`. All numeric tool timestamps use epoch milliseconds. Existing
-inputs representing dates before 2001 remain supported through existing fields.
+`resolvedAt`. All numeric tool timestamps use epoch milliseconds. Use ISO strings for dates before 2001 in calendar input fields.
 
 `show` accepts plain quest ids or `kind:id`: quest, rumor, questline,
 repeatable_quest (alias repeatable), using `inspect_questlog_item`.
@@ -736,3 +735,23 @@ and exit 2. `manage_repeatable` action `spawn_due` defaults `now` to the current
 time, matching `preview_due`. For tool calls, nest creation data under `quest`
 or `questline`, and tagging targets under `target`; validation errors show the
 expected shape.
+
+### Calendar inputs in tools and CLI
+
+`dueAt`, `scheduledStartAt`, and `scheduledEndAt` accept integer epoch
+milliseconds (>= 1e12), ISO datetime with Z/offset, YYYY-MM-DD, `today`,
+`tomorrow`, `+Nd` or `+Nh` (also yesterday, negative offsets and DD.MM.YYYY).
+Numeric seconds are rejected: use epoch ms or ISO. Output remains epoch ms.
+`tz` is an optional top-level IANA zone; it selects the local date for relative
+days and defaults to TZ/process local time. As in Affinity, calendar days map
+to UTC midnight, with dueAt at UTC 23:59:59.999; hour offsets add elapsed hours.
+
+```sh
+questlog call shape_work '{"action":"create_quest","tz":"Europe/Berlin","quest":{"title":"Review report","objective":"Check report","dueAt":"2026-11-12","scheduledStartAt":"2026-11-12T09:00:00+01:00","scheduledEndAt":"2026-11-12T10:00:00+01:00"}}'
+questlog add "Review report" --due tomorrow --tz Europe/Berlin
+```
+
+Create input is nested: `{action:"create_quest", quest:{title:string,
+objective:string, dueAt?:number|string, scheduledStartAt?:number|string,
+scheduledEndAt?:number|string, tags?:string[], allDay?:boolean}, tz?:string}`.
+Validation errors include the full nested schema with field types.

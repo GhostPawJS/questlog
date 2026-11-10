@@ -53,7 +53,7 @@ describe('runOperationalReviewSkill', () => {
 			planQuestTool.handler(db, {
 				action: 'set_time',
 				questId: quest.data.quest?.id ?? 0,
-				dueAt: 5000,
+				dueAt: '1970-01-01T00:00:05.000Z',
 			}),
 		);
 		strictEqual(replanned.data.quest.dueAt, 5000);

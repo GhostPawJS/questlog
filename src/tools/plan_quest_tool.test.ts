@@ -20,7 +20,7 @@ describe('planQuestTool', () => {
 				quest: {
 					title: 'Already planned',
 					objective: 'Keep the same planning fields.',
-					dueAt: 1_000,
+					dueAt: 1_800_000_001_000,
 				},
 			}),
 		);
@@ -32,11 +32,11 @@ describe('planQuestTool', () => {
 			planQuestTool.handler(db, {
 				action: 'set_time',
 				questId: created.data.quest.id,
-				dueAt: 1_000,
+				dueAt: 1_800_000_001_000,
 			}),
 		);
 
-		strictEqual(result.data.quest.dueAt, 1_000);
+		strictEqual(result.data.quest.dueAt, 1_800_000_001_000);
 	});
 
 	it('returns invalid-state when revising the objective after start', () => {

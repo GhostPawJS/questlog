@@ -39,6 +39,7 @@ Run tools as `ghostpaw-questlog ...`; use `~/.local/bin/ghostpaw-questlog` if it
 - `questlog list --count-by tag|prefix`: count filtered quests. `questlog list --count [--tag work]` prints a filtered total before pagination; with --json it prints {total}. Rumor views: rumors or its CLI alias rumors.open.
 - `questlog list --view quests.duplicates`: review open quests with similar titles.
 - Use `--json` on any plain command, or set `GHOSTPAW_OUTPUT=json`. `list --limit N --offset M` paginates both formats; JSON data includes total, offset, limit, hasMore.
+- Calendar inputs: dueAt/scheduledStartAt/scheduledEndAt accept epoch ms >= 1e12 (seconds rejected), ISO datetime, YYYY-MM-DD, today, tomorrow, +Nd/+Nh. Optional top-level tz selects relative local days; calendar days use UTC midnight, dueAt UTC end of day. Nest create fields under quest: {title:string, objective:string, dueAt?:number|string, scheduledStartAt?:number|string, scheduledEndAt?:number|string}. CLI: add TITLE --due tomorrow --tz Europe/Berlin.
 - Repeatables: `repeatable create --title TITLE --objective OBJECTIVE --rrule FREQ=DAILY --anchor-at ISO --tz Europe/Berlin`; `repeatable revise <id> --tz <zone|none>`. Facade create uses `repeatableQuest.tz`; update/revise uses `tz` (null clears). Zoned recurrence keeps wall-clock time across DST; no tz keeps UTC behavior.
 - Exit codes: 0 ok / 1 error / 2 usage (including missing done --outcome and invalid call input) / 3 needs input or item not found.
 - Database: `~/.ghostpaw/questlog.db`; override with `--db` or `GHOSTPAW_QUESTLOG_DB`. Default opens print `using default db <path>` to stderr; suppress with `-q` or `--quiet` or `GHOSTPAW_QUIET=1`. Use one database per project.
@@ -197,10 +198,10 @@ Writes: writes_state.
 | quest.rewards | array | no | Optional rewards to attach at creation. |
 | quest.rewards[].kind | string | yes | Reward kind. |
 | quest.rewards[].name | string | yes | Reward name. |
-| quest.dueAt | integer | no | Optional latest acceptable completion timestamp. Unit: epoch milliseconds. |
+| quest.dueAt | oneOf | no | Optional latest acceptable completion timestamp. Accepts epoch ms (>= 1e12), ISO datetime, YYYY-MM-DD, today, tomorrow, +Nd/+Nh. Calendar days use UTC boundaries (dueAt: end of day); tz selects the local day for relative dates. |
 | quest.notBeforeAt | integer | no | Optional earliest actionable timestamp. Unit: epoch milliseconds. |
-| quest.scheduledStartAt | integer | no | Optional planned schedule window start. Unit: epoch milliseconds. |
-| quest.scheduledEndAt | integer | no | Optional planned schedule window end. Unit: epoch milliseconds. |
+| quest.scheduledStartAt | oneOf | no | Optional planned schedule window start. Accepts epoch ms (>= 1e12), ISO datetime, YYYY-MM-DD, today, tomorrow, +Nd/+Nh. Calendar days use UTC boundaries (dueAt: end of day); tz selects the local day for relative dates. |
+| quest.scheduledEndAt | oneOf | no | Optional planned schedule window end. Accepts epoch ms (>= 1e12), ISO datetime, YYYY-MM-DD, today, tomorrow, +Nd/+Nh. Calendar days use UTC boundaries (dueAt: end of day); tz selects the local day for relative dates. |
 | quest.allDay | boolean | no | Whether the scheduled window is all-day. |
 | quest.estimateSeconds | integer | no | Optional active-effort estimate in seconds. |
 | questline | object | no | Object: title (required), now, description |
@@ -219,15 +220,16 @@ Writes: writes_state.
 | quests[].rewards | array | no | Optional rewards to attach at creation. |
 | quests[].rewards[].kind | string | yes | Reward kind. |
 | quests[].rewards[].name | string | yes | Reward name. |
-| quests[].dueAt | integer | no | Optional latest acceptable completion timestamp. Unit: epoch milliseconds. |
+| quests[].dueAt | oneOf | no | Optional latest acceptable completion timestamp. Accepts epoch ms (>= 1e12), ISO datetime, YYYY-MM-DD, today, tomorrow, +Nd/+Nh. Calendar days use UTC boundaries (dueAt: end of day); tz selects the local day for relative dates. |
 | quests[].notBeforeAt | integer | no | Optional earliest actionable timestamp. Unit: epoch milliseconds. |
-| quests[].scheduledStartAt | integer | no | Optional planned schedule window start. Unit: epoch milliseconds. |
-| quests[].scheduledEndAt | integer | no | Optional planned schedule window end. Unit: epoch milliseconds. |
+| quests[].scheduledStartAt | oneOf | no | Optional planned schedule window start. Accepts epoch ms (>= 1e12), ISO datetime, YYYY-MM-DD, today, tomorrow, +Nd/+Nh. Calendar days use UTC boundaries (dueAt: end of day); tz selects the local day for relative dates. |
+| quests[].scheduledEndAt | oneOf | no | Optional planned schedule window end. Accepts epoch ms (>= 1e12), ISO datetime, YYYY-MM-DD, today, tomorrow, +Nd/+Nh. Calendar days use UTC boundaries (dueAt: end of day); tz selects the local day for relative dates. |
 | quests[].allDay | boolean | no | Whether the scheduled window is all-day. |
 | quests[].estimateSeconds | integer | no | Optional active-effort estimate in seconds. |
 | now | integer | no | Optional epoch milliseconds for creation, settlement, dismissal, membership, reopen, or rumor update. Unit: epoch milliseconds. |
 | title | string | no | New title for the update_rumor action. |
 | details | string | no | New or enriched context text for the update_rumor action. |
+| tz | string | no | IANA time zone for relative calendar days; defaults to TZ or process local zone. |
 
 ```sh
 ghostpaw-questlog call shape_work '{"action":"attach_quest_to_questline","questId":1,"questlineId":1}'
@@ -252,12 +254,13 @@ Writes: writes_state.
 | title | string | no | New title. Required for revise_title. |
 | objective | string | no | The new quest objective text. Required for revise_objective. |
 | notBeforeAt | integer | no | Optional earliest actionable timestamp. Unit: epoch milliseconds. |
-| dueAt | integer | no | Optional latest acceptable completion timestamp. Unit: epoch milliseconds. |
-| scheduledStartAt | integer | no | Optional planned schedule window start. Unit: epoch milliseconds. |
-| scheduledEndAt | integer | no | Optional planned schedule window end. Unit: epoch milliseconds. |
+| dueAt | oneOf | no | Optional latest acceptable completion timestamp. Accepts epoch ms (>= 1e12), ISO datetime, YYYY-MM-DD, today, tomorrow, +Nd/+Nh. Calendar days use UTC boundaries (dueAt: end of day); tz selects the local day for relative dates. |
+| scheduledStartAt | oneOf | no | Optional planned schedule window start. Accepts epoch ms (>= 1e12), ISO datetime, YYYY-MM-DD, today, tomorrow, +Nd/+Nh. Calendar days use UTC boundaries (dueAt: end of day); tz selects the local day for relative dates. |
+| scheduledEndAt | oneOf | no | Optional planned schedule window end. Accepts epoch ms (>= 1e12), ISO datetime, YYYY-MM-DD, today, tomorrow, +Nd/+Nh. Calendar days use UTC boundaries (dueAt: end of day); tz selects the local day for relative dates. |
 | allDay | boolean | no | Whether the planned schedule window is all-day. |
 | estimateSeconds | integer | no | Optional active-effort estimate in seconds. |
 | now | integer | no | Optional update timestamp. Unit: epoch milliseconds. |
+| tz | string | no | IANA time zone for relative calendar days; defaults to TZ or process local zone. |
 
 ```sh
 ghostpaw-questlog call plan_quest '{"action":"revise_objective","questId":1,"objective":"Check changes against the release"}'
@@ -312,12 +315,13 @@ Writes: writes_state.
 | title | string | no | Optional new questline title. |
 | description | string | no | Optional new questline description. |
 | startsAt | integer | no | Optional questline start timestamp. Unit: epoch milliseconds. |
-| dueAt | integer | no | Optional questline due timestamp. Unit: epoch milliseconds. |
+| dueAt | oneOf | no | Optional questline due timestamp. Accepts epoch ms (>= 1e12), ISO datetime, YYYY-MM-DD, today, tomorrow, +Nd/+Nh. Calendar days use UTC boundaries (dueAt: end of day); tz selects the local day for relative dates. |
 | archivedAt | integer | no | Optional archive timestamp. Unit: epoch milliseconds. |
 | toQuestId | integer | no | Quest whose blockers should change. |
 | fromQuestId | integer | no | Prerequisite quest id. |
 | fromQuestIds | array | no | Full prerequisite quest id set. |
 | now | integer | no | Optional timestamp. Unit: epoch milliseconds. |
+| tz | string | no | IANA time zone for relative calendar days; defaults to TZ or process local zone. |
 
 ```sh
 ghostpaw-questlog call organize_work '{"action":"add_unlock","fromQuestId":1,"toQuestId":2}'

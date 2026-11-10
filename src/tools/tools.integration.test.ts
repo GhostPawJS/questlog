@@ -128,10 +128,10 @@ describe('tool facade integration', () => {
 			planQuestTool.handler(db, {
 				action: 'set_time',
 				questId: questA.id,
-				dueAt: 1_000,
+				dueAt: 1_800_000_001_000,
 			}),
 		);
-		strictEqual(planned.data.quest.dueAt, 1_000);
+		strictEqual(planned.data.quest.dueAt, 1_800_000_001_000);
 
 		const started = expectSuccess(
 			runQuestTool.handler(db, {

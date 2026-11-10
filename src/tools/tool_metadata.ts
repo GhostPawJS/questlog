@@ -3,6 +3,7 @@ import { registerSchemaActions } from '../surfaces/schema_actions.ts';
 import { minimalInput } from '../surfaces/schema_examples.ts';
 import { validateInput } from '../surfaces/validate_input.ts';
 import { actionRequirements } from './action_requirements.ts';
+import { normalizeCalendarInputs } from './calendar_inputs.ts';
 import { type ToolResult, toolFailure } from './tool_types.ts';
 
 export type ToolInputDescriptions = Readonly<Record<string, string>>;
@@ -62,7 +63,15 @@ export function defineQuestlogTool<
 >(definition: QuestlogToolDefinition<TInput, TResult>): QuestlogToolDefinition<TInput, TResult> {
 	const describeTimestamps = (schema: JsonSchema) => {
 		for (const [name, property] of Object.entries(schema.properties ?? {})) {
-			if (name === 'now' || name.endsWith('At')) {
+			if (['dueAt', 'scheduledStartAt', 'scheduledEndAt'].includes(name)) {
+				property.type = undefined;
+				property.oneOf = [
+					{ type: 'integer' },
+					{ type: 'string' },
+					...(property.oneOf?.filter((branch) => branch.type === 'null') ?? []),
+				];
+				property.description = `${property.description ?? ''} Accepts epoch ms (>= 1e12), ISO datetime, YYYY-MM-DD, today, tomorrow, +Nd/+Nh. Calendar days use UTC boundaries (dueAt: end of day); tz selects the local day for relative dates.`;
+			} else if (name === 'now' || name.endsWith('At')) {
 				property.description = `${property.description ?? ''} Unit: epoch milliseconds.`;
 			}
 			describeTimestamps(property);
@@ -70,6 +79,20 @@ export function defineQuestlogTool<
 		if (schema.items) describeTimestamps(schema.items);
 		for (const branch of schema.oneOf ?? []) describeTimestamps(branch);
 	};
+	if (['shape_work', 'plan_quest', 'organize_work'].includes(definition.name)) {
+		definition.inputSchema.properties = {
+			...definition.inputSchema.properties,
+			tz: {
+				type: 'string',
+				description:
+					'IANA time zone for relative calendar days; defaults to TZ or process local zone.',
+			},
+		};
+		definition.inputDescriptions = {
+			...definition.inputDescriptions,
+			tz: 'IANA time zone for relative calendar days.',
+		};
+	}
 	describeTimestamps(definition.inputSchema);
 	definition.inputDescriptions = Object.fromEntries(
 		Object.entries(definition.inputDescriptions).map(([name, description]) => [
@@ -84,11 +107,37 @@ export function defineQuestlogTool<
 	const handler = definition.handler;
 	definition.handler = (db, input) => {
 		const errors = validateInput(definition.inputSchema, input);
+		if (!errors.length && ['shape_work', 'plan_quest', 'organize_work'].includes(definition.name)) {
+			try {
+				normalizeCalendarInputs(input);
+			} catch (error) {
+				errors.push((error as Error).message);
+			}
+		}
 		if (errors.length) {
 			const action = (input as Record<string, unknown> | null)?.action;
 			const example = minimalInput(definition.inputSchema, action);
+			const typedShape =
+				definition.name === 'shape_work' && action === 'create_quest'
+					? '; field types: ' +
+						JSON.stringify({
+							action: 'create_quest',
+							tz: 'IANA zone (optional)',
+							quest: Object.fromEntries(
+								Object.entries(definition.inputSchema.properties?.quest?.properties ?? {}).map(
+									([key, child]) => [
+										key,
+										child.oneOf
+											? 'epoch ms >= 1e12 | ISO datetime | YYYY-MM-DD | today | tomorrow | +Nd/+Nh (optional)'
+											: `${child.type}${definition.inputSchema.properties?.quest?.required?.includes(key) ? '' : ' (optional)'}`,
+									],
+								),
+							),
+						})
+					: '';
 			const message =
 				errors.join('; ') +
+				typedShape +
 				(['shape_work', 'tag_work'].includes(definition.name)
 					? `; expected nested input shape: ${JSON.stringify(example)}`
 					: '');

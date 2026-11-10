@@ -40,7 +40,7 @@ describe('planTimeCorrectlySkill', () => {
 				action: 'set_time',
 				questId,
 				notBeforeAt: 1000,
-				dueAt: 2000,
+				dueAt: '1970-01-01T00:00:02.000Z',
 				now: 1,
 			}),
 		);
@@ -51,7 +51,7 @@ describe('planTimeCorrectlySkill', () => {
 				action: 'set_time',
 				questId,
 				notBeforeAt: 1000,
-				dueAt: 2000,
+				dueAt: '1970-01-01T00:00:02.000Z',
 				now: 2,
 			}),
 		);

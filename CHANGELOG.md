@@ -5,6 +5,8 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+- Accept calendar strings and zones for planning inputs, reject numeric seconds, and show typed nested quest creation shapes.
+
 ## [0.14.0] - 2026-11-09
 
 ### Added

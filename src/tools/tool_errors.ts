@@ -44,6 +44,9 @@ export function translateToolError(
 	}
 
 	if (
+		message.includes(': expected') ||
+		message.includes('epoch milliseconds (>= 1e12) expected') ||
+		message.includes('Invalid time zone') ||
 		message.includes('must not be empty') ||
 		message.includes('must not be negative') ||
 		message.includes('must be greater than zero') ||

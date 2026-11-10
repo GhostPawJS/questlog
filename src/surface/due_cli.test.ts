@@ -34,8 +34,11 @@ test('due CLI JSON, text, claims, release, limits and tick counts', async () => 
 		return { code, out, err };
 	};
 	try {
-		assert.equal((await run(['add', 'late', '--due', '100', '--tag', 'work'])).code, 0);
-		assert.equal((await run(['add', 'also late', '--due', '101'])).code, 0);
+		assert.equal(
+			(await run(['add', 'late', '--due', '1970-01-01T00:00:00.100Z', '--tag', 'work'])).code,
+			0,
+		);
+		assert.equal((await run(['add', 'also late', '--due', '1970-01-01T00:00:00.101Z'])).code, 0);
 		const first = await run(['due', '--claim', 'a', '--tag', 'work', '--json']);
 		assert.equal(first.code, 0, first.err);
 		const data = JSON.parse(first.out).data;

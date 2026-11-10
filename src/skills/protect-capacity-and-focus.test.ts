@@ -29,8 +29,8 @@ describe('protectCapacityAndFocusSkill', () => {
 				quest: {
 					title: 'Focus block',
 					objective: 'Work on the highest-priority item.',
-					scheduledStartAt: 100,
-					scheduledEndAt: 200,
+					scheduledStartAt: '1970-01-01T00:00:00.100Z',
+					scheduledEndAt: '1970-01-01T00:00:00.200Z',
 					now: 1,
 				},
 			}),

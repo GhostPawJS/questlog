@@ -30,7 +30,7 @@ describe('detectSlipsAndStalenessSkill', () => {
 				quest: {
 					title: 'Repair timeline',
 					objective: 'Fix the project timeline.',
-					dueAt: 100,
+					dueAt: '1970-01-01T00:00:00.100Z',
 					now: 1,
 				},
 			}),
@@ -48,7 +48,7 @@ describe('detectSlipsAndStalenessSkill', () => {
 			planQuestTool.handler(db, {
 				action: 'set_time',
 				questId: quest.data.quest?.id ?? 0,
-				dueAt: 1000,
+				dueAt: '1970-01-01T00:00:01.000Z',
 				now: 200,
 			}),
 		);

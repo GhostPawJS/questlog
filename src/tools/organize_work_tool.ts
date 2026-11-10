@@ -2,6 +2,7 @@ import { archiveQuestline, getQuestlineDetail, updateQuestline } from '../questl
 import type { UpdateQuestlineInput } from '../questlines/types.ts';
 import { getQuestDetail } from '../quests/get_quest_detail.ts';
 import { addUnlock, removeUnlock, replaceUnlocks } from '../unlocks/index.ts';
+import { type CalendarInputs, normalizeCalendarInputs } from './calendar_inputs.ts';
 import { translateToolError } from './tool_errors.ts';
 import {
 	arraySchema,
@@ -46,9 +47,10 @@ function sameQuestlineFields(
 
 export function organizeWorkToolHandler(
 	db: Parameters<typeof getQuestlineDetail>[0],
-	input: OrganizeWorkToolInput,
+	rawInput: CalendarInputs<OrganizeWorkToolInput>,
 ): OrganizeWorkToolResult {
 	try {
+		const input = normalizeCalendarInputs(rawInput) as OrganizeWorkToolInput;
 		switch (input.action) {
 			case 'set_questline_fields': {
 				const current = getQuestlineDetail(db, input.questlineId);
@@ -196,12 +198,15 @@ export function organizeWorkToolHandler(
 		}
 	} catch (error) {
 		return translateToolError(error, {
-			summary: `Could not complete organize-work action \`${input.action}\`.`,
+			summary: `Could not complete organize-work action \`${rawInput.action}\`.`,
 		});
 	}
 }
 
-export const organizeWorkTool = defineQuestlogTool<OrganizeWorkToolInput, OrganizeWorkToolResult>({
+export const organizeWorkTool = defineQuestlogTool<
+	CalendarInputs<OrganizeWorkToolInput>,
+	OrganizeWorkToolResult
+>({
 	name: organizeWorkToolName,
 	description:
 		'Organize grouping and dependency structure by updating questlines or changing hard unlock prerequisites between concrete quests.',

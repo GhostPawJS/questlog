@@ -1,5 +1,6 @@
 import { getQuestDetail, planQuestTime, reviseQuestObjective } from '../quests/index.ts';
 import type { PlanQuestTimeInput } from '../quests/types.ts';
+import { type CalendarInputs, normalizeCalendarInputs } from './calendar_inputs.ts';
 import { translateToolError } from './tool_errors.ts';
 import {
 	booleanSchema,
@@ -42,9 +43,10 @@ function samePlanningState(
 
 export function planQuestToolHandler(
 	db: Parameters<typeof getQuestDetail>[0],
-	input: PlanQuestToolInput,
+	rawInput: CalendarInputs<PlanQuestToolInput>,
 ): PlanQuestToolResult {
 	try {
+		const input = normalizeCalendarInputs(rawInput) as PlanQuestToolInput;
 		const current = getQuestDetail(db, input.questId);
 
 		if (input.action === 'revise_title') {
@@ -116,12 +118,15 @@ export function planQuestToolHandler(
 		);
 	} catch (error) {
 		return translateToolError(error, {
-			summary: `Could not complete plan-quest action \`${input.action}\`.`,
+			summary: `Could not complete plan-quest action \`${rawInput.action}\`.`,
 		});
 	}
 }
 
-export const planQuestTool = defineQuestlogTool<PlanQuestToolInput, PlanQuestToolResult>({
+export const planQuestTool = defineQuestlogTool<
+	CalendarInputs<PlanQuestToolInput>,
+	PlanQuestToolResult
+>({
 	name: planQuestToolName,
 	description:
 		'Refine a quest by revising its objective before actual start or by changing its temporal planning fields.',

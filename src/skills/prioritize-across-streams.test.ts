@@ -65,7 +65,7 @@ describe('prioritizeAcrossStreamsSkill', () => {
 			planQuestTool.handler(db, {
 				action: 'set_time',
 				questId: questA.data.quest?.id ?? 0,
-				dueAt: 500,
+				dueAt: '1970-01-01T00:00:00.500Z',
 			}),
 		);
 		strictEqual(prioritized.data.quest.dueAt, 500);

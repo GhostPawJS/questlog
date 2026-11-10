@@ -53,7 +53,7 @@ describe('manageApprovalsAndPromisesSkill', () => {
 			planQuestTool.handler(db, {
 				action: 'set_time',
 				questId: approval.data.quest?.id ?? 0,
-				dueAt: 100,
+				dueAt: '1970-01-01T00:00:00.100Z',
 				now: 1,
 			}),
 		);
