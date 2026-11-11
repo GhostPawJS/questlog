@@ -144,13 +144,13 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 		{
 			spec: {
 				command: 'drop',
-				description: 'Abandon a quest. Alias: quest abandon <id> [--reason text].',
+				description: 'Abandon a quest. Alias: quest abandon.',
 				positionals: [id],
 				flags: [
 					{
 						name: 'reason',
 						type: 'string',
-						description: 'Recorded outcome; defaults to Abandoned via CLI.',
+						description: 'Outcome; default: Abandoned via CLI.',
 					},
 				],
 			},

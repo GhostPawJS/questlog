@@ -49,14 +49,14 @@ export const questlogCliOptions: ToolCliOptions<QuestlogDb> = {
   start <id>
   done <id> --outcome text
   due
-  drop <id> [--reason text] (also: quest abandon)
+  drop <id> [--reason text] (alias: quest abandon)
 More: show, search, quest revise <id> --title text, review
 Advanced:
   repeatable, hook, watch, tick
   Rumors: shape_work, show rumor:1, list --view rumors.open
   Unlocks: organize_work; rewards: reward_work
   tools [--json], describe <tool>, call <tool> [JSON|-], <tool> --parameter value, mcp, skill
-Use <command> --help for details.`,
+Use <command> --help.`,
 		names: ['hook', 'watch'],
 		run: async (command, args, options, io) => {
 			if (command === 'quest' && args[0] && !['revise', '--help', '-h'].includes(args[0])) {
