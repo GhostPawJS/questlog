@@ -5,6 +5,10 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
+- Fix CLI abandonment with `quest abandon <id> [--reason text]` and the discoverable `drop` alias.
+- Explain unsupported quest actions with available actions and the tagged `add` command.
+- Lead default CLI help with the core flow and group specialized commands under Advanced.
+
 ## [0.14.1] - 2026-11-10
 
 ### Changed

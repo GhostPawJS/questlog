@@ -27,8 +27,7 @@ export const questlogCliOptions: ToolCliOptions<QuestlogDb> = {
 	bin: 'ghostpaw-questlog',
 	version: questlogVersion,
 	versionLine: (args) => cliVersion(questlogVersion, { args }),
-	description:
-		'Local task and calendar library\nExamples: questlog add "Review report" --due tomorrow --tag work --tag review; questlog show rumor:1; questlog list --view rumors.open',
+	description: 'Local task and calendar library',
 	tools: questlogSurfaceTools,
 	describeDb: (options) =>
 		`Database: ${selectedDbPath(options)}\nUse --db <path> or GHOSTPAW_QUESTLOG_DB to override the default ~/.ghostpaw/questlog.db.`,
@@ -43,8 +42,29 @@ export const questlogCliOptions: ToolCliOptions<QuestlogDb> = {
 	},
 	closeContext: (db) => db.close(),
 	commands: {
+		aliases: { 'quest abandon': 'drop' },
+		help: `Core flow:
+  add "<title>" --due tomorrow --tag work --tag review
+  list
+  start <id>
+  done <id> --outcome text
+  due
+  drop <id> [--reason text] (also: quest abandon)
+More: show, search, quest revise <id> --title text, review
+Advanced:
+  repeatable, hook, watch, tick
+  Rumors: shape_work, show rumor:1, list --view rumors.open
+  Unlocks: organize_work; rewards: reward_work
+  tools [--json], describe <tool>, call <tool> [JSON|-], <tool> --parameter value, mcp, skill
+Use <command> --help for details.`,
 		names: ['hook', 'watch'],
 		run: async (command, args, options, io) => {
+			if (command === 'quest' && args[0] && !['revise', '--help', '-h'].includes(args[0])) {
+				io.stderr.write(
+					`Unknown quest action: ${args[0]}. Available quest actions: revise, abandon. Create with questlog add "<title>" --tag x.\n`,
+				);
+				return 2;
+			}
 			if (command === 'show' && args[0]?.startsWith('d_')) {
 				const { listDeliveries } = await import('../hooks/list_deliveries.ts');
 				const { listHooks } = await import('../hooks/list_hooks.ts');

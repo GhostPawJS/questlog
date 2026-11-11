@@ -482,3 +482,77 @@ test('default database notice uses stderr and respects explicit selection and qu
 		rmSync(dir, { recursive: true, force: true });
 	}
 });
+
+test('drop and quest abandon record facade outcomes with optional reasons', () => {
+	const dir = mkdtempSync(join(tmpdir(), 'questlog-drop-'));
+	try {
+		const run = (...args: string[]) =>
+			capture(['src/cli.ts', '--db', join(dir, 'work.db'), ...args]);
+		for (const prefix of [['drop'], ['quest', 'abandon']]) {
+			for (const reason of [undefined, 'No longer needed']) {
+				assert.equal(run('add', 'Disposable').status, 0);
+				const items = JSON.parse(run('list', '--json').stdout).data.items;
+				const id = String(items.find((item: { title: string }) => item.title === 'Disposable').id);
+				const result = run(...prefix, id, ...(reason ? ['--reason', reason] : []), '--json');
+				assert.equal(result.status, 0, result.stderr);
+				const data = JSON.parse(result.stdout).data;
+				assert.equal(data.action, 'abandon');
+				assert.equal(data.quest.success, false);
+				assert.equal(data.quest.outcome, reason ?? 'Abandoned via CLI.');
+				const stored = JSON.parse(run('show', id, '--json').stdout);
+				assert.match(JSON.stringify(stored), new RegExp(reason ?? 'Abandoned via CLI.'));
+			}
+			assert.equal(run(...prefix, '99999').status, 3);
+			assert.equal(run(...prefix).status, 2);
+			assert.match(run(...prefix, '--help').stdout, /--reason/);
+		}
+	} finally {
+		rmSync(dir, { recursive: true, force: true });
+	}
+});
+
+test('unknown quest actions recommend tagged add before parsing flags or opening a database', () => {
+	for (const action of ['create', 'new', 'add', 'typo']) {
+		const result = capture([
+			'src/cli.ts',
+			'--db',
+			'/missing/questlog/work.db',
+			'quest',
+			action,
+			'Title',
+			'--tag',
+			'x',
+		]);
+		assert.equal(result.status, 2);
+		assert.match(result.stderr, /Available quest actions: revise, abandon/);
+		assert.match(result.stderr, /questlog add "<title>" --tag x/);
+		assert.doesNotMatch(result.stderr, /Unknown flag/);
+	}
+});
+
+test('default help leads with core flow and retains advanced command discovery', () => {
+	const result = capture(['src/cli.ts', '--help']);
+	assert.equal(result.status, 0);
+	const [core, advanced] = result.stdout.split('Advanced:');
+	assert.ok(core && advanced);
+	let previous = -1;
+	for (const command of ['add', 'list', 'start', 'done', 'due', 'drop']) {
+		const index = core.search(new RegExp(`  ${command}(?: |\\n)`));
+		assert.ok(index > previous, command);
+		previous = index;
+	}
+	for (const command of [
+		'Rumors',
+		'Unlocks',
+		'rewards',
+		'hook',
+		'repeatable',
+		'tools',
+		'describe',
+		'call',
+	]) {
+		assert.ok(advanced.includes(command), command);
+	}
+	assert.doesNotMatch(core, /shape_work|reward_work|repeatable|hook/);
+	assert.match(capture(['src/cli.ts', 'quest', '--help']).stdout, /abandon/);
+});

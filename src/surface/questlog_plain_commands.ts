@@ -143,8 +143,30 @@ export function questlogPlainCommands(): readonly PlainCliCommand<QuestlogDb>[] 
 		},
 		{
 			spec: {
+				command: 'drop',
+				description: 'Abandon a quest. Alias: quest abandon <id> [--reason text].',
+				positionals: [id],
+				flags: [
+					{
+						name: 'reason',
+						type: 'string',
+						description: 'Recorded outcome; defaults to Abandoned via CLI.',
+					},
+				],
+			},
+			tool: 'run_quest',
+			input: (v) => ({
+				action: 'abandon',
+				questId: v.id,
+				outcome: v.reason ?? 'Abandoned via CLI.',
+			}),
+			render: renderQuestlogPlainResult,
+		},
+		{
+			spec: {
 				command: 'quest',
-				description: 'Revise a quest title.',
+				description:
+					'Actions: revise <id> --title text; abandon <id> [--reason text] (alias: drop). Create with questlog add "<title>" --tag x.',
 				positionals: [{ name: 'action', type: 'string', required: true, enum: ['revise'] }, id],
 				flags: [{ name: 'title', type: 'string', required: true }],
 			},

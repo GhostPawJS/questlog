@@ -23,6 +23,8 @@ export interface ToolCliOptions<TCtx> {
 	openContext(opts: { db?: string; quiet?: boolean; stderr?: Writable }): TCtx | Promise<TCtx>;
 	closeContext?: (ctx: TCtx) => void | Promise<void>;
 	commands?: {
+		help?: string;
+		aliases?: Readonly<Record<string, string>>;
 		plain?: readonly PlainCliCommand<TCtx>[];
 		names?: readonly string[];
 		run?: (
@@ -79,18 +81,26 @@ export async function runToolCli<TCtx>(
 		return 0;
 	}
 	const ctxOptions = { ...(db === undefined ? {} : { db }), quiet, stderr };
-	const command = args.shift() ?? 'help';
+	let command = args.shift() ?? 'help';
+	const alias = options.commands?.aliases?.[`${command} ${args[0]}`];
+	if (alias) {
+		args.shift();
+		command = alias;
+	}
 	const normalize = (name: string) => name.replace(/[-_]/g, '').toLowerCase();
 	if (['help', '--help', '-h'].includes(command)) {
 		stdout.write(
-			`${options.bin} ${options.version}\n${options.description}\n\nUsage: ${options.bin} [--db path] <command>\nCommands: ${[
-				...(options.commands?.plain?.map((entry) => entry.spec.command) ?? []),
-				...(options.commands?.names ?? []),
-			]
-				.map((name) => `${name}, `)
-				.join(
-					'',
-				)}tools [--json], describe <tool>, call <tool> [JSON|-], <tool> --parameter value, mcp, skill\nOutput: --json or GHOSTPAW_OUTPUT=json\nOptions: --help, --version, --compact, -q, --quiet (or GHOSTPAW_QUIET=1), --db <path>\nVersion formats: --version --short, --version --json\n${options.describeDb ? `${options.describeDb(ctxOptions)}\n` : ''}\n${options.tools.map((tool) => `${tool.name}  ${tool.description}`).join('\n')}\n`,
+			`${options.bin} ${options.version}\n${options.description}\n\nUsage: ${options.bin} [--db path] <command>\n${
+				options.commands?.help ??
+				`Commands: ${[
+					...(options.commands?.plain?.map((entry) => entry.spec.command) ?? []),
+					...(options.commands?.names ?? []),
+				]
+					.map((name) => `${name}, `)
+					.join(
+						'',
+					)}tools [--json], describe <tool>, call <tool> [JSON|-], <tool> --parameter value, mcp, skill`
+			}\nOutput: --json or GHOSTPAW_OUTPUT=json\nOptions: --help, --version, --compact, -q, --quiet (or GHOSTPAW_QUIET=1), --db <path>\nVersion formats: --version --short, --version --json\n${options.describeDb ? `${options.describeDb(ctxOptions)}\n` : ''}\n${options.commands?.help ? '' : options.tools.map((tool) => `${tool.name}  ${tool.description}`).join('\n')}\n`,
 		);
 		return 0;
 	}

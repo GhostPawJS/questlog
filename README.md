@@ -120,6 +120,12 @@ Lists show local due dates, overdue markers, and recorded outcomes. Plain JSON
 adds ISO UTC siblings for numeric timestamp fields ending in `At`.
 `done` stores `--outcome` with the finished quest; without it the command prints a usage hint (`--outcome '...'`) and exits 2.
 
+`drop <id> [--reason text]` (also `quest abandon <id>`) abandons a quest and records the reason; the default is "Abandoned via CLI."
+Quest actions are `revise` and `abandon`. Create quests with `questlog add "<title>" --tag x`;
+unsupported quest actions such as `create`, `new`, or `add` print this guidance and exit 2.
+Top-level `--help` leads with add, list, start, done, due, and drop. Advanced commands
+for rumors, unlocks, rewards, hooks, and repeatables remain available in its advanced section.
+
 Revise a title with `questlog quest revise <id> --title "New title"`.
 Count filtered quests with `questlog list --count-by tag|prefix`.
 Find similar open quest titles with `questlog list --view quests.duplicates`.
