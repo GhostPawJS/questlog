@@ -40,20 +40,7 @@ export function parsePlainDue(raw: string, now = Date.now()): number {
 
 export function formatPlainDate(value: number, full = false, now = Date.now()): string {
 	const date = new Date(value);
-	const month = [
-		'Jan',
-		'Feb',
-		'Mar',
-		'Apr',
-		'May',
-		'Jun',
-		'Jul',
-		'Aug',
-		'Sep',
-		'Oct',
-		'Nov',
-		'Dec',
-	][date.getMonth()];
+	const month = 'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'.split(' ')[date.getMonth()];
 	const year =
 		full || date.getFullYear() !== new Date(now).getFullYear() ? ` ${date.getFullYear()}` : '';
 	const endOfDay =

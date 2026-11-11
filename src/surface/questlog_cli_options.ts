@@ -2,12 +2,20 @@ import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { cliVersion } from '../cli_version.ts';
 import type { QuestlogDb } from '../database.ts';
+import { listDeliveries } from '../hooks/list_deliveries.ts';
+import { listHooks } from '../hooks/list_hooks.ts';
 import { questlogSkills } from '../skills/skill_registry.ts';
 import type { ToolCliOptions } from '../surfaces/cli.ts';
+import { cliCommandsHelp } from '../surfaces/cli_commands_help.ts';
+import { renderSkillMarkdown } from '../surfaces/skill_markdown.ts';
+import { textOutput } from '../surfaces/text_output.ts';
 import { questlogVersion } from '../version.ts';
+import { openQuestlogDb } from './open_questlog_db.ts';
 import { questlogPlainCommands } from './questlog_plain_commands.ts';
 import { questlogSurfaceTools } from './questlog_surface_tools.ts';
 import { resolveQuestlogDbPath } from './resolve_questlog_db_path.ts';
+import { runHookCommand } from './run_hook_command.ts';
+import { serveQuestlogMcp } from './serve_questlog_mcp.ts';
 
 function selectedDbPath(options: { db?: string }): string {
 	const selected = resolveQuestlogDbPath(options.db === undefined ? {} : { flag: options.db });
@@ -23,6 +31,11 @@ function notice(options: {
 		(options.stderr ?? process.stderr).write(`using default db ${selectedDbPath(options)}\n`);
 }
 
+async function openContext(options: Parameters<typeof notice>[0]): Promise<QuestlogDb> {
+	notice(options);
+	return openQuestlogDb(selectedDbPath(options));
+}
+
 export const questlogCliOptions: ToolCliOptions<QuestlogDb> = {
 	bin: 'ghostpaw-questlog',
 	version: questlogVersion,
@@ -32,7 +45,6 @@ export const questlogCliOptions: ToolCliOptions<QuestlogDb> = {
 	describeDb: (options) =>
 		`Database: ${selectedDbPath(options)}\nUse --db <path> or GHOSTPAW_QUESTLOG_DB to override the default ~/.ghostpaw/questlog.db.`,
 	openContext: async (options) => {
-		const { openQuestlogDb } = await import('./open_questlog_db.ts');
 		const path = selectedDbPath(options);
 		const created = path !== ':memory:' && !existsSync(path);
 		notice(options);
@@ -55,7 +67,7 @@ Advanced:
   repeatable, hook, watch, tick
   Rumors: shape_work, show rumor:1, list --view rumors.open
   Unlocks: organize_work; rewards: reward_work
-  tools [--json], describe <tool>, call <tool> [JSON|-], <tool> --parameter value, mcp, skill
+  ${cliCommandsHelp}
 Use <command> --help.`,
 		names: ['hook', 'watch'],
 		run: async (command, args, options, io) => {
@@ -66,16 +78,11 @@ Use <command> --help.`,
 				return 2;
 			}
 			if (command === 'show' && args[0]?.startsWith('d_')) {
-				const { listDeliveries } = await import('../hooks/list_deliveries.ts');
-				const { listHooks } = await import('../hooks/list_hooks.ts');
-				const { textOutput } = await import('../surfaces/text_output.ts');
 				if (args.includes('--help') || args.includes('-h')) {
 					io.stdout.write('questlog show <delivery-id> [--json]\n');
 					return 0;
 				}
-				const { openQuestlogDb } = await import('./open_questlog_db.ts');
-				notice(options);
-				const db = await openQuestlogDb(selectedDbPath(options));
+				const db = await openContext(options);
 				try {
 					const delivery = listDeliveries(db, { includeDelivered: true }).find(
 						(d) => d.id === args[0],
@@ -99,22 +106,15 @@ Use <command> --help.`,
 				}
 			}
 			if (command !== 'hook' && command !== 'watch') return undefined;
-			const { runHookCommand } = await import('./run_hook_command.ts');
-			return runHookCommand(command, args, io, async () => {
-				const { openQuestlogDb } = await import('./open_questlog_db.ts');
-				notice(options);
-				return openQuestlogDb(selectedDbPath(options));
-			});
+			return runHookCommand(command, args, io, () => openContext(options));
 		},
 		plain: questlogPlainCommands(),
 		guides: questlogSkills,
 		mcp: async (options) => {
-			const { serveQuestlogMcp } = await import('./serve_questlog_mcp.ts');
 			notice(options);
 			await serveQuestlogMcp(options.db === undefined ? {} : { dbPath: options.db });
 		},
 		skill: async () => {
-			const { renderSkillMarkdown } = await import('../surfaces/skill_markdown.ts');
 			const { questlogSkillSpec } = await import('./questlog_skill_spec.ts');
 			return renderSkillMarkdown(questlogSkillSpec);
 		},

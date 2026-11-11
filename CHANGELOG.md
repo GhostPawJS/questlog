@@ -5,7 +5,7 @@ The format follows Keep a Changelog 1.1.0. Dates use YYYY-MM-DD.
 
 ## [Unreleased]
 
-- Trim CLI help wording and refresh size budgets for the additive CLI improvements.
+- Trim CLI help wording and consolidate CLI helpers and module loading; the CLI bundle stays within its existing size budget.
 
 - Fix CLI abandonment with `quest abandon <id> [--reason text]` and the discoverable `drop` alias.
 - Explain unsupported quest actions with available actions and the tagged `add` command.

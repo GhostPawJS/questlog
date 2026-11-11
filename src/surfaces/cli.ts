@@ -1,5 +1,6 @@
 import type { Readable, Writable } from 'node:stream';
 import { type CliSpec, CliUsageError, parseCliArgs, renderCliHelp } from './cli_args.ts';
+import { cliCommandsHelp } from './cli_commands_help.ts';
 import { enrichPlainJson, suggestCommand } from './cli_output.ts';
 import { minimalInput } from './schema_examples.ts';
 import { schemaRows } from './schema_rows.ts';
@@ -41,6 +42,10 @@ export interface ToolCliOptions<TCtx> {
 	stdout?: Writable;
 	stderr?: Writable;
 }
+function hasHelp(args: string[]): boolean {
+	return args.includes('--help') || args.includes('-h');
+}
+
 export async function runToolCli<TCtx>(
 	argv: string[],
 	options: ToolCliOptions<TCtx>,
@@ -88,18 +93,15 @@ export async function runToolCli<TCtx>(
 		command = alias;
 	}
 	const normalize = (name: string) => name.replace(/[-_]/g, '').toLowerCase();
+	const commandNames = [
+		...(options.commands?.plain?.map((entry) => entry.spec.command) ?? []),
+		...(options.commands?.names ?? []),
+	];
 	if (['help', '--help', '-h'].includes(command)) {
 		stdout.write(
 			`${options.bin} ${options.version}\n${options.description}\n\nUsage: ${options.bin} [--db path] <command>\n${
 				options.commands?.help ??
-				`Commands: ${[
-					...(options.commands?.plain?.map((entry) => entry.spec.command) ?? []),
-					...(options.commands?.names ?? []),
-				]
-					.map((name) => `${name}, `)
-					.join(
-						'',
-					)}tools [--json], describe <tool>, call <tool> [JSON|-], <tool> --parameter value, mcp, skill`
+				`Commands: ${commandNames.map((name) => `${name}, `).join('')}${cliCommandsHelp}`
 			}\nOutput: --json or GHOSTPAW_OUTPUT=json\nOptions: --help, --version, --compact, -q, --quiet (or GHOSTPAW_QUIET=1), --db <path>\nVersion formats: --version --short, --version --json\n${options.describeDb ? `${options.describeDb(ctxOptions)}\n` : ''}\n${options.commands?.help ? '' : options.tools.map((tool) => `${tool.name}  ${tool.description}`).join('\n')}\n`,
 		);
 		return 0;
@@ -128,9 +130,9 @@ export async function runToolCli<TCtx>(
 	}
 	if (command === 'skill') {
 		if (!options.commands?.skill) return fail('skill command unavailable');
-		if (args.length > 1 && !args.some((arg) => ['--help', '-h'].includes(arg)))
+		if (args.length > 1 && !hasHelp(args))
 			return fail(`Usage: ${options.bin} skill [--short | --list | <guide> | --help]`);
-		const guide = args.some((arg) => ['--help', '-h'].includes(arg)) ? '--help' : args[0];
+		const guide = hasHelp(args) ? '--help' : args[0];
 		if (guide === '--help' || guide === '-h') {
 			stdout.write(
 				`Usage:\n  ${options.bin} skill\n  ${options.bin} skill --list\n  ${options.bin} skill --short\n  ${options.bin} skill <guide>\n`,
@@ -151,7 +153,7 @@ export async function runToolCli<TCtx>(
 		} else stdout.write(await options.commands.skill());
 		return 0;
 	}
-	if (command === 'mcp' && (args.includes('--help') || args.includes('-h'))) {
+	if (command === 'mcp' && hasHelp(args)) {
 		stdout.write(`${options.bin} mcp [--db path]\n`);
 		return 0;
 	}
@@ -169,7 +171,7 @@ export async function runToolCli<TCtx>(
 	const plain = options.commands?.plain?.find((entry) => entry.spec.command === command);
 	let plainValues: Record<string, unknown> = {};
 	if (plain) {
-		if (args.includes('--help') || args.includes('-h')) {
+		if (hasHelp(args)) {
 			stdout.write(
 				renderCliHelp({
 					...plain.spec,
@@ -199,8 +201,7 @@ export async function runToolCli<TCtx>(
 	if (!tool) {
 		if (command === 'call' || command === 'describe') return fail(`Unknown tool: ${name ?? ''}`);
 		const suggestion = suggestCommand(command, [
-			...(options.commands?.plain?.map((entry) => entry.spec.command) ?? []),
-			...(options.commands?.names ?? []),
+			...commandNames,
 			'help',
 			'tools',
 			'describe',
@@ -211,7 +212,7 @@ export async function runToolCli<TCtx>(
 		]);
 		return fail(`Unknown command: ${command}.${suggestion ? ` Did you mean ${suggestion}?` : ''}`);
 	}
-	if (command === 'describe' || args.includes('--help') || args.includes('-h')) {
+	if (command === 'describe' || hasHelp(args)) {
 		stdout.write(
 			`${tool.name}\nUsage: ${options.bin} ${tool.name} --parameter value [--json]\n${tool.description}\nUse when: ${tool.whenToUse ?? ''}\nNot for: ${tool.whenNotToUse ?? ''}\nRead only: ${tool.readOnly ?? false}\n\nParameter | Type | Required | Description\n${schemaRows(tool.inputSchema).join('\n')}\n\n${JSON.stringify(tool.inputSchema, null, 2)}\n`,
 		);

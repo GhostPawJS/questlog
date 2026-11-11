@@ -60,6 +60,13 @@ export async function runHookCommand(
 		if (action === 'watch' && values.interval !== undefined && Number(values.interval) < 5)
 			throw new Error(`--interval ${values.interval} is below the minimum of 5 seconds`);
 		db = await open();
+		if (
+			(action === 'remove' || action === 'test') &&
+			!listHooks(db).some((hook) => hook.id === Number(values.id))
+		) {
+			io.stderr.write(`Hook ${values.id} not found\n`);
+			return 3;
+		}
 		let result: unknown;
 		switch (action) {
 			case 'add': {
@@ -102,18 +109,10 @@ export async function runHookCommand(
 				result = { label: hookLabel(db, values.name as string | undefined) };
 				break;
 			case 'remove':
-				if (!listHooks(db).some((hook) => hook.id === Number(values.id))) {
-					io.stderr.write(`Hook ${values.id} not found\n`);
-					return 3;
-				}
 				removeHook(db, Number(values.id));
 				result = { removed: Number(values.id) };
 				break;
 			case 'test':
-				if (!listHooks(db).some((hook) => hook.id === Number(values.id))) {
-					io.stderr.write(`Hook ${values.id} not found\n`);
-					return 3;
-				}
 				result = await testHook(db, Number(values.id));
 				break;
 			case 'watch': {
