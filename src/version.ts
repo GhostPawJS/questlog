@@ -1,1 +1,1 @@
-export const questlogVersion = '0.14.1';
+export const questlogVersion = '0.14.2';

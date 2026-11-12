@@ -6,7 +6,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "@ghostpaw/questlog@0.14.1",
+        "@ghostpaw/questlog@0.14.2",
         "mcp"
       ]
     }
